@@ -1,19 +1,21 @@
-import { Client } from '../../../models/Client'
-import { Document, DocumentType, Items } from '../../../models/Document'
-import { Payment } from '../../../models/Payment'
+import { Document, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 
-export interface paramsCreateDocument {
-  items: Items
-  payment?: Payment
-  client: Client
-  document: DocumentType
+export interface ParamsCreateDocument {
+  items: Items[]
+  payment?: string
+  client?: string
+  document: string
+  discount: number
+  total?: number
+  attendant: string
+  createdAt?: Date
 }
 
 export interface ICreateDocumentRepository {
-  createDocument(): Promise<Document>
+  createDocument(params: ParamsCreateDocument): Promise<Document>
 }
 
-export interface CreateDocumentController {
-  handle(params: paramsCreateDocument): HttpResponse<Document>
+export interface ICreateDocumentController {
+  handle(params: ParamsCreateDocument): Promise<HttpResponse<Document>>
 }
