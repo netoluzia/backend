@@ -8,9 +8,8 @@ export const MongoClient = {
         const url = process.env.MONGODB_URL || ''
         const username = process.env.MONGODB_USERNAME
         const password = process.env.MONGODB_PASSWORD
-
         const client = new Mongo(url, { auth: { username, password } })
-        const db = client.db('users')
+        const db = client.db('db-users')
 
         this.client = client
         this.db = db

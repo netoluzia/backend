@@ -1,8 +1,8 @@
-export interface User {
+export interface InsuranceCompany {
   id: string
   name: string
-  email: string
-  password: string
+  address: string
+  nif: string
   createdAt?: Date
   updatedAt?: Date
   deletedAt?: Date
