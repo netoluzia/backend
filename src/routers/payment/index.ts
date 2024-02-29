@@ -2,10 +2,15 @@ import express from 'express'
 import type { Response, Request } from 'express'
 import { MongoCreatePaymentRepository } from '../../repositories/payment/create-payment/mongo-create-payment'
 import { CreatePaymentController } from '../../controllers/payment/create-payment/create-payment'
+import { MongoGetPaymentsRepository } from '../../repositories/payment/get-payments/get-payments'
+import { GetPaymentsController } from '../../controllers/payment/get-payments/get-payments'
 const router = express.Router()
 
 router.get('/', async (req: Request, res: Response) => {
-  //   return res.status(statusCode).send(body)
+  const repository = new MongoGetPaymentsRepository()
+  const controller = new GetPaymentsController(repository)
+  const { statusCode, body } = await controller.handle()
+  return res.status(statusCode).send(body)
 })
 
 router.post('/', async (req: Request, res: Response) => {

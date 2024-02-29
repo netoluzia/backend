@@ -9,7 +9,7 @@ export class MongoCreatePaymentRepository implements ICreatePaymentRepository {
   async createPayment(params: CreatePayment): Promise<Payment> {
     const { insertedId } = await MongoClient.db
       .collection('payment')
-      .insertOne(params)
+      .insertOne({ ...params, createdAt: new Date() })
     const payment = await MongoClient.db
       .collection<Omit<Payment, 'id'>>('payment')
       .findOne({ _id: insertedId })
