@@ -11,8 +11,8 @@ export class MongoGetServicesRepository implements IGetServicesRepository {
       .toArray()
 
     return services.map(({ _id, ...rest }) => ({
-      ...rest,
       id: _id.toHexString(),
+      ...rest,
     }))
   }
 }
