@@ -7,7 +7,6 @@ const router = express.Router()
 router.get('/', async (req: Request, res: Response) => {
   const reportController = new ReportController()
   const result = await reportController.handle()
-  console.log(result)
   return res.end(result)
 })
 

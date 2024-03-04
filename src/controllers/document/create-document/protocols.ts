@@ -10,6 +10,10 @@ export interface ParamsCreateDocument {
   total?: number
   attendant: string
   createdAt?: Date
+  serie?: string | number
+  reference?: string | null
+  hash64: string
+  hash4: string
 }
 
 export interface ICreateDocumentRepository {

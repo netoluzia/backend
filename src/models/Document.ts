@@ -23,9 +23,12 @@ export interface Document {
   payment: Payment
   items: Items[]
   receipt_value: number
-  refernce: string
+  reference: string
+  serie: string
   emission_reason: string
   changes: number
+  hash64: string
+  hash4: string
   attendant: User
   createdAt?: Date
   updatedAt?: Date

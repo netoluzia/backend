@@ -5,6 +5,7 @@ import {
   ICreateDocumentRepository,
   ParamsCreateDocument,
 } from './protocols'
+import crypto from 'crypto'
 
 export class CreateDocumentController implements ICreateDocumentController {
   constructor(
@@ -17,9 +18,22 @@ export class CreateDocumentController implements ICreateDocumentController {
         return accumulator + item.total
       }, 0)
 
+      const [ano, mes, dia, hora, minuto, segundo] =
+        new Date().toLocaleString().match(/(\d+)/g) || []
       const document = await this.createDocumentRepository.createDocument({
         ...params,
         total,
+        serie: new Date().getFullYear(),
+        reference: `${dia}${mes}${ano}${hora}${minuto}${segundo}`,
+        hash64: crypto
+          .createHash('sha256')
+          .update(`${dia}${mes}${ano}${hora}${minuto}${segundo}`)
+          .digest('hex'),
+        hash4: crypto
+          .createHash('sha256')
+          .update(`${dia}${mes}${ano}${hora}${minuto}${segundo}`)
+          .digest('hex')
+          .slice(0, 4),
       })
 
       return {
