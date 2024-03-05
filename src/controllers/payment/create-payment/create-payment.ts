@@ -13,18 +13,28 @@ export class CreatePaymentController implements ICreatePaymentController {
       if (!code || !title) {
         return {
           statusCode: 400,
-          body: 'Missing some fields',
+          body: {
+            message: 'Missing some fields',
+            status: false,
+          },
         }
       }
       const payment = await this.createPaymentRepository.createPayment(params)
       return {
         statusCode: 201,
-        body: payment,
+        body: {
+          data: payment,
+          status: true,
+          message: 'Método de pagamento adicionado com sucesso',
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

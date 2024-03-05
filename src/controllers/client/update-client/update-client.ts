@@ -15,12 +15,19 @@ export class UpdateClientController implements IUpdateClientController {
       const client = await this.updateClientRepository.updateClient(id, params)
       return {
         statusCode: 200,
-        body: client,
+        body: {
+          data: client,
+          message: 'Cliente adicionado com sucesso',
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

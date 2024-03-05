@@ -9,12 +9,19 @@ export class GetClientsController implements IGetClientsController {
       const clients = await this.getClientsRepository.getClients()
       return {
         statusCode: 200,
-        body: clients,
+        body: {
+          data: clients,
+          message: 'Clientes carregados com sucesso',
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

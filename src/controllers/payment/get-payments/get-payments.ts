@@ -12,12 +12,19 @@ export class GetPaymentsController implements IGetPaymentsController {
       const payments = await this.getPaymentsRepository.getPayments()
       return {
         statusCode: 200,
-        body: payments,
+        body: {
+          message: 'Métodos de pagamento carregado com sucesso',
+          data: payments,
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

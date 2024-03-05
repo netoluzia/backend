@@ -16,7 +16,10 @@ export class CreateClientController implements ICreateClientController {
       if (!name) {
         return {
           statusCode: 400,
-          body: 'Missing fields',
+          body: {
+            message: 'Missing fields',
+            status: false,
+          },
         }
       }
       const client = await this.createClientRepository.createClient({
@@ -25,12 +28,19 @@ export class CreateClientController implements ICreateClientController {
       })
       return {
         statusCode: 200,
-        body: client,
+        body: {
+          data: client,
+          status: true,
+          message: 'Cliente adicionado com sucesso',
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

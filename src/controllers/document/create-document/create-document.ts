@@ -38,12 +38,19 @@ export class CreateDocumentController implements ICreateDocumentController {
 
       return {
         statusCode: 200,
-        body: document,
+        body: {
+          message: 'Documento criado com sucesso',
+          data: document,
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

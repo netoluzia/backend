@@ -1,18 +1,20 @@
-import { Service } from '../../../models/Service'
+import { InsuranceCompany } from '../../../models/Insurance'
 import { HttpRequest, HttpResponse } from '../../protocols'
 import {
-  ICreateServiceController,
-  ICreateServicesRepository,
+  CreateInsuranceParams,
+  ICreateInsuranceController,
+  ICreateInsuranceRepository,
 } from './protocols'
 
-export class CreateServiceController implements ICreateServiceController {
+export class CreateInsuranceController implements ICreateInsuranceController {
   constructor(
-    private readonly createServiceRepository: ICreateServicesRepository
+    private readonly createServiceRepository: ICreateInsuranceRepository
   ) {}
-  async handle(params: HttpRequest<Service>): Promise<HttpResponse<Service>> {
+  async handle(
+    params: CreateInsuranceParams
+  ): Promise<HttpResponse<InsuranceCompany>> {
     try {
-      const { body } = params
-      if (!body) {
+      if (!params) {
         return {
           statusCode: 400,
           body: {
@@ -22,16 +24,13 @@ export class CreateServiceController implements ICreateServiceController {
         }
       }
 
-      const service = await this.createServiceRepository.createService({
-        ...body,
-        createdAt: new Date(),
-      })
+      const service = await this.createServiceRepository.createInsurance(params)
 
       return {
         statusCode: 200,
         body: {
           data: service,
-          message: 'Servico criado com sucesso',
+          message: 'Seguradora criada com sucesso',
           status: true,
         },
       }

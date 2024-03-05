@@ -1,6 +1,12 @@
 export interface HttpResponse<T> {
   statusCode: number
-  body: T | string
+  body: BodyResponse<T>
+}
+
+export interface BodyResponse<B> {
+  data?: B
+  status: boolean
+  message: string
 }
 
 export interface HttpRequest<B> {

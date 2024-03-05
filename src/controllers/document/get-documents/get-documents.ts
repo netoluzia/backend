@@ -11,12 +11,19 @@ export class GetDocumentsController implements IGetDocumentsController {
       const documents = await this.getDocumentsRepository.getDocuments()
       return {
         statusCode: 200,
-        body: documents,
+        body: {
+          data: documents,
+          message: 'Documentos carregados com sucesso',
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

@@ -15,7 +15,10 @@ export class UpdateServiceController implements IUpdateServiceController {
       if (!params || !body) {
         return {
           statusCode: 400,
-          body: 'Bad request',
+          body: {
+            message: 'Bad request',
+            status: false,
+          },
         }
       }
 
@@ -26,12 +29,19 @@ export class UpdateServiceController implements IUpdateServiceController {
 
       return {
         statusCode: 200,
-        body: service,
+        body: {
+          message: 'Item atualizado com sucesso',
+          data: service,
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

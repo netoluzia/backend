@@ -16,7 +16,10 @@ export class CreateUserController implements ICreateUserController {
       if (!httpRequest.body) {
         return {
           statusCode: 400,
-          body: 'Please, specify a body',
+          body: {
+            message: 'Please, specify a body',
+            status: false,
+          },
         }
       }
 
@@ -25,12 +28,19 @@ export class CreateUserController implements ICreateUserController {
 
       return {
         statusCode: 200,
-        body: user,
+        body: {
+          data: user,
+          message: 'Usuario criado com sucesso',
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          message: 'Something went wrong',
+          status: false,
+        },
       }
     }
   }

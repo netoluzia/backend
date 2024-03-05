@@ -10,12 +10,19 @@ export class GetServicesController implements IGetServicesController {
       const services = await this.getServicesRepository.getServices(type)
       return {
         statusCode: 200,
-        body: services,
+        body: {
+          data: services,
+          message: 'Items carregados com sucesso',
+          status: true,
+        },
       }
     } catch (error) {
       return {
         statusCode: 500,
-        body: 'Something went wrong',
+        body: {
+          status: false,
+          message: 'Something went wrong',
+        },
       }
     }
   }
