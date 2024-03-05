@@ -4,9 +4,10 @@ import { ReportController } from '../../controllers/printing/report'
 
 const router = express.Router()
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/:id', async (req: Request, res: Response) => {
   const reportController = new ReportController()
-  const result = await reportController.handle()
+  const { id } = req.params
+  const result = await reportController.handle(id)
   return res.end(result)
 })
 

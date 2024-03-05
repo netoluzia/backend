@@ -2,7 +2,7 @@ import pdfPrinter from 'pdfmake'
 import { TDocumentDefinitions } from 'pdfmake/interfaces'
 
 export class ReportController {
-  async handle(): Promise<Buffer> {
+  async handle(id: string): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const fonts = {
         Courier: {
@@ -32,10 +32,7 @@ export class ReportController {
       }
       const printer = new pdfPrinter(fonts)
       let docDefinition: TDocumentDefinitions = {
-        content: [
-          'First paragraph',
-          'Another paragraph, this time a little bit longer to make sure, this line will be divided into at least two lines',
-        ],
+        content: ['First paragraph', 'Honorio de Sousa', id],
         defaultStyle: {
           font: 'Helvetica',
         },
