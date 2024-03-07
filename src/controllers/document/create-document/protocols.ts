@@ -6,14 +6,15 @@ export interface ParamsCreateDocument {
   payment?: string
   client?: string
   document: string
-  discount: number
+  discount?: number
   total?: number
-  attendant: string
+  attendant?: string
   createdAt?: Date
   serie?: string | number
   reference?: string | null
   hash64: string
   hash4: string
+  emission_date?: Date
 }
 
 export interface ICreateDocumentRepository {

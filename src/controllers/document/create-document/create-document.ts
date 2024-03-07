@@ -34,6 +34,8 @@ export class CreateDocumentController implements ICreateDocumentController {
           .update(`${dia}${mes}${ano}${hora}${minuto}${segundo}`)
           .digest('hex')
           .slice(0, 4),
+        createdAt: new Date(),
+        emission_date: params.emission_date || new Date(),
       })
 
       return {

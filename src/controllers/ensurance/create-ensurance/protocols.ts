@@ -2,6 +2,7 @@ import { InsuranceCompany } from '../../../models/Insurance'
 import { HttpRequest, HttpResponse } from '../../protocols'
 
 export interface CreateInsuranceParams {
+  id?: string
   name: string
   address: string
   nif: string

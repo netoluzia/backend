@@ -7,6 +7,11 @@ import { MongoCreateServiceRepository } from '../../repositories/service/create-
 import { CreateServiceController } from '../../controllers/service/create-service/create-service'
 import { MongoUpdateServiceRepository } from '../../repositories/service/update-service/mongo-update-service'
 import { UpdateServiceController } from '../../controllers/service/update-service/update-service'
+import { MongoGetServiceRepository } from '../../repositories/service/get-service/mongo-get-service'
+import { GetServiceController } from '../../controllers/service/get-service/get-service'
+import { MongoDeleteClientRepository } from '../../repositories/client/delete-client/mongo-delete-client'
+import { MongoDeleteServiceRepository } from '../../repositories/service/delete-service/mongo-delete-service'
+import { DeleteServiceController } from '../../controllers/service/delete-service/delete-service'
 
 const router = express.Router()
 
@@ -48,10 +53,18 @@ router.patch('/:id', async (req: Request, res: Response) => {
 })
 
 router.get('/:id', async (req: Request, res: Response) => {
-  // Pegar um;'ao
+  const repository = new MongoGetServiceRepository()
+  const controller = new GetServiceController(repository)
+
+  const { body, statusCode } = await controller.handle(req.params.id)
+  return res.status(statusCode).send(body)
 })
 router.delete('/:id', async (req: Request, res: Response) => {
-  // Deletar um;'ao
+  const repository = new MongoDeleteServiceRepository()
+  const controller = new DeleteServiceController(repository)
+
+  const { body, statusCode } = await controller.handle(req.params.id)
+  return res.status(statusCode).send(body)
 })
 
 export default router

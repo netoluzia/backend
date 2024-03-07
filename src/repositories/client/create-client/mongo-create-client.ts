@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import {
   CreateCliente,
   ICreateClientRepository,
@@ -7,9 +8,12 @@ import { Client } from '../../../models/Client'
 
 export class MongoCreateClientRepository implements ICreateClientRepository {
   async createClient(params: CreateCliente): Promise<Client> {
-    const { insertedId } = await MongoClient.db
-      .collection('client')
-      .insertOne(params)
+    const { insurance_company, ...restData } = params
+
+    const { insertedId } = await MongoClient.db.collection('client').insertOne({
+      insurance_company: new ObjectId(insurance_company),
+      ...restData,
+    })
     const client = await MongoClient.db
       .collection<Omit<Client, 'id'>>('client')
       .findOne({ _id: insertedId })

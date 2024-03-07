@@ -1,9 +1,12 @@
 import pdfPrinter from 'pdfmake'
 import { TDocumentDefinitions } from 'pdfmake/interfaces'
+import { MongoGetDocumentsRepository } from '../../repositories/document/get-documents/mongo-get-documents'
 
 export class ReportController {
   async handle(id: string): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
+      const repository = new MongoGetDocumentsRepository()
+      const data = await repository.getDocuments()
       const fonts = {
         Courier: {
           normal: 'Courier',
@@ -32,7 +35,11 @@ export class ReportController {
       }
       const printer = new pdfPrinter(fonts)
       let docDefinition: TDocumentDefinitions = {
-        content: ['First paragraph', 'Honorio de Sousa', id],
+        content: [
+          'First paragraph',
+          'Honorio de Sousa',
+          String(JSON.stringify(data)),
+        ],
         defaultStyle: {
           font: 'Helvetica',
         },

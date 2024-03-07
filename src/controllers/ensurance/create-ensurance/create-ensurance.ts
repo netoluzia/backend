@@ -23,8 +23,10 @@ export class CreateInsuranceController implements ICreateInsuranceController {
           },
         }
       }
-
-      const service = await this.createServiceRepository.createInsurance(params)
+      const { id, ...rest } = params
+      const service = await this.createServiceRepository.createInsurance({
+        ...rest,
+      })
 
       return {
         statusCode: 200,

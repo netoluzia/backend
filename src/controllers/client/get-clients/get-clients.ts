@@ -15,11 +15,11 @@ export class GetClientsController implements IGetClientsController {
           status: true,
         },
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
         statusCode: 500,
         body: {
-          message: 'Something went wrong',
+          message: error.message,
           status: false,
         },
       }

@@ -6,7 +6,7 @@ export interface CreateCliente {
   nif?: string
   email?: string
   phone_number?: string
-  insurance_company?: string
+  insurance_company?: any
   insurance_number?: string
   createdAt: Date
 }
