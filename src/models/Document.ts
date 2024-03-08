@@ -16,7 +16,7 @@ export interface Items {
   total: number
 }
 
-export interface Document {
+export interface FiscalDoc {
   id: string
   client: Client
   document: DocumentType

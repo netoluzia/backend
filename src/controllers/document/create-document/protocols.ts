@@ -1,4 +1,4 @@
-import { Document, Items } from '../../../models/Document'
+import { FiscalDoc, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 
 export interface ParamsCreateDocument {
@@ -18,9 +18,9 @@ export interface ParamsCreateDocument {
 }
 
 export interface ICreateDocumentRepository {
-  createDocument(params: ParamsCreateDocument): Promise<Document>
+  createDocument(params: ParamsCreateDocument): Promise<FiscalDoc>
 }
 
 export interface ICreateDocumentController {
-  handle(params: ParamsCreateDocument): Promise<HttpResponse<Document>>
+  handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>>
 }

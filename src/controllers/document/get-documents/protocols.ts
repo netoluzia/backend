@@ -1,10 +1,10 @@
-import { Document } from '../../../models/Document'
+import { FiscalDoc } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 
 export interface IGetDocumentsRepository {
-  getDocuments(): Promise<Document[]>
+  getDocuments(): Promise<FiscalDoc[]>
 }
 
 export interface IGetDocumentsController {
-  handle(): Promise<HttpResponse<Document[]>>
+  handle(): Promise<HttpResponse<FiscalDoc[]>>
 }

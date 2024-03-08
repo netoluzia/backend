@@ -1,11 +1,11 @@
 import { IGetDocumentsRepository } from '../../../controllers/document/get-documents/protocols'
 import { MongoClient } from '../../../database/mongo'
-import { Document } from '../../../models/Document'
+import { FiscalDoc } from '../../../models/Document'
 
 export class MongoGetDocumentsRepository implements IGetDocumentsRepository {
-  async getDocuments(): Promise<Document[]> {
+  async getDocuments(): Promise<FiscalDoc[]> {
     const documents = await MongoClient.db
-      .collection<Omit<Document, 'id'>>('document')
+      .collection<Omit<FiscalDoc, 'id'>>('document')
       .find({})
       .toArray()
 

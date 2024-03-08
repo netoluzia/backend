@@ -1,4 +1,4 @@
-import { Document, Items } from '../../../models/Document'
+import { FiscalDoc, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 import {
   ICreateDocumentController,
@@ -11,7 +11,7 @@ export class CreateDocumentController implements ICreateDocumentController {
   constructor(
     private readonly createDocumentRepository: ICreateDocumentRepository
   ) {}
-  async handle(params: ParamsCreateDocument): Promise<HttpResponse<Document>> {
+  async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
       const { items } = params
       const total = items.reduce((accumulator: number, item: Items) => {

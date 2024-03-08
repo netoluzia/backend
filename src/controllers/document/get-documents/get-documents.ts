@@ -1,4 +1,4 @@
-import { Document } from '../../../models/Document'
+import { FiscalDoc } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 import { IGetDocumentsController, IGetDocumentsRepository } from './protocols'
 
@@ -6,7 +6,7 @@ export class GetDocumentsController implements IGetDocumentsController {
   constructor(
     private readonly getDocumentsRepository: IGetDocumentsRepository
   ) {}
-  async handle(): Promise<HttpResponse<Document[]>> {
+  async handle(): Promise<HttpResponse<FiscalDoc[]>> {
     try {
       const documents = await this.getDocumentsRepository.getDocuments()
       return {
