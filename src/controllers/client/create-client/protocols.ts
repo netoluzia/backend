@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { Client } from '../../../models/Client'
 import { HttpResponse } from '../../protocols'
 
@@ -6,7 +7,7 @@ export interface CreateCliente {
   nif?: string
   email?: string
   phone_number?: string
-  insurance_company?: any
+  insurance_company?: ObjectId
   insurance_number?: string
   createdAt: Date
 }

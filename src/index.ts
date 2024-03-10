@@ -7,7 +7,6 @@ import routes from './routers'
 const main = async () => {
   config()
   const port = process.env.PORT || 8020
-
   const app = express()
 
   app.use(cors())

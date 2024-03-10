@@ -1,9 +1,10 @@
+import { InsuranceCompany } from '../../../models/Insurance'
 import { Service } from '../../../models/Service'
 import { HttpResponse } from '../../protocols'
 
-export interface IDeleteServiceController {
-  handle(id: string): Promise<HttpResponse<Service>>
+export interface IDeleteInsuranceController {
+  handle(id: string): Promise<HttpResponse<InsuranceCompany>>
 }
-export interface IDeleteServiceRepository {
-  deleteService(id: string): Promise<Service>
+export interface IDeleteInsuranceRepository {
+  deleteInsurance(id: string): Promise<InsuranceCompany>
 }

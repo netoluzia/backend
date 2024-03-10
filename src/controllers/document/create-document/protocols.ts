@@ -1,10 +1,11 @@
 import { FiscalDoc, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
+import { ObjectId } from 'mongodb'
 
 export interface ParamsCreateDocument {
   items: Items[]
-  payment?: string
-  client?: string
+  payment?: ObjectId
+  client?: ObjectId
   document: string
   discount?: number
   total?: number

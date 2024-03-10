@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { FiscalDoc, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
 import {
@@ -6,14 +7,13 @@ import {
   ParamsCreateDocument,
 } from './protocols'
 import crypto from 'crypto'
-
 export class CreateDocumentController implements ICreateDocumentController {
   constructor(
     private readonly createDocumentRepository: ICreateDocumentRepository
   ) {}
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
-      const { items } = params
+      const { items, client, payment } = params
       const total = items.reduce((accumulator: number, item: Items) => {
         return accumulator + item.total
       }, 0)
@@ -36,6 +36,8 @@ export class CreateDocumentController implements ICreateDocumentController {
           .slice(0, 4),
         createdAt: new Date(),
         emission_date: params.emission_date || new Date(),
+        client: new ObjectId(client),
+        payment: new ObjectId(payment),
       })
 
       return {

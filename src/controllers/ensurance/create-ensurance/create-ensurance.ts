@@ -23,7 +23,7 @@ export class CreateInsuranceController implements ICreateInsuranceController {
           },
         }
       }
-      const { id, ...rest } = params
+      const { ...rest } = params
       const service = await this.createServiceRepository.createInsurance({
         ...rest,
       })
