@@ -13,6 +13,7 @@ import auth from './auth'
 const router = express.Router()
 const middleware = new Middlewares()
 
+// testando
 router.use('/users', middleware.verifyToken, user)
 router.use('/services', middleware.verifyToken, service)
 router.use('/reports', report)
