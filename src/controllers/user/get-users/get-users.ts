@@ -5,7 +5,7 @@ import { IGetUserController, IGetUsersRepository } from './protocols'
 export class GetUserController implements IGetUserController {
   constructor(private readonly getUsersRepository: IGetUsersRepository) {}
 
-  async handle(): Promise<HttpResponse<User[]>> {
+  async handle(): Promise<HttpResponse<Omit<User, 'password'>[]>> {
     try {
       const users = await this.getUsersRepository.getUsers()
       return {

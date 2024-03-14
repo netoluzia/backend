@@ -27,6 +27,7 @@ export class MongoGetDocumentRepository implements IGetDocumentRepository {
             preserveNullAndEmptyArrays: true,
           },
         },
+
         {
           $project: {
             _id: 1,
@@ -34,6 +35,37 @@ export class MongoGetDocumentRepository implements IGetDocumentRepository {
             document: 1,
             payment: 1,
             emission_date: 1,
+            reference: 1,
+            serie: 1,
+            total: 1,
+            createdAt: 1,
+            client: '$client',
+          },
+        },
+        {
+          $lookup: {
+            from: 'insurance',
+            localField: 'client.insurance_company',
+            foreignField: '_id',
+            as: 'client.insurance_company',
+          },
+        },
+        // {
+        //   $wind: {
+        //     path: '$client.insurance_company',
+        //     preserveNullAndEmptyArrays: true,
+        //   },
+        // },
+        {
+          $project: {
+            _id: 1,
+            items: 1,
+            document: 1,
+            payment: 1,
+            emission_date: 1,
+            reference: 1,
+            serie: 1,
+            total: 1,
             createdAt: 1,
             client: '$client',
           },

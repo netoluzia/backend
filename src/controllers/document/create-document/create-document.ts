@@ -14,7 +14,15 @@ export class CreateDocumentController implements ICreateDocumentController {
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
       const { items, client, payment } = params
-      const total = items.reduce((accumulator: number, item: Items) => {
+      const auxItems = items.map(
+        ({ quantity, unit_price, total, ...rest }) => ({
+          total: quantity * unit_price,
+          ...rest,
+          unit_price,
+          quantity,
+        })
+      )
+      const total = auxItems.reduce((accumulator: number, item: Items) => {
         return accumulator + item.total
       }, 0)
 
@@ -38,6 +46,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         emission_date: params.emission_date || new Date(),
         client: new ObjectId(client),
         payment: new ObjectId(payment),
+        items: auxItems,
       })
 
       return {

@@ -11,6 +11,8 @@ export interface CreateUserParams {
   name: string
   email: string
   password: string
+  role: string
+  username: string
   createdAt: Date
 }
 

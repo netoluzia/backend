@@ -2,16 +2,20 @@ import pdfPrinter from 'pdfmake'
 import { TDocumentDefinitions } from 'pdfmake/interfaces'
 import { MongoGetDocumentRepository } from '../../repositories/document/get-document/mongo-get-document'
 import { FiscalDoc } from '../../models/Document'
-
+const documents = {
+  FT: 'Fatura',
+  RG: 'Recibo',
+  FR: 'Fatura-Recibo',
+}
 export class ReportController {
   async handle(id: string): Promise<Buffer> {
     return new Promise(async (resolve, reject) => {
       const repository = new MongoGetDocumentRepository()
       const data = await repository.getDocument(id)
       const documentData = JSON.parse(JSON.stringify(data))
+      const client = documentData.client
 
       console.log(documentData)
-
       const fonts = {
         Helvetica: {
           normal: 'Helvetica',
@@ -31,13 +35,24 @@ export class ReportController {
             text: new Intl.NumberFormat('de-DE', {
               style: 'currency',
               currency: 'AOA',
-            }).format(item.unit_price),
+            }).format(item.total),
             alignment: 'right',
           },
         ]
         itemsTable.push(element)
       })
-
+      itemsTable.push([
+        { style: 'default', text: 'TOTAL', alignment: 'left' },
+        {},
+        {
+          style: 'default',
+          text: new Intl.NumberFormat('de-DE', {
+            style: 'currency',
+            currency: 'AOA',
+          }).format(documentData.total),
+          alignment: 'right',
+        },
+      ])
       const printer = new pdfPrinter(fonts)
       let docDefinition: TDocumentDefinitions = {
         content: [
@@ -53,8 +68,9 @@ export class ReportController {
                       style: ['header'],
                     },
                     'Endereço: Zango 1, Rua da Pomobel',
-                    'Telefone: +244 990 88 99 87',
-                    'Número de contribuinte: +244 990 88 99 87',
+                    'Telefone: (+244) 946 803 775 / 990 803 775',
+                    'Email: clinicaalfavida2020@gmail.com',
+                    'Número de contribuinte: 5000139777',
                   ],
                 ],
               },
@@ -64,16 +80,26 @@ export class ReportController {
                 columns: [
                   [
                     {
-                      text: 'Fatura',
+                      text: documents[
+                        documentData.document as keyof typeof documents
+                      ],
                       alignment: 'right',
                       style: ['header'],
                     },
                     {
-                      text: 'Referência: FT/23454787',
+                      text: `Referência: ${documentData.document}/${documentData?.reference}`,
                       alignment: 'right',
                     },
                     {
-                      text: 'Data de emissão: 12/02/2024',
+                      text:
+                        'Data de emissão: ' +
+                        new Intl.DateTimeFormat('en-GB', {
+                          day: 'numeric',
+                          month: 'numeric',
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        }).format(new Date(documentData?.emission_date)),
                       alignment: 'right',
                     },
                     {
@@ -112,7 +138,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.name,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -122,7 +148,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.insurance_number,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -132,7 +158,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client?.nif,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -142,7 +168,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.phone_number,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -172,17 +198,17 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.insurance_company[0].name,
                         style: ['bodyStyle'],
                       },
                     ],
                     [
                       {
-                        text: 'Cartão',
+                        text: 'Endereço',
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.insurance_company[0].address,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -192,7 +218,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.insurance_company[0].nif,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -202,7 +228,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: 'Honório de Sousa',
+                        text: client.insurance_company[0].phone_number,
                         style: ['bodyStyle'],
                       },
                     ],

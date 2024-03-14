@@ -5,6 +5,7 @@ import { MongoGetUsersRepository } from '../../repositories/user/get-users/mongo
 import { GetUserController } from '../../controllers/user/get-users/get-users'
 import { MongoCreateUserRepository } from '../../repositories/user/create-user/mongo-create-user'
 import { CreateUserController } from '../../controllers/user/create-user/create-user'
+import { MongoGetUserRepository } from '../../repositories/user/get-user/mongo-get-user'
 
 const router = express.Router()
 
@@ -18,7 +19,11 @@ router.get('/', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   const createUserRepository = new MongoCreateUserRepository()
-  const createUserController = new CreateUserController(createUserRepository)
+  const getUserRepository = new MongoGetUserRepository()
+  const createUserController = new CreateUserController(
+    createUserRepository,
+    getUserRepository
+  )
 
   const { body, statusCode } = await createUserController.handle({
     body: req.body,
