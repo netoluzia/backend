@@ -12,10 +12,5 @@
       "src": ".*",
       "dest": "index.ts"
     }
-  ],
-  "functions": {
-    "src/index.ts": {
-      "runtime": "nodejs18.12.0"
-    }
-  }
+  ]
 }
