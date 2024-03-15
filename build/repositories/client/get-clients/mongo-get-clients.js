@@ -25,9 +25,37 @@ const mongo_1 = require("../../../database/mongo");
 class MongoGetClientsRepository {
     getClients() {
         return __awaiter(this, void 0, void 0, function* () {
+            const pipeline = [
+                {
+                    $lookup: {
+                        from: 'insurance',
+                        localField: 'insurance_company',
+                        foreignField: '_id',
+                        as: 'insurance_data',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$insurance_data',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        name: 1,
+                        email: 1,
+                        phone_number: 1,
+                        insurance_number: 1,
+                        createdAt: 1,
+                        insurance_company: '$insurance_data',
+                    },
+                },
+            ];
             const clients = yield mongo_1.MongoClient.db
                 .collection('client')
-                .find({})
+                .aggregate(pipeline)
+                // .find()
                 .toArray();
             return clients.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);

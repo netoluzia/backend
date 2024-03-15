@@ -19,6 +19,10 @@ const mongo_create_client_1 = require("../../repositories/client/create-client/m
 const create_client_1 = require("../../controllers/client/create-client/create-client");
 const mongo_update_client_1 = require("../../repositories/client/update-client/mongo-update-client");
 const update_client_1 = require("../../controllers/client/update-client/update-client");
+const get_client_1 = require("../../controllers/client/get-client/get-client");
+const mongo_get_client_1 = require("../../repositories/client/get-client/mongo-get-client");
+const mongo_delete_client_1 = require("../../repositories/client/delete-client/mongo-delete-client");
+const delete_client_1 = require("../../controllers/client/delete-client/delete-client");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getClientsRepository = new mongo_get_clients_1.MongoGetClientsRepository();
@@ -40,8 +44,16 @@ router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Pegar um;'ao
+    const repository = new mongo_get_client_1.MongoGetClientRepository();
+    const controller = new get_client_1.GetClientController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Deletar um;'ao
+    const repository = new mongo_delete_client_1.MongoDeleteClientRepository();
+    const controller = new delete_client_1.DeleteClientController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 exports.default = router;

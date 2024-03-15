@@ -30,7 +30,7 @@ class MongoGetUsersRepository {
                 .find({})
                 .toArray();
             return users.map((_a) => {
-                var { _id } = _a, rest = __rest(_a, ["_id"]);
+                var { _id, password } = _a, rest = __rest(_a, ["_id", "password"]);
                 return (Object.assign(Object.assign({}, rest), { id: _id.toHexString() }));
             });
         });

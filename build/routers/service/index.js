@@ -19,6 +19,10 @@ const mongo_create_service_1 = require("../../repositories/service/create-servic
 const create_service_1 = require("../../controllers/service/create-service/create-service");
 const mongo_update_service_1 = require("../../repositories/service/update-service/mongo-update-service");
 const update_service_1 = require("../../controllers/service/update-service/update-service");
+const mongo_get_service_1 = require("../../repositories/service/get-service/mongo-get-service");
+const get_service_1 = require("../../controllers/service/get-service/get-service");
+const mongo_delete_service_1 = require("../../repositories/service/delete-service/mongo-delete-service");
+const delete_service_1 = require("../../controllers/service/delete-service/delete-service");
 const router = express_1.default.Router();
 router.get('/index/:type', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getServicesRepository = new mongo_get_services_1.MongoGetServicesRepository();
@@ -44,9 +48,15 @@ router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     return res.status(statusCode).send(body);
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Pegar um;'ao
+    const repository = new mongo_get_service_1.MongoGetServiceRepository();
+    const controller = new get_service_1.GetServiceController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Deletar um;'ao
+    const repository = new mongo_delete_service_1.MongoDeleteServiceRepository();
+    const controller = new delete_service_1.DeleteServiceController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 exports.default = router;

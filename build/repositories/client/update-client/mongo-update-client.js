@@ -26,13 +26,16 @@ const mongo_1 = require("../../../database/mongo");
 class MongoUpdateClientRepository {
     updateClient(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const client = yield mongo_1.MongoClient.db
+            const { insurance_company } = params, restParams = __rest(params, ["insurance_company"]);
+            const updatedClient = yield mongo_1.MongoClient.db
                 .collection('client')
-                .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, params), { updatedAt: new Date() }) }, { returnDocument: 'after' });
-            if (!client) {
+                .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
+                $set: Object.assign(Object.assign({ updatedAt: new Date() }, restParams), { insurance_company: new mongodb_1.ObjectId(String(insurance_company)) }),
+            }, { returnDocument: 'after' });
+            if (!updatedClient) {
                 throw new Error('Client was not updated');
             }
-            const { _id } = client, rest = __rest(client, ["_id"]);
+            const { _id } = updatedClient, rest = __rest(updatedClient, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);
         });
     }

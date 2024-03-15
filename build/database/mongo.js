@@ -25,5 +25,5 @@ exports.MongoClient = {
             this.db = db;
             console.log('Conectou a base');
         });
-    }
+    },
 };

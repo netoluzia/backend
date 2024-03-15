@@ -17,6 +17,12 @@ const mongo_get_insurances_1 = require("../../repositories/ensurance/get-insuran
 const get_ensurances_1 = require("../../controllers/ensurance/get-ensurances/get-ensurances");
 const mongo_create_insurance_1 = require("../../repositories/ensurance/create-insurance/mongo-create-insurance");
 const create_ensurance_1 = require("../../controllers/ensurance/create-ensurance/create-ensurance");
+const mongo_get_insurance_1 = require("../../repositories/ensurance/get-insurance/mongo-get-insurance");
+const get_insurance_1 = require("../../controllers/ensurance/get-ensurance/get-insurance");
+const mongo_update_insurance_1 = require("../../repositories/ensurance/update-insurance/mongo-update-insurance");
+const update_ensurance_1 = require("../../controllers/ensurance/update-ensurance/update-ensurance");
+const mongo_delete_insurance_1 = require("../../repositories/ensurance/delete-insurance/mongo-delete-insurance");
+const delete_ensurance_1 = require("../../controllers/ensurance/delete-ensurance/delete-ensurance");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_get_insurances_1.MongoGetInsurancesRepository();
@@ -24,10 +30,28 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body, statusCode } = yield controller.handle();
     return res.status(statusCode).send(body);
 }));
+router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repository = new mongo_get_insurance_1.MongoGetInsuranceRepository();
+    const controller = new get_insurance_1.GetInsuranceController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
+}));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_create_insurance_1.MongoCreateInsuranceRepository();
     const controller = new create_ensurance_1.CreateInsuranceController(repository);
     const { body, statusCode } = yield controller.handle(req.body);
+    return res.status(statusCode).send(body);
+}));
+router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repository = new mongo_update_insurance_1.MongoUpdateInsuranceRepository();
+    const controller = new update_ensurance_1.UpdateInsuranceController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id, req.body);
+    return res.status(statusCode).send(body);
+}));
+router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repository = new mongo_delete_insurance_1.MongoDeleteInsuranceRepository();
+    const controller = new delete_ensurance_1.DeleteInsuranceController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
     return res.status(statusCode).send(body);
 }));
 exports.default = router;

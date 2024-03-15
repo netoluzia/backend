@@ -32,7 +32,7 @@ class MongoCreateDocumentRepository {
                 .collection('document')
                 .findOne({ _id: insertedId });
             if (!document)
-                throw new Error('Document was not created');
+                throw new Error('FiscalDoc was not created');
             const { _id } = document, rest = __rest(document, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);
         });

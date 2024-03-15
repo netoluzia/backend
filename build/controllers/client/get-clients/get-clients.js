@@ -31,7 +31,7 @@ class GetClientsController {
                 return {
                     statusCode: 500,
                     body: {
-                        message: 'Something went wrong',
+                        message: error.message,
                         status: false,
                     },
                 };

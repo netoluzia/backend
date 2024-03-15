@@ -17,6 +17,7 @@ const mongo_get_users_1 = require("../../repositories/user/get-users/mongo-get-u
 const get_users_1 = require("../../controllers/user/get-users/get-users");
 const mongo_create_user_1 = require("../../repositories/user/create-user/mongo-create-user");
 const create_user_1 = require("../../controllers/user/create-user/create-user");
+const mongo_get_user_1 = require("../../repositories/user/get-user/mongo-get-user");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getUsersRepository = new mongo_get_users_1.MongoGetUsersRepository();
@@ -26,7 +27,8 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const createUserRepository = new mongo_create_user_1.MongoCreateUserRepository();
-    const createUserController = new create_user_1.CreateUserController(createUserRepository);
+    const getUserRepository = new mongo_get_user_1.MongoGetUserRepository();
+    const createUserController = new create_user_1.CreateUserController(createUserRepository, getUserRepository);
     const { body, statusCode } = yield createUserController.handle({
         body: req.body,
     });

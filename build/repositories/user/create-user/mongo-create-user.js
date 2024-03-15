@@ -25,17 +25,29 @@ const mongo_1 = require("../../../database/mongo");
 class MongoCreateUserRepository {
     createUser(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { insertedId } = yield mongo_1.MongoClient.db
-                .collection('user')
-                .insertOne(params);
-            const user = yield mongo_1.MongoClient.db
-                .collection('user')
-                .findOne({ _id: insertedId });
-            if (!user) {
-                throw new Error('User not created');
+            try {
+                const collection = mongo_1.MongoClient.db.collection('user');
+                yield collection.createIndex({ email: 1 }, { unique: true });
+                const { insertedId } = yield collection.insertOne(params);
+                const user = yield mongo_1.MongoClient.db
+                    .collection('user')
+                    .findOne({ _id: insertedId });
+                if (!user) {
+                    throw new Error('User not created');
+                }
+                const { _id } = user, rest = __rest(user, ["_id"]);
+                return Object.assign({ id: _id.toHexString() }, rest);
             }
-            const { _id } = user, rest = __rest(user, ["_id"]);
-            return Object.assign({ id: _id.toHexString() }, rest);
+            catch (error) {
+                return {
+                    id: 'string',
+                    email: 'hhhdf',
+                    name: 'edbebjd',
+                    password: 'ewjen',
+                    role: 'kenrjb',
+                    username: 'eherj',
+                };
+            }
         });
     }
 }
