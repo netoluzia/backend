@@ -15,7 +15,7 @@
   ],
   "functions": {
     "src/index.ts": {
-      "runtime": "nodejs12.x"
+      "runtime": "nodejs16"
     }
   }
 }
