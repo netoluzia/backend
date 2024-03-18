@@ -2,7 +2,7 @@ import { User } from '../../../models/User'
 import { HttpResponse } from '../../protocols'
 import { IGetUserController, IGetUsersRepository } from './protocols'
 
-export class GetUserController implements IGetUserController {
+export class GetUsersController implements IGetUserController {
   constructor(private readonly getUsersRepository: IGetUsersRepository) {}
 
   async handle(): Promise<HttpResponse<Omit<User, 'password'>[]>> {

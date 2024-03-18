@@ -11,7 +11,9 @@ export class MongoCreateClientRepository implements ICreateClientRepository {
     const { insurance_company, ...restData } = params
 
     const { insertedId } = await MongoClient.db.collection('client').insertOne({
-      insurance_company: new ObjectId(insurance_company),
+      insurance_company: insurance_company
+        ? new ObjectId(insurance_company)
+        : null,
       ...restData,
     })
     const client = await MongoClient.db

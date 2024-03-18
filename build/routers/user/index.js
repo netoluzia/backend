@@ -18,10 +18,15 @@ const get_users_1 = require("../../controllers/user/get-users/get-users");
 const mongo_create_user_1 = require("../../repositories/user/create-user/mongo-create-user");
 const create_user_1 = require("../../controllers/user/create-user/create-user");
 const mongo_get_user_1 = require("../../repositories/user/get-user/mongo-get-user");
+const get_user_1 = require("../../controllers/user/get-user/get-user");
+const mongo_delete_user_1 = require("../../repositories/user/delete-user/mongo-delete-user");
+const delete_user_1 = require("../../controllers/user/delete-user/delete-user");
+const mongo_update_user_1 = require("../../repositories/user/update-user/mongo-update-user");
+const update_user_1 = require("../../controllers/user/update-user/update-user");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getUsersRepository = new mongo_get_users_1.MongoGetUsersRepository();
-    const getUserController = new get_users_1.GetUserController(getUsersRepository);
+    const getUserController = new get_users_1.GetUsersController(getUsersRepository);
     const { body, statusCode } = yield getUserController.handle();
     return res.status(statusCode).send(body);
 }));
@@ -36,11 +41,21 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Atualiza;'ao
+    const repository = new mongo_update_user_1.MongoUpdateUserRepository();
+    const controller = new update_user_1.UpdateUserController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id, req.body);
+    return res.status(statusCode).send(body);
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Pegar um;'ao
+    const repository = new mongo_get_user_1.MongoGetUserRepository();
+    const controller = new get_user_1.GetUserController(repository);
+    const { body, statusCode } = yield controller.getUser({ id: req.params.id });
+    return res.status(statusCode).send(body);
 }));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Deletar um;'ao
+    const repository = new mongo_delete_user_1.MongoDeleteUserRepository();
+    const controller = new delete_user_1.DeleteUserController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 exports.default = router;

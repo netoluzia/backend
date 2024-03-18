@@ -9,34 +9,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUsersController = void 0;
-class GetUsersController {
-    constructor(getUsersRepository) {
-        this.getUsersRepository = getUsersRepository;
+exports.CreateAttendingController = void 0;
+class CreateAttendingController {
+    constructor(createAttendingRepository) {
+        this.createAttendingRepository = createAttendingRepository;
     }
-    handle() {
+    handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const users = yield this.getUsersRepository.getUsers();
+                const { attendant, client, items } = params;
+                if (!attendant || client || (items === null || items === void 0 ? void 0 : items.length)) {
+                    return {
+                        body: {
+                            message: 'Faltando campos obrigatórios',
+                            status: false,
+                        },
+                        statusCode: 400,
+                    };
+                }
+                const attending = yield this.createAttendingRepository.createAttending(params);
                 return {
-                    statusCode: 200,
                     body: {
-                        data: users,
-                        message: 'Usuários carregados com sucesso',
+                        message: 'Operação concluída com sucesso',
                         status: true,
+                        data: attending,
                     },
+                    statusCode: 200,
                 };
             }
             catch (error) {
                 return {
-                    statusCode: 200,
                     body: {
-                        message: 'Something went wrong',
-                        status: false,
+                        message: error.message,
+                        status: true,
                     },
+                    statusCode: 500,
                 };
             }
         });
     }
 }
-exports.GetUsersController = GetUsersController;
+exports.CreateAttendingController = CreateAttendingController;

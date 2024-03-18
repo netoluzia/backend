@@ -20,25 +20,20 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MongoCreateClientRepository = void 0;
+exports.MongoDeleteUserRepository = void 0;
 const mongodb_1 = require("mongodb");
 const mongo_1 = require("../../../database/mongo");
-class MongoCreateClientRepository {
-    createClient(params) {
+class MongoDeleteUserRepository {
+    deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { insurance_company } = params, restData = __rest(params, ["insurance_company"]);
-            const { insertedId } = yield mongo_1.MongoClient.db.collection('client').insertOne(Object.assign({ insurance_company: insurance_company
-                    ? new mongodb_1.ObjectId(insurance_company)
-                    : null }, restData));
-            const client = yield mongo_1.MongoClient.db
-                .collection('client')
-                .findOne({ _id: insertedId });
-            if (!client) {
-                throw new Error('Service was not created');
-            }
-            const { _id } = client, rest = __rest(client, ["_id"]);
+            const user = yield mongo_1.MongoClient.db
+                .collection('user')
+                .findOneAndDelete({ _id: new mongodb_1.ObjectId(id) });
+            if (!user)
+                throw new Error('Ocorreu um erro');
+            const { _id } = user, rest = __rest(user, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);
         });
     }
 }
-exports.MongoCreateClientRepository = MongoCreateClientRepository;
+exports.MongoDeleteUserRepository = MongoDeleteUserRepository;

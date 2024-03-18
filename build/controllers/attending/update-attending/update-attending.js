@@ -9,34 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUsersController = void 0;
-class GetUsersController {
-    constructor(getUsersRepository) {
-        this.getUsersRepository = getUsersRepository;
+exports.UpdateAttendingController = void 0;
+class UpdateAttendingController {
+    constructor(updateAttendingRepository) {
+        this.updateAttendingRepository = updateAttendingRepository;
     }
-    handle() {
+    handle(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const users = yield this.getUsersRepository.getUsers();
+                const attending = yield this.updateAttendingRepository.updateAttending(id, params);
                 return {
-                    statusCode: 200,
                     body: {
-                        data: users,
-                        message: 'Usuários carregados com sucesso',
+                        message: 'Operação concluída com sucesso',
                         status: true,
+                        data: attending,
                     },
+                    statusCode: 201,
                 };
             }
             catch (error) {
                 return {
-                    statusCode: 200,
                     body: {
-                        message: 'Something went wrong',
-                        status: false,
+                        message: error.message,
+                        status: true,
                     },
+                    statusCode: 500,
                 };
             }
         });
     }
 }
-exports.GetUsersController = GetUsersController;
+exports.UpdateAttendingController = UpdateAttendingController;

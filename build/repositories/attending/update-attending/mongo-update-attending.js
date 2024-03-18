@@ -20,25 +20,27 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MongoCreateClientRepository = void 0;
+exports.MongoUpdateAttendingRepository = void 0;
 const mongodb_1 = require("mongodb");
 const mongo_1 = require("../../../database/mongo");
-class MongoCreateClientRepository {
-    createClient(params) {
+class MongoUpdateAttendingRepository {
+    updateAttending(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { insurance_company } = params, restData = __rest(params, ["insurance_company"]);
-            const { insertedId } = yield mongo_1.MongoClient.db.collection('client').insertOne(Object.assign({ insurance_company: insurance_company
-                    ? new mongodb_1.ObjectId(insurance_company)
-                    : null }, restData));
-            const client = yield mongo_1.MongoClient.db
-                .collection('client')
-                .findOne({ _id: insertedId });
-            if (!client) {
-                throw new Error('Service was not created');
+            const { items } = params, payload = __rest(params, ["items"]);
+            const attending = yield mongo_1.MongoClient.db
+                .collection('attending')
+                .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
+                $set: Object.assign({}, payload),
+                $push: {
+                    items: { $each: items },
+                },
+            }, { returnDocument: 'after' });
+            if (!attending) {
+                throw new Error('Erro ao registar dados. Tente novamente');
             }
-            const { _id } = client, rest = __rest(client, ["_id"]);
+            const { _id } = attending, rest = __rest(attending, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);
         });
     }
 }
-exports.MongoCreateClientRepository = MongoCreateClientRepository;
+exports.MongoUpdateAttendingRepository = MongoUpdateAttendingRepository;

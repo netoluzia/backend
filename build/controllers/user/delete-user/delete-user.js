@@ -9,34 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetUsersController = void 0;
-class GetUsersController {
-    constructor(getUsersRepository) {
-        this.getUsersRepository = getUsersRepository;
+exports.DeleteUserController = void 0;
+class DeleteUserController {
+    constructor(deleteUserRepository) {
+        this.deleteUserRepository = deleteUserRepository;
     }
-    handle() {
+    handle(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const users = yield this.getUsersRepository.getUsers();
+                const user = yield this.deleteUserRepository.deleteUser(id);
                 return {
-                    statusCode: 200,
                     body: {
-                        data: users,
-                        message: 'Usuários carregados com sucesso',
+                        data: user,
+                        message: 'Operação concluída com sucesso',
                         status: true,
                     },
+                    statusCode: 200,
                 };
             }
             catch (error) {
                 return {
-                    statusCode: 200,
                     body: {
-                        message: 'Something went wrong',
-                        status: false,
+                        message: error.message,
+                        status: true,
                     },
+                    statusCode: 500,
                 };
             }
         });
     }
 }
-exports.GetUsersController = GetUsersController;
+exports.DeleteUserController = DeleteUserController;

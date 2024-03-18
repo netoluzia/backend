@@ -1,17 +1,16 @@
 import { User } from '../../../models/User'
 import { HttpResponse } from '../../protocols'
 import {
-  IGetUserController,
-  IGetUserRepository,
-  PayloadParams,
+  IUpdateUserController,
+  IUpdateUserRepository,
+  UpdateParams,
 } from './protocols'
 
-export class GetUserController implements IGetUserController {
-  constructor(private readonly getUserRepository: IGetUserRepository) {}
-  async getUser(payload: PayloadParams): Promise<HttpResponse<User>> {
+export class UpdateUserController implements IUpdateUserController {
+  constructor(private readonly updateUserRepository: IUpdateUserRepository) {}
+  async handle(id: string, payload: UpdateParams): Promise<HttpResponse<User>> {
     try {
-      const user = (await this.getUserRepository.getUser(payload)) as User
-
+      const user = await this.updateUserRepository.update(id, payload)
       return {
         body: {
           data: user,

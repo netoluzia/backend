@@ -1,17 +1,12 @@
 import { User } from '../../../models/User'
 import { HttpResponse } from '../../protocols'
-import {
-  IGetUserController,
-  IGetUserRepository,
-  PayloadParams,
-} from './protocols'
+import { IDeleteUserController, IDeleteUserRepository } from './protocols'
 
-export class GetUserController implements IGetUserController {
-  constructor(private readonly getUserRepository: IGetUserRepository) {}
-  async getUser(payload: PayloadParams): Promise<HttpResponse<User>> {
+export class DeleteUserController implements IDeleteUserController {
+  constructor(private readonly deleteUserRepository: IDeleteUserRepository) {}
+  async handle(id: string): Promise<HttpResponse<User>> {
     try {
-      const user = (await this.getUserRepository.getUser(payload)) as User
-
+      const user = await this.deleteUserRepository.deleteUser(id)
       return {
         body: {
           data: user,
