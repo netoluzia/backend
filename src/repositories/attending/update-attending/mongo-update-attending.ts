@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb'
-import { CreateAttending } from '../../../controllers/attending/create-attending/protocols'
+import {
+  CreateAttending,
+  UpdateAttending,
+} from '../../../controllers/attending/create-attending/protocols'
 import { IUpdateAttendingRepository } from '../../../controllers/attending/update-attending/protocols'
 import { MongoClient } from '../../../database/mongo'
 import { Attending } from '../../../models/Attending'
@@ -9,19 +12,16 @@ export class MongoUpdateAttendingRepository
 {
   async updateAttending(
     id: string,
-    params: CreateAttending
-  ): Promise<Attending> {
-    const { items, ...payload } = params
+    params: UpdateAttending
+  ): Promise<Attending | any> {
+    const { ...payload } = params
     const attending = await MongoClient.db
-      .collection<Omit<Attending, 'id'>>('attending')
+      .collection('attending')
       .findOneAndUpdate(
         { _id: new ObjectId(id) },
         {
           $set: {
             ...payload,
-          },
-          $push: {
-            items: { $each: items },
           },
         },
         { returnDocument: 'after' }

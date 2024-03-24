@@ -6,6 +6,8 @@ export interface ParamsCreateDocument {
   items: Items[]
   payment?: ObjectId
   client?: ObjectId
+  amount_received: number
+  change: number
   document: string
   discount?: number
   total?: number
@@ -24,4 +26,8 @@ export interface ICreateDocumentRepository {
 
 export interface ICreateDocumentController {
   handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>>
+}
+
+export interface ICountDocumentRepository {
+  count(document: string): Promise<number>
 }

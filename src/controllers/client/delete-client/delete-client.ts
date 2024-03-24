@@ -17,10 +17,10 @@ export class DeleteClientController implements IDeleteClientController {
         },
         statusCode: 200,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
         body: {
-          message: 'Ocorreu um erro',
+          message: error.message,
           status: true,
         },
         statusCode: 500,

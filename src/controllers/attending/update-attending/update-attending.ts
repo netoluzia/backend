@@ -1,6 +1,6 @@
 import { Attending } from '../../../models/Attending'
 import { HttpResponse } from '../../protocols'
-import { CreateAttending } from '../create-attending/protocols'
+import { CreateAttending, UpdateAttending } from '../create-attending/protocols'
 import {
   IUpdateAttendingController,
   IUpdateAttendingRepository,
@@ -12,7 +12,7 @@ export class UpdateAttendingController implements IUpdateAttendingController {
   ) {}
   async handle(
     id: string,
-    params: CreateAttending
+    params: UpdateAttending
   ): Promise<HttpResponse<Attending>> {
     try {
       const attending = await this.updateAttendingRepository.updateAttending(

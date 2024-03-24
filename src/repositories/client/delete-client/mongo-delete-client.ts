@@ -10,7 +10,7 @@ export class MongoDeleteClientRepository implements IDeleteClientRepository {
       .findOne({ _id: new ObjectId(id) })
     if (!client) throw new Error('Client was not found')
     const { deletedCount } = await MongoClient.db
-      .collection('service')
+      .collection('client')
       .deleteOne({ _id: new ObjectId(id) })
 
     if (!deletedCount) throw new Error('Client was not deleted')

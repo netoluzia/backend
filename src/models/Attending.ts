@@ -2,6 +2,12 @@ import { ObjectId } from 'mongodb'
 import { Items } from './Document'
 import { User } from './User'
 
+export interface ItemsAttendance {
+  items: Items[]
+  payment: string
+  date: Date
+}
+
 export interface Attending {
   id: string
   client: ObjectId
@@ -9,10 +15,10 @@ export interface Attending {
   analyst: ObjectId
   nurse: ObjectId
   attendant: ObjectId
-  itemsAttendant: Items[]
-  itemsNurse: Items[]
-  itemsDoctor: Items[]
-  itemsAnalyst: Items[]
+  itemsAttendant: ItemsAttendance
+  itemsNurse: ItemsAttendance
+  itemsDoctor: ItemsAttendance
+  itemsAnalyst: ItemsAttendance
   createdAt: Date
   updatedAt: Date
 }

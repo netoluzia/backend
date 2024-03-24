@@ -5,15 +5,16 @@ import {
   ICreateAttendingController,
   ICreateAttendingRepository,
 } from './protocols'
-
+import { Socket } from 'socket.io'
 export class CreateAttendingController implements ICreateAttendingController {
   constructor(
-    private readonly createAttendingRepository: ICreateAttendingRepository
+    private readonly createAttendingRepository: ICreateAttendingRepository,
+    private readonly io: Socket
   ) {}
   async handle(params: CreateAttending): Promise<HttpResponse<Attending>> {
     try {
-      const { attendant, client, items } = params
-      if (!attendant || client || items?.length) {
+      const { attendant, client, itemsAttendant } = params
+      if (!attendant || !client || !itemsAttendant.items.length) {
         return {
           body: {
             message: 'Faltando campos obrigatórios',
@@ -27,6 +28,8 @@ export class CreateAttendingController implements ICreateAttendingController {
         params
       )
 
+      this.io.emit('attending:new', attending)
+      console.log('Chegu')
       return {
         body: {
           message: 'Operação concluída com sucesso',

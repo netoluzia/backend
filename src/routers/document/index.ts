@@ -6,6 +6,7 @@ import { MongoCreateDocumentRepository } from '../../repositories/document/creat
 import { CreateDocumentController } from '../../controllers/document/create-document/create-document'
 import { MongoGetDocumentRepository } from '../../repositories/document/get-document/mongo-get-document'
 import { GetDocumentController } from '../../controllers/document/get-document/get-documents'
+import { MongoCountDocuments } from '../../repositories/document/count-documents/mongo-count-documents'
 
 const router = express.Router()
 
@@ -27,7 +28,8 @@ router.get('/:id', async (req: Request, res: Response) => {
 
 router.post('/', async (req: Request, res: Response) => {
   const repository = new MongoCreateDocumentRepository()
-  const controller = new CreateDocumentController(repository)
+  const countRepository = new MongoCountDocuments()
+  const controller = new CreateDocumentController(repository, countRepository)
   const { body, statusCode } = await controller.handle(req.body)
   return res.status(statusCode).send(body)
 })
