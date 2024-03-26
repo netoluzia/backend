@@ -7,7 +7,7 @@ import {
   ICreateDocumentRepository,
   ParamsCreateDocument,
 } from './protocols'
-import crypto from 'crypto'
+import { MongoClient } from '../../../database/mongo'
 export class CreateDocumentController implements ICreateDocumentController {
   constructor(
     private readonly createDocumentRepository: ICreateDocumentRepository,
@@ -33,7 +33,8 @@ export class CreateDocumentController implements ICreateDocumentController {
   }
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
-      const { items, client, payment, document, amount_received } = params
+      let { items, client, payment, document, amount_received, paid, source } =
+        params
       const auxItems = items.map(
         ({ total, quantity, unit_price, ...rest }) => ({
           total: quantity * unit_price,
@@ -42,11 +43,30 @@ export class CreateDocumentController implements ICreateDocumentController {
           ...rest,
         })
       )
+      paid = false
       const total = this.calculateTotal(items)
       const reference = await this.generateReference(document)
-      const change = amount_received - total
-      const { hash4, hash64 } = await this.signature()
+      let change: number | null = null
 
+      if (document == 'RG' || document == 'FR') {
+        change = amount_received - total
+        paid = true
+      }
+      if (document == 'RG') {
+        await MongoClient.db
+          .collection('document')
+          .findOneAndUpdate({ reference: source }, { $set: { paid: true } })
+      }
+      if (document == 'RG' && !source) {
+        return {
+          statusCode: 200,
+          body: {
+            message: 'Introduza a referencia do documento de origem',
+            status: true,
+          },
+        }
+      }
+      const { hash4, hash64 } = await this.signature()
       const doc = await this.createDocumentRepository.createDocument({
         ...params,
         total,
@@ -55,12 +75,13 @@ export class CreateDocumentController implements ICreateDocumentController {
         createdAt: new Date(),
         emission_date: params.emission_date || new Date(),
         client: new ObjectId(client),
-        payment: new ObjectId(payment),
+        payment: payment ? new ObjectId(payment) : null,
         items: auxItems,
         amount_received,
-        change,
+        change: change as number,
         hash4,
         hash64,
+        paid,
       })
 
       return {

@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb'
 
 export interface ParamsCreateDocument {
   items: Items[]
-  payment?: ObjectId
+  payment?: ObjectId | null
   client?: ObjectId
   amount_received: number
   change: number
@@ -18,6 +18,8 @@ export interface ParamsCreateDocument {
   hash64: string
   hash4: string
   emission_date?: Date
+  paid: boolean
+  source: string | null
 }
 
 export interface ICreateDocumentRepository {

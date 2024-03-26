@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { Attending } from '../../../models/Attending'
 import { HttpResponse } from './protocols'
 import {
@@ -24,9 +25,11 @@ export class CreateAttendingController implements ICreateAttendingController {
         }
       }
 
-      const attending = await this.createAttendingRepository.createAttending(
-        params
-      )
+      const attending = await this.createAttendingRepository.createAttending({
+        attendant: new ObjectId(attendant),
+        itemsAttendant: itemsAttendant,
+        client: new ObjectId(client),
+      })
 
       this.io.emit('attending:new', attending)
       console.log('Chegu')

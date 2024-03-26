@@ -8,3 +8,10 @@ export interface IGetDocumentsRepository {
 export interface IGetDocumentsController {
   handle(): Promise<HttpResponse<FiscalDoc[]>>
 }
+
+export interface IGetDocumentsByTypeController {
+  handle(): Promise<HttpResponse<any[]>>
+}
+export interface IGetDocumentsByTypeRepository {
+  getDocumentsByType(): Promise<any[]>
+}

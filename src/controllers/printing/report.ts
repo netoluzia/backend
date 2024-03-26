@@ -15,7 +15,6 @@ export class ReportController {
       const documentData = JSON.parse(JSON.stringify(data))
       const client = documentData.client
 
-      console.log(documentData)
       const fonts = {
         Helvetica: {
           normal: 'Helvetica',
@@ -87,7 +86,7 @@ export class ReportController {
                       style: ['header'],
                     },
                     {
-                      text: `Referência: ${documentData.document}/${documentData?.reference}`,
+                      text: `Referência: ${documentData?.reference}`,
                       alignment: 'right',
                     },
                     {
@@ -148,7 +147,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: client.insurance_number,
+                        text: client?.insurance_number,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -198,7 +197,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: client.insurance_company[0].name,
+                        text: client.insurance_company[0]?.name,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -208,7 +207,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: client.insurance_company[0].address,
+                        text: client.insurance_company[0]?.address,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -218,7 +217,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: client.insurance_company[0].nif,
+                        text: client.insurance_company[0]?.nif,
                         style: ['bodyStyle'],
                       },
                     ],
@@ -228,7 +227,7 @@ export class ReportController {
                         style: ['bodyStyle'],
                       },
                       {
-                        text: client.insurance_company[0].phone_number,
+                        text: client.insurance_company[0]?.phone_number,
                         style: ['bodyStyle'],
                       },
                     ],

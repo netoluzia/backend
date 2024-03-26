@@ -7,6 +7,8 @@ import { CreateDocumentController } from '../../controllers/document/create-docu
 import { MongoGetDocumentRepository } from '../../repositories/document/get-document/mongo-get-document'
 import { GetDocumentController } from '../../controllers/document/get-document/get-documents'
 import { MongoCountDocuments } from '../../repositories/document/count-documents/mongo-count-documents'
+import { MongoGetDocumentsByTypeRepository } from '../../repositories/document/get-documents/mongo-get-documents-by-type'
+import { GetDocumentsByDocuments } from '../../controllers/document/get-documents/get-documents-by-type'
 
 const router = express.Router()
 
@@ -16,6 +18,13 @@ router.get('/', async (req: Request, res: Response) => {
     getDocumentsRepository
   )
   const { body, statusCode } = await getDocumentsController.handle()
+  return res.status(statusCode).send(body)
+})
+
+router.get('/invoice', async (req: Request, res: Response) => {
+  const repository = new MongoGetDocumentsByTypeRepository()
+  const controller = new GetDocumentsByDocuments(repository)
+  const { body, statusCode } = await controller.handle()
   return res.status(statusCode).send(body)
 })
 

@@ -7,6 +7,8 @@ import { UpdateAttendingController } from '../../controllers/attending/update-at
 import { Socket } from 'socket.io'
 import { MongoGetAttendingsRepository } from '../../repositories/attending/get-attendings/mongo-get-attendings'
 import { GetAttendingsController } from '../../controllers/attending/get-attendings/get-attendings'
+import { MongoGetAttendingRepository } from '../../repositories/attending/get-attending/mongo-get-attending'
+import { GetAttendingController } from '../../controllers/attending/get-attending/get-attending'
 const router = express.Router()
 
 router.get('/', async (req: Request, res: Response) => {
@@ -34,9 +36,10 @@ router.patch('/:id', async (req: Request, res: Response) => {
 })
 
 router.get('/:id', async (req: Request, res: Response) => {
-  // Pegar um;'ao
-  //   const { body, statusCode } = await controller.handle(req.params.id)
-  //   return res.status(statusCode).send(body)
+  const repository = new MongoGetAttendingRepository()
+  const controller = new GetAttendingController(repository)
+  const { body, statusCode } = await controller.handle(req.params.id)
+  return res.status(statusCode).send(body)
 })
 router.delete('/:id', async (req: Request, res: Response) => {
   // Deletar um;'ao

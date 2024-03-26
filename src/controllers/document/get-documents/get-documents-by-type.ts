@@ -1,15 +1,16 @@
-import { FiscalDoc } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
-import { IGetDocumentsController, IGetDocumentsRepository } from './protocols'
+import {
+  IGetDocumentsByTypeController,
+  IGetDocumentsByTypeRepository,
+} from './protocols'
 
-export class GetDocumentsController implements IGetDocumentsController {
+export class GetDocumentsByDocuments implements IGetDocumentsByTypeController {
   constructor(
-    private readonly getDocumentsRepository: IGetDocumentsRepository
+    private readonly getDocumentsByType: IGetDocumentsByTypeRepository
   ) {}
-
-  async handle(): Promise<HttpResponse<FiscalDoc[]>> {
+  async handle(): Promise<HttpResponse<any[]>> {
     try {
-      const documents = await this.getDocumentsRepository.getDocuments()
+      const documents = await this.getDocumentsByType.getDocumentsByType()
       return {
         statusCode: 200,
         body: {
