@@ -19,43 +19,74 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDocumentController = void 0;
 const mongodb_1 = require("mongodb");
-const crypto_1 = __importDefault(require("crypto"));
+const mongo_1 = require("../../../database/mongo");
 class CreateDocumentController {
-    constructor(createDocumentRepository) {
+    constructor(createDocumentRepository, countDocumentType) {
         this.createDocumentRepository = createDocumentRepository;
+        this.countDocumentType = countDocumentType;
+    }
+    calculateTotal(items) {
+        return items.reduce((accumulator, item) => {
+            return accumulator + item.quantity * item.unit_price;
+        }, 0);
+    }
+    generateReference(document) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const [dia, mes, ano] = new Date().toLocaleDateString('pt-BR').split('/');
+            return `${document}${dia}${mes}${ano}/${(yield this.countDocumentType.count(document)) + 1}`;
+        });
+    }
+    signature() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const hash64 = '64';
+            const hash4 = '4';
+            return { hash64, hash4 };
+        });
     }
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { items, client, payment } = params;
+                let { items, client, payment, document, amount_received, paid, source } = params;
                 const auxItems = items.map((_a) => {
-                    var { quantity, unit_price, total } = _a, rest = __rest(_a, ["quantity", "unit_price", "total"]);
-                    return (Object.assign(Object.assign({ total: quantity * unit_price }, rest), { unit_price,
-                        quantity }));
+                    var { total, quantity, unit_price } = _a, rest = __rest(_a, ["total", "quantity", "unit_price"]);
+                    return (Object.assign({ total: quantity * unit_price, quantity,
+                        unit_price }, rest));
                 });
-                const total = auxItems.reduce((accumulator, item) => {
-                    return accumulator + item.total;
-                }, 0);
-                const [ano, mes, dia, hora, minuto, segundo] = new Date().toLocaleString().match(/(\d+)/g) || [];
-                const document = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total, serie: new Date().getFullYear(), reference: `${dia}${mes}${ano}${hora}${minuto}${segundo}`, hash64: crypto_1.default
-                        .createHash('sha256')
-                        .update(`${dia}${mes}${ano}${hora}${minuto}${segundo}`)
-                        .digest('hex'), hash4: crypto_1.default
-                        .createHash('sha256')
-                        .update(`${dia}${mes}${ano}${hora}${minuto}${segundo}`)
-                        .digest('hex')
-                        .slice(0, 4), createdAt: new Date(), emission_date: params.emission_date || new Date(), client: new mongodb_1.ObjectId(client), payment: new mongodb_1.ObjectId(payment), items: auxItems }));
+                paid = false;
+                const total = this.calculateTotal(items);
+                const reference = yield this.generateReference(document);
+                let change = null;
+                if (document == 'RG' || document == 'FR') {
+                    change = amount_received - total;
+                    paid = true;
+                }
+                if (document == 'RG') {
+                    yield mongo_1.MongoClient.db
+                        .collection('document')
+                        .findOneAndUpdate({ reference: source }, { $set: { paid: true } });
+                }
+                if (document == 'RG' && !source) {
+                    return {
+                        statusCode: 200,
+                        body: {
+                            message: 'Introduza a referencia do documento de origem',
+                            status: true,
+                        },
+                    };
+                }
+                const { hash4, hash64 } = yield this.signature();
+                const doc = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total,
+                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: params.emission_date || new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
+                    hash64,
+                    paid }));
                 return {
                     statusCode: 200,
                     body: {
                         message: 'Documento criado com sucesso',
-                        data: document,
+                        data: doc,
                         status: true,
                     },
                 };
@@ -64,7 +95,7 @@ class CreateDocumentController {
                 return {
                     statusCode: 500,
                     body: {
-                        message: 'Something went wrong',
+                        message: error.message,
                         status: false,
                     },
                 };

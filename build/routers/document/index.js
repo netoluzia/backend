@@ -19,11 +19,20 @@ const mongo_create_document_1 = require("../../repositories/document/create-docu
 const create_document_1 = require("../../controllers/document/create-document/create-document");
 const mongo_get_document_1 = require("../../repositories/document/get-document/mongo-get-document");
 const get_documents_2 = require("../../controllers/document/get-document/get-documents");
+const mongo_count_documents_1 = require("../../repositories/document/count-documents/mongo-count-documents");
+const mongo_get_documents_by_type_1 = require("../../repositories/document/get-documents/mongo-get-documents-by-type");
+const get_documents_by_type_1 = require("../../controllers/document/get-documents/get-documents-by-type");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const getDocumentsRepository = new mongo_get_documents_1.MongoGetDocumentsRepository();
     const getDocumentsController = new get_documents_1.GetDocumentsController(getDocumentsRepository);
     const { body, statusCode } = yield getDocumentsController.handle();
+    return res.status(statusCode).send(body);
+}));
+router.get('/invoice', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repository = new mongo_get_documents_by_type_1.MongoGetDocumentsByTypeRepository();
+    const controller = new get_documents_by_type_1.GetDocumentsByDocuments(repository);
+    const { body, statusCode } = yield controller.handle();
     return res.status(statusCode).send(body);
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,7 +43,8 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_create_document_1.MongoCreateDocumentRepository();
-    const controller = new create_document_1.CreateDocumentController(repository);
+    const countRepository = new mongo_count_documents_1.MongoCountDocuments();
+    const controller = new create_document_1.CreateDocumentController(repository, countRepository);
     const { body, statusCode } = yield controller.handle(req.body);
     return res.status(statusCode).send(body);
 }));

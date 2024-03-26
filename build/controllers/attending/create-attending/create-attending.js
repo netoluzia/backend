@@ -10,15 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateAttendingController = void 0;
+const mongodb_1 = require("mongodb");
 class CreateAttendingController {
-    constructor(createAttendingRepository) {
+    constructor(createAttendingRepository, io) {
         this.createAttendingRepository = createAttendingRepository;
+        this.io = io;
     }
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { attendant, client, items } = params;
-                if (!attendant || client || (items === null || items === void 0 ? void 0 : items.length)) {
+                const { attendant, client, itemsAttendant } = params;
+                if (!attendant || !client || !itemsAttendant.items.length) {
                     return {
                         body: {
                             message: 'Faltando campos obrigatórios',
@@ -27,7 +29,13 @@ class CreateAttendingController {
                         statusCode: 400,
                     };
                 }
-                const attending = yield this.createAttendingRepository.createAttending(params);
+                const attending = yield this.createAttendingRepository.createAttending({
+                    attendant: new mongodb_1.ObjectId(attendant),
+                    itemsAttendant: itemsAttendant,
+                    client: new mongodb_1.ObjectId(client),
+                });
+                this.io.emit('attending:new', attending);
+                console.log('Chegu');
                 return {
                     body: {
                         message: 'Operação concluída com sucesso',

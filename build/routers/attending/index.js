@@ -17,14 +17,20 @@ const mongo_create_attending_1 = require("../../repositories/attending/create-at
 const create_attending_1 = require("../../controllers/attending/create-attending/create-attending");
 const mongo_update_attending_1 = require("../../repositories/attending/update-attending/mongo-update-attending");
 const update_attending_1 = require("../../controllers/attending/update-attending/update-attending");
+const mongo_get_attendings_1 = require("../../repositories/attending/get-attendings/mongo-get-attendings");
+const get_attendings_1 = require("../../controllers/attending/get-attendings/get-attendings");
+const mongo_get_attending_1 = require("../../repositories/attending/get-attending/mongo-get-attending");
+const get_attending_1 = require("../../controllers/attending/get-attending/get-attending");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //   const { body, statusCode } = await getClientsController.handle()
-    //   return res.status(statusCode).send(body)
+    const repository = new mongo_get_attendings_1.MongoGetAttendingsRepository();
+    const controller = new get_attendings_1.GetAttendingsController(repository);
+    const { body, statusCode } = yield controller.handle();
+    return res.status(statusCode).send(body);
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_create_attending_1.MongoCreateAttendingRepository();
-    const controller = new create_attending_1.CreateAttendingController(repository);
+    const controller = new create_attending_1.CreateAttendingController(repository, req.app.get('io'));
     const { body, statusCode } = yield controller.handle(req.body);
     return res.status(statusCode).send(body);
 }));
@@ -35,9 +41,10 @@ router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     return res.status(statusCode).send(body);
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Pegar um;'ao
-    //   const { body, statusCode } = await controller.handle(req.params.id)
-    //   return res.status(statusCode).send(body)
+    const repository = new mongo_get_attending_1.MongoGetAttendingRepository();
+    const controller = new get_attending_1.GetAttendingController(repository);
+    const { body, statusCode } = yield controller.handle(req.params.id);
+    return res.status(statusCode).send(body);
 }));
 router.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Deletar um;'ao

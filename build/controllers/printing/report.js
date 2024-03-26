@@ -24,11 +24,11 @@ class ReportController {
     handle(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                var _a, _b, _c, _d;
                 const repository = new mongo_get_document_1.MongoGetDocumentRepository();
                 const data = yield repository.getDocument(id);
                 const documentData = JSON.parse(JSON.stringify(data));
                 const client = documentData.client;
-                console.log(documentData);
                 const fonts = {
                     Helvetica: {
                         normal: 'Helvetica',
@@ -97,7 +97,7 @@ class ReportController {
                                                 style: ['header'],
                                             },
                                             {
-                                                text: `Referência: ${documentData.document}/${documentData === null || documentData === void 0 ? void 0 : documentData.reference}`,
+                                                text: `Referência: ${documentData === null || documentData === void 0 ? void 0 : documentData.reference}`,
                                                 alignment: 'right',
                                             },
                                             {
@@ -156,7 +156,7 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: client.insurance_number,
+                                                    text: client === null || client === void 0 ? void 0 : client.insurance_number,
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
@@ -205,7 +205,7 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: client.insurance_company[0].name,
+                                                    text: (_a = client.insurance_company[0]) === null || _a === void 0 ? void 0 : _a.name,
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
@@ -215,7 +215,7 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: client.insurance_company[0].address,
+                                                    text: (_b = client.insurance_company[0]) === null || _b === void 0 ? void 0 : _b.address,
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
@@ -225,7 +225,7 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: client.insurance_company[0].nif,
+                                                    text: (_c = client.insurance_company[0]) === null || _c === void 0 ? void 0 : _c.nif,
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
@@ -235,7 +235,7 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: client.insurance_company[0].phone_number,
+                                                    text: (_d = client.insurance_company[0]) === null || _d === void 0 ? void 0 : _d.phone_number,
                                                     style: ['bodyStyle'],
                                                 },
                                             ],

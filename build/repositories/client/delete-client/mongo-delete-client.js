@@ -32,7 +32,7 @@ class MongoDeleteClientRepository {
             if (!client)
                 throw new Error('Client was not found');
             const { deletedCount } = yield mongo_1.MongoClient.db
-                .collection('service')
+                .collection('client')
                 .deleteOne({ _id: new mongodb_1.ObjectId(id) });
             if (!deletedCount)
                 throw new Error('Client was not deleted');

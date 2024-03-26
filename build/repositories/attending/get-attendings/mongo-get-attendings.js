@@ -20,24 +20,42 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MongoUpdateAttendingRepository = void 0;
-const mongodb_1 = require("mongodb");
+exports.MongoGetAttendingsRepository = void 0;
 const mongo_1 = require("../../../database/mongo");
-class MongoUpdateAttendingRepository {
-    updateAttending(id, params) {
+class MongoGetAttendingsRepository {
+    getAttendings() {
         return __awaiter(this, void 0, void 0, function* () {
-            const payload = __rest(params, []);
-            const attending = yield mongo_1.MongoClient.db
+            const attendings = yield mongo_1.MongoClient.db
                 .collection('attending')
-                .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: Object.assign({}, payload),
-            }, { returnDocument: 'after' });
-            if (!attending) {
-                throw new Error('Erro ao registar dados. Tente novamente');
-            }
-            const { _id } = attending, rest = __rest(attending, ["_id"]);
-            return Object.assign({ id: _id.toHexString() }, rest);
+                .aggregate([
+                {
+                    $lookup: {
+                        from: 'client',
+                        localField: 'client',
+                        foreignField: '_id',
+                        as: 'client_data',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$client_data',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        createdAt: 1,
+                        client: '$client_data',
+                    },
+                },
+            ])
+                .toArray();
+            return attendings.map((_a) => {
+                var { _id } = _a, rest = __rest(_a, ["_id"]);
+                return (Object.assign({ id: _id.toHexString() }, rest));
+            });
         });
     }
 }
-exports.MongoUpdateAttendingRepository = MongoUpdateAttendingRepository;
+exports.MongoGetAttendingsRepository = MongoGetAttendingsRepository;

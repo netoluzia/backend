@@ -9,34 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteClientController = void 0;
-class DeleteClientController {
-    constructor(deleteClientRepository) {
-        this.deleteClientRepository = deleteClientRepository;
+exports.GetDocumentsByDocuments = void 0;
+class GetDocumentsByDocuments {
+    constructor(getDocumentsByType) {
+        this.getDocumentsByType = getDocumentsByType;
     }
-    handle(id) {
+    handle() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const client = yield this.deleteClientRepository.deleteClient(id);
+                const documents = yield this.getDocumentsByType.getDocumentsByType();
                 return {
+                    statusCode: 200,
                     body: {
-                        data: client,
-                        message: 'Cliente eliminado com sucesso',
+                        data: documents,
+                        message: 'Documentos carregados com sucesso',
                         status: true,
                     },
-                    statusCode: 200,
                 };
             }
             catch (error) {
                 return {
-                    body: {
-                        message: error.message,
-                        status: true,
-                    },
                     statusCode: 500,
+                    body: {
+                        message: 'Something went wrong',
+                        status: false,
+                    },
                 };
             }
         });
     }
 }
-exports.DeleteClientController = DeleteClientController;
+exports.GetDocumentsByDocuments = GetDocumentsByDocuments;

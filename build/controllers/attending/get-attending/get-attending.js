@@ -9,20 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DeleteClientController = void 0;
-class DeleteClientController {
-    constructor(deleteClientRepository) {
-        this.deleteClientRepository = deleteClientRepository;
+exports.GetAttendingController = void 0;
+class GetAttendingController {
+    constructor(getAttendingRepository) {
+        this.getAttendingRepository = getAttendingRepository;
     }
     handle(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const client = yield this.deleteClientRepository.deleteClient(id);
+                const attending = yield this.getAttendingRepository.getAttending(id);
                 return {
                     body: {
-                        data: client,
-                        message: 'Cliente eliminado com sucesso',
+                        message: 'Operacao concluida com sucesso',
                         status: true,
+                        data: attending,
                     },
                     statusCode: 200,
                 };
@@ -33,10 +33,10 @@ class DeleteClientController {
                         message: error.message,
                         status: true,
                     },
-                    statusCode: 500,
+                    statusCode: 200,
                 };
             }
         });
     }
 }
-exports.DeleteClientController = DeleteClientController;
+exports.GetAttendingController = GetAttendingController;
