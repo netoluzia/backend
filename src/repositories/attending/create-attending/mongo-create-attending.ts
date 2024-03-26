@@ -1,5 +1,6 @@
 import {
   CreateAttending,
+  CreatingAttending,
   ICreateAttendingRepository,
 } from '../../../controllers/attending/create-attending/protocols'
 import { MongoClient } from '../../../database/mongo'
@@ -8,7 +9,7 @@ import { Attending } from '../../../models/Attending'
 export class MongoCreateAttendingRepository
   implements ICreateAttendingRepository
 {
-  async createAttending(params: CreateAttending): Promise<Attending> {
+  async createAttending(params: CreatingAttending): Promise<Attending> {
     const { insertedId } = await MongoClient.db
       .collection('attending')
       .insertOne({ ...params, createdAt: new Date(), updatedAt: new Date() })

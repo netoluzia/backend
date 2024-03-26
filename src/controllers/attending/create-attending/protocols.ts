@@ -9,6 +9,36 @@ export interface CreateAttending {
   itemsAttendant: ItemsAttendance
 }
 
+export interface Exam {
+  id: string
+  title: string
+  result: TestResult
+}
+
+export interface Patient {
+  name: string
+  birthday: Date
+  gender: 'M' | 'F'
+  phone_number?: string
+  address?: string
+  symptoms?: {
+    fever: boolean
+    spew: boolean
+  }
+  exams?: Exam[]
+  observation?: string
+}
+
+export interface CreatingAttending {
+  attendant?: ObjectId
+  client?: ObjectId
+  patient?: Patient
+  trial_incharge?: string
+  doctor?: ObjectId
+  analyst?: ObjectId
+  status: 'to-trial' | 'to-doctor-1' | 'to-lab' | 'to-doctor-2'
+}
+
 export interface TestResult {
   name: string
   result: string
@@ -28,9 +58,9 @@ export interface UpdateAttending {
   nurse?: ObjectId
 }
 export interface ICreateAttendingController {
-  handle(params: CreateAttending): Promise<HttpResponse<Attending>>
+  handle(params: CreatingAttending): Promise<HttpResponse<Attending>>
 }
 export interface ICreateAttendingRepository {
-  createAttending(params: CreateAttending): Promise<Attending>
+  createAttending(params: CreatingAttending): Promise<Attending>
 }
 export { HttpResponse }

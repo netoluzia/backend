@@ -19,8 +19,8 @@ class CreateAttendingController {
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { attendant, client, itemsAttendant } = params;
-                if (!attendant || !client || !itemsAttendant.items.length) {
+                const { attendant, client } = params;
+                if (!attendant || !client) {
                     return {
                         body: {
                             message: 'Faltando campos obrigatórios',
@@ -31,11 +31,10 @@ class CreateAttendingController {
                 }
                 const attending = yield this.createAttendingRepository.createAttending({
                     attendant: new mongodb_1.ObjectId(attendant),
-                    itemsAttendant: itemsAttendant,
                     client: new mongodb_1.ObjectId(client),
+                    status: 'to-trial',
                 });
-                this.io.emit('attending:new', attending);
-                console.log('Chegu');
+                this.io.emit('attending:from-attending', attending);
                 return {
                     body: {
                         message: 'Operação concluída com sucesso',

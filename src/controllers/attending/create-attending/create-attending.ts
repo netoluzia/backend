@@ -1,8 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { Attending } from '../../../models/Attending'
-import { HttpResponse } from './protocols'
+import { CreatingAttending, HttpResponse } from './protocols'
 import {
-  CreateAttending,
   ICreateAttendingController,
   ICreateAttendingRepository,
 } from './protocols'
@@ -12,10 +11,10 @@ export class CreateAttendingController implements ICreateAttendingController {
     private readonly createAttendingRepository: ICreateAttendingRepository,
     private readonly io: Socket
   ) {}
-  async handle(params: CreateAttending): Promise<HttpResponse<Attending>> {
+  async handle(params: CreatingAttending): Promise<HttpResponse<Attending>> {
     try {
-      const { attendant, client, itemsAttendant } = params
-      if (!attendant || !client || !itemsAttendant.items.length) {
+      const { attendant, client } = params
+      if (!attendant || !client) {
         return {
           body: {
             message: 'Faltando campos obrigatórios',
@@ -27,12 +26,11 @@ export class CreateAttendingController implements ICreateAttendingController {
 
       const attending = await this.createAttendingRepository.createAttending({
         attendant: new ObjectId(attendant),
-        itemsAttendant: itemsAttendant,
         client: new ObjectId(client),
+        status: 'to-trial',
       })
 
-      this.io.emit('attending:new', attending)
-      console.log('Chegu')
+      this.io.emit('attending:from-attending', attending)
       return {
         body: {
           message: 'Operação concluída com sucesso',
