@@ -15,10 +15,6 @@ export interface Attending {
   analyst: ObjectId
   nurse: ObjectId
   attendant: ObjectId
-  itemsAttendant: ItemsAttendance
-  itemsNurse: ItemsAttendance
-  itemsDoctor: ItemsAttendance
-  itemsAnalyst: ItemsAttendance
   createdAt: Date
   updatedAt: Date
 }

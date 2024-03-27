@@ -14,10 +14,10 @@ class GetAttendingsController {
     constructor(getAttendingsRepository) {
         this.getAttendingsRepository = getAttendingsRepository;
     }
-    handle() {
+    handle(status) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const attendings = yield this.getAttendingsRepository.getAttendings();
+                const attendings = yield this.getAttendingsRepository.getAttendings(status);
                 return {
                     body: {
                         data: attendings,

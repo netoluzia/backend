@@ -11,13 +11,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpdateAttendingController = void 0;
 class UpdateAttendingController {
-    constructor(updateAttendingRepository) {
+    constructor(updateAttendingRepository, io) {
         this.updateAttendingRepository = updateAttendingRepository;
+        this.io = io;
     }
     handle(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const { status } = params;
                 const attending = yield this.updateAttendingRepository.updateAttending(id, params);
+                if (status == 'to-doctor-1') {
+                    this.io.emit('attending:from-trial');
+                }
+                else if (status == 'to-attendant') {
+                    this.io.emit('attending:from-doctor-1');
+                }
+                else if (status == 'to-lab') {
+                    this.io.emit('attending:from-doctor-1-attendant');
+                }
                 return {
                     body: {
                         message: 'Operação concluída com sucesso',

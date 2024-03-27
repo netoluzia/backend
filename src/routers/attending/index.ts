@@ -11,10 +11,10 @@ import { MongoGetAttendingRepository } from '../../repositories/attending/get-at
 import { GetAttendingController } from '../../controllers/attending/get-attending/get-attending'
 const router = express.Router()
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/index/:status', async (req: Request, res: Response) => {
   const repository = new MongoGetAttendingsRepository()
   const controller = new GetAttendingsController(repository)
-  const { body, statusCode } = await controller.handle()
+  const { body, statusCode } = await controller.handle(req.params.status)
   return res.status(statusCode).send(body)
 })
 
@@ -30,7 +30,10 @@ router.post('/', async (req: Request, res: Response) => {
 
 router.patch('/:id', async (req: Request, res: Response) => {
   const repository = new MongoUpdateAttendingRepository()
-  const controller = new UpdateAttendingController(repository)
+  const controller = new UpdateAttendingController(
+    repository,
+    req.app.get('io') as Socket
+  )
   const { body, statusCode } = await controller.handle(req.params.id, req.body)
   return res.status(statusCode).send(body)
 })

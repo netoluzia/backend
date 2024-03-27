@@ -22,10 +22,10 @@ const get_attendings_1 = require("../../controllers/attending/get-attendings/get
 const mongo_get_attending_1 = require("../../repositories/attending/get-attending/mongo-get-attending");
 const get_attending_1 = require("../../controllers/attending/get-attending/get-attending");
 const router = express_1.default.Router();
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/index/:status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_get_attendings_1.MongoGetAttendingsRepository();
     const controller = new get_attendings_1.GetAttendingsController(repository);
-    const { body, statusCode } = yield controller.handle();
+    const { body, statusCode } = yield controller.handle(req.params.status);
     return res.status(statusCode).send(body);
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,7 +36,7 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 }));
 router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const repository = new mongo_update_attending_1.MongoUpdateAttendingRepository();
-    const controller = new update_attending_1.UpdateAttendingController(repository);
+    const controller = new update_attending_1.UpdateAttendingController(repository, req.app.get('io'));
     const { body, statusCode } = yield controller.handle(req.params.id, req.body);
     return res.status(statusCode).send(body);
 }));

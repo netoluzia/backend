@@ -5,9 +5,11 @@ export class GetAttendingsController implements IGetAtendingsController {
   constructor(
     private readonly getAttendingsRepository: IGetAtendingsRepository
   ) {}
-  async handle(): Promise<HttpResponse<any>> {
+  async handle(status: string): Promise<HttpResponse<any>> {
     try {
-      const attendings = await this.getAttendingsRepository.getAttendings()
+      const attendings = await this.getAttendingsRepository.getAttendings(
+        status
+      )
       return {
         body: {
           data: attendings,

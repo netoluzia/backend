@@ -1,6 +1,7 @@
+import { Socket } from 'socket.io'
 import { Attending } from '../../../models/Attending'
 import { HttpResponse } from '../../protocols'
-import { CreateAttending, UpdateAttending } from '../create-attending/protocols'
+import { CreatingAttending } from '../create-attending/protocols'
 import {
   IUpdateAttendingController,
   IUpdateAttendingRepository,
@@ -8,17 +9,26 @@ import {
 
 export class UpdateAttendingController implements IUpdateAttendingController {
   constructor(
-    private readonly updateAttendingRepository: IUpdateAttendingRepository
+    private readonly updateAttendingRepository: IUpdateAttendingRepository,
+    private readonly io: Socket
   ) {}
   async handle(
     id: string,
-    params: UpdateAttending
+    params: CreatingAttending
   ): Promise<HttpResponse<Attending>> {
     try {
+      const { status } = params
       const attending = await this.updateAttendingRepository.updateAttending(
         id,
         params
       )
+      if (status == 'to-doctor-1') {
+        this.io.emit('attending:from-trial')
+      } else if (status == 'to-attendant') {
+        this.io.emit('attending:from-doctor-1')
+      } else if (status == 'to-lab') {
+        this.io.emit('attending:from-doctor-1-attendant')
+      }
 
       return {
         body: {

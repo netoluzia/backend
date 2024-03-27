@@ -31,6 +31,7 @@ export class MongoGetAttendingRepository implements IGetAttendingRepository {
             _id: 1,
             createdAt: 1,
             client: '$client_data',
+            patient: 1,
           },
         },
       ])

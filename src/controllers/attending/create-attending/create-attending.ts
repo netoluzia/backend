@@ -11,7 +11,9 @@ export class CreateAttendingController implements ICreateAttendingController {
     private readonly createAttendingRepository: ICreateAttendingRepository,
     private readonly io: Socket
   ) {}
-  async handle(params: CreatingAttending): Promise<HttpResponse<Attending>> {
+  async handle(
+    params: CreatingAttending
+  ): Promise<HttpResponse<Attending | any>> {
     try {
       const { attendant, client } = params
       if (!attendant || !client) {

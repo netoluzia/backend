@@ -3,10 +3,15 @@ import { MongoClient } from '../../../database/mongo'
 import { Attending } from '../../../models/Attending'
 
 export class MongoGetAttendingsRepository implements IGetAtendingsRepository {
-  async getAttendings(): Promise<any> {
+  async getAttendings(status: string): Promise<any> {
     const attendings = await MongoClient.db
       .collection<Omit<Attending, 'id'>>('attending')
       .aggregate([
+        {
+          $match: {
+            status: status,
+          },
+        },
         {
           $lookup: {
             from: 'client',

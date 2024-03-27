@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import {
   CreateAttending,
+  CreatingAttending,
   UpdateAttending,
 } from '../../../controllers/attending/create-attending/protocols'
 import { IUpdateAttendingRepository } from '../../../controllers/attending/update-attending/protocols'
@@ -12,7 +13,7 @@ export class MongoUpdateAttendingRepository
 {
   async updateAttending(
     id: string,
-    params: UpdateAttending
+    params: CreatingAttending
   ): Promise<Attending | any> {
     const { ...payload } = params
     const attending = await MongoClient.db

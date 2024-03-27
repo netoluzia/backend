@@ -33,11 +33,36 @@ class MongoCreateAttendingRepository {
             }
             const attending = yield mongo_1.MongoClient.db
                 .collection('attending')
-                .findOne({ _id: insertedId });
-            if (!attending) {
-                throw new Error('Atendimento não foi registrado');
-            }
-            const { _id } = attending, rest = __rest(attending, ["_id"]);
+                .aggregate([
+                {
+                    $match: {
+                        _id: insertedId,
+                    },
+                },
+                {
+                    $lookup: {
+                        from: 'client',
+                        localField: 'client',
+                        foreignField: '_id',
+                        as: 'client_data',
+                    },
+                },
+                {
+                    $unwind: {
+                        path: '$client_data',
+                        preserveNullAndEmptyArrays: true,
+                    },
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        createdAt: 1,
+                        client: '$client_data',
+                    },
+                },
+            ])
+                .toArray();
+            const _a = attending[0], { _id } = _a, rest = __rest(_a, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);
         });
     }

@@ -36,7 +36,7 @@ export interface CreatingAttending {
   trial_incharge?: string
   doctor?: ObjectId
   analyst?: ObjectId
-  status: 'to-trial' | 'to-doctor-1' | 'to-lab' | 'to-doctor-2'
+  status: 'to-trial' | 'to-doctor-1' | 'to-lab' | 'to-doctor-2' | 'to-attendant'
 }
 
 export interface TestResult {
@@ -58,9 +58,9 @@ export interface UpdateAttending {
   nurse?: ObjectId
 }
 export interface ICreateAttendingController {
-  handle(params: CreatingAttending): Promise<HttpResponse<Attending>>
+  handle(params: CreatingAttending): Promise<HttpResponse<Attending | any>>
 }
 export interface ICreateAttendingRepository {
-  createAttending(params: CreatingAttending): Promise<Attending>
+  createAttending(params: CreatingAttending): Promise<Attending | any>
 }
 export { HttpResponse }

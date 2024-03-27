@@ -23,11 +23,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongoGetAttendingsRepository = void 0;
 const mongo_1 = require("../../../database/mongo");
 class MongoGetAttendingsRepository {
-    getAttendings() {
+    getAttendings(status) {
         return __awaiter(this, void 0, void 0, function* () {
             const attendings = yield mongo_1.MongoClient.db
                 .collection('attending')
                 .aggregate([
+                {
+                    $match: {
+                        status: status,
+                    },
+                },
                 {
                     $lookup: {
                         from: 'client',

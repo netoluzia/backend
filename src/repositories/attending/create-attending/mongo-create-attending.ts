@@ -9,7 +9,7 @@ import { Attending } from '../../../models/Attending'
 export class MongoCreateAttendingRepository
   implements ICreateAttendingRepository
 {
-  async createAttending(params: CreatingAttending): Promise<Attending> {
+  async createAttending(params: CreatingAttending): Promise<Attending | any> {
     const { insertedId } = await MongoClient.db
       .collection('attending')
       .insertOne({ ...params, createdAt: new Date(), updatedAt: new Date() })
@@ -18,14 +18,36 @@ export class MongoCreateAttendingRepository
     }
     const attending = await MongoClient.db
       .collection<Omit<Attending, 'id'>>('attending')
-      .findOne({ _id: insertedId })
-
-    if (!attending) {
-      throw new Error('Atendimento não foi registrado')
-    }
-
-    const { _id, ...rest } = attending
-
+      .aggregate([
+        {
+          $match: {
+            _id: insertedId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'client',
+            localField: 'client',
+            foreignField: '_id',
+            as: 'client_data',
+          },
+        },
+        {
+          $unwind: {
+            path: '$client_data',
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            createdAt: 1,
+            client: '$client_data',
+          },
+        },
+      ])
+      .toArray()
+    const { _id, ...rest } = attending[0]
     return { id: _id.toHexString(), ...rest }
   }
 }
