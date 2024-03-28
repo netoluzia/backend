@@ -3,6 +3,7 @@ import express from 'express'
 
 import user from './user'
 import service from './service'
+import product from './product'
 import report from './report'
 import document from './document'
 import client from './client'
@@ -17,6 +18,7 @@ const middleware = new Middlewares()
 router.use('/auth', auth)
 router.use('/users', middleware.verifyToken, user)
 router.use('/services', middleware.verifyToken, service)
+router.use('/products', middleware.verifyToken, product)
 router.use('/reports', report)
 router.use('/documents', middleware.verifyToken, document)
 router.use('/clients', middleware.verifyToken, client)

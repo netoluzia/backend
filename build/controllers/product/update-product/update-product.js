@@ -9,20 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetServicesController = void 0;
-class GetServicesController {
-    constructor(getServicesRepository) {
-        this.getServicesRepository = getServicesRepository;
+exports.UpdateProductController = void 0;
+class UpdateProductController {
+    constructor(updateProductRepository) {
+        this.updateProductRepository = updateProductRepository;
     }
-    handle(params) {
+    handle(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const services = yield this.getServicesRepository.getServices(params);
+                const { body, params } = payload;
+                if (!params || !body) {
+                    return {
+                        statusCode: 400,
+                        body: {
+                            message: 'Bad request',
+                            status: false,
+                        },
+                    };
+                }
+                const service = yield this.updateProductRepository.updateProduct(params, Object.assign(Object.assign({}, body), { updatedAt: new Date() }));
                 return {
                     statusCode: 200,
                     body: {
-                        data: services,
-                        message: 'Items carregados com sucesso',
+                        message: 'Item atualizado com sucesso',
+                        data: service,
                         status: true,
                     },
                 };
@@ -31,12 +41,12 @@ class GetServicesController {
                 return {
                     statusCode: 500,
                     body: {
-                        status: false,
                         message: 'Something went wrong',
+                        status: false,
                     },
                 };
             }
         });
     }
 }
-exports.GetServicesController = GetServicesController;
+exports.UpdateProductController = UpdateProductController;

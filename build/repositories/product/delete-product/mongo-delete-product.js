@@ -20,20 +20,27 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MongoGetServicesRepository = void 0;
+exports.MongoDeleteProductRepository = void 0;
+const mongodb_1 = require("mongodb");
 const mongo_1 = require("../../../database/mongo");
-class MongoGetServicesRepository {
-    getServices(type) {
+class MongoDeleteProductRepository {
+    deleteProduct(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const services = yield mongo_1.MongoClient.db
-                .collection('service')
-                .find({ category: type })
-                .toArray();
-            return services.map((_a) => {
-                var { _id } = _a, rest = __rest(_a, ["_id"]);
-                return (Object.assign({ id: _id.toHexString() }, rest));
-            });
+            const product = yield mongo_1.MongoClient.db
+                .collection('product')
+                .findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!product) {
+                throw new Error('Product was not found');
+            }
+            const { deletedCount } = yield mongo_1.MongoClient.db
+                .collection('product')
+                .deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!deletedCount) {
+                throw new Error('Product was not deleted');
+            }
+            const { _id } = product, rest = __rest(product, ["_id"]);
+            return Object.assign({ id: _id.toHexString() }, rest);
         });
     }
 }
-exports.MongoGetServicesRepository = MongoGetServicesRepository;
+exports.MongoDeleteProductRepository = MongoDeleteProductRepository;

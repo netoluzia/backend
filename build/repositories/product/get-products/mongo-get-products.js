@@ -20,20 +20,20 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MongoGetServicesRepository = void 0;
+exports.MongoGetProductsRepository = void 0;
 const mongo_1 = require("../../../database/mongo");
-class MongoGetServicesRepository {
-    getServices(type) {
+class MongoGetProductsRepository {
+    getProducts(type) {
         return __awaiter(this, void 0, void 0, function* () {
-            const services = yield mongo_1.MongoClient.db
-                .collection('service')
+            const products = yield mongo_1.MongoClient.db
+                .collection('product')
                 .find({ category: type })
                 .toArray();
-            return services.map((_a) => {
+            return products.map((_a) => {
                 var { _id } = _a, rest = __rest(_a, ["_id"]);
                 return (Object.assign({ id: _id.toHexString() }, rest));
             });
         });
     }
 }
-exports.MongoGetServicesRepository = MongoGetServicesRepository;
+exports.MongoGetProductsRepository = MongoGetProductsRepository;

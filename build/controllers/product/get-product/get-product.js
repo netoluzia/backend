@@ -9,34 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetServicesController = void 0;
-class GetServicesController {
-    constructor(getServicesRepository) {
-        this.getServicesRepository = getServicesRepository;
+exports.GetProductController = void 0;
+class GetProductController {
+    constructor(getProductRepository) {
+        this.getProductRepository = getProductRepository;
     }
-    handle(params) {
+    handle(id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const services = yield this.getServicesRepository.getServices(params);
+                const product = yield this.getProductRepository.getProduct(id);
                 return {
-                    statusCode: 200,
                     body: {
-                        data: services,
-                        message: 'Items carregados com sucesso',
+                        message: 'Operação concluída com sucesso',
                         status: true,
+                        data: product,
                     },
+                    statusCode: 200,
                 };
             }
             catch (error) {
                 return {
-                    statusCode: 500,
                     body: {
-                        status: false,
                         message: 'Something went wrong',
+                        status: true,
                     },
+                    statusCode: 500,
                 };
             }
         });
     }
 }
-exports.GetServicesController = GetServicesController;
+exports.GetProductController = GetProductController;

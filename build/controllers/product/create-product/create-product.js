@@ -9,20 +9,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GetServicesController = void 0;
-class GetServicesController {
-    constructor(getServicesRepository) {
-        this.getServicesRepository = getServicesRepository;
+exports.CreateProductController = void 0;
+class CreateProductController {
+    constructor(createProductRepository) {
+        this.createProductRepository = createProductRepository;
     }
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const services = yield this.getServicesRepository.getServices(params);
+                const { body } = params;
+                if (!body) {
+                    return {
+                        statusCode: 400,
+                        body: {
+                            message: 'Bad request',
+                            status: false,
+                        },
+                    };
+                }
+                console.log(body);
+                const product = yield this.createProductRepository.createProduct(Object.assign({}, body));
                 return {
                     statusCode: 200,
                     body: {
-                        data: services,
-                        message: 'Items carregados com sucesso',
+                        data: product,
+                        message: 'Produto criado com sucesso',
                         status: true,
                     },
                 };
@@ -31,12 +42,12 @@ class GetServicesController {
                 return {
                     statusCode: 500,
                     body: {
-                        status: false,
                         message: 'Something went wrong',
+                        status: false,
                     },
                 };
             }
         });
     }
 }
-exports.GetServicesController = GetServicesController;
+exports.CreateProductController = CreateProductController;

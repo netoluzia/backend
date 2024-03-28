@@ -6,8 +6,7 @@ export class GetServicesController implements IGetServicesController {
   constructor(private readonly getServicesRepository: IGetServicesRepository) {}
   async handle(params: string): Promise<HttpResponse<Service[]>> {
     try {
-      const type = params || 'service'
-      const services = await this.getServicesRepository.getServices(type)
+      const services = await this.getServicesRepository.getServices(params)
       return {
         statusCode: 200,
         body: {

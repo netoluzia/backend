@@ -7,7 +7,7 @@ export class MongoGetServicesRepository implements IGetServicesRepository {
   async getServices(type: string): Promise<Service[]> {
     const services = await MongoClient.db
       .collection<Omit<Service, 'id'>>('service')
-      .find({ type: type } as Filter<Omit<Service, 'id'>>)
+      .find({ category: type } as Filter<Omit<Service, 'id'>>)
       .toArray()
 
     return services.map(({ _id, ...rest }) => ({
