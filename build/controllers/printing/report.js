@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReportController = void 0;
 const pdfmake_1 = __importDefault(require("pdfmake"));
 const mongo_get_document_1 = require("../../repositories/document/get-document/mongo-get-document");
+const mongo_get_company_1 = require("../../repositories/company/get-company/mongo-get-company");
 const documents = {
     FT: 'Fatura',
     RG: 'Recibo',
@@ -29,6 +30,8 @@ class ReportController {
                 const data = yield repository.getDocument(id);
                 const documentData = JSON.parse(JSON.stringify(data));
                 const client = documentData.client;
+                const companyRepository = new mongo_get_company_1.MongoGetCompany();
+                const company = yield companyRepository.getCompany();
                 const fonts = {
                     Helvetica: {
                         normal: 'Helvetica',
@@ -65,6 +68,16 @@ class ReportController {
                         alignment: 'right',
                     },
                 ]);
+                const companyData = [
+                    {
+                        text: company.name,
+                        style: ['header'],
+                    },
+                    `Endereço: ${company.address}`,
+                    `Telefone: (+244) ${company.phone_number}`,
+                    `Email: ${company.email}`,
+                    `Número de contribuinte: ${company.nif}`,
+                ];
                 const printer = new pdfmake_1.default(fonts);
                 let docDefinition = {
                     content: [
@@ -73,18 +86,7 @@ class ReportController {
                                 {
                                     width: '50%',
                                     style: ['default'],
-                                    columns: [
-                                        [
-                                            {
-                                                text: 'Clínica Alfavida',
-                                                style: ['header'],
-                                            },
-                                            'Endereço: Zango 1, Rua da Pomobel',
-                                            'Telefone: (+244) 946 803 775 / 990 803 775',
-                                            'Email: clinicaalfavida2020@gmail.com',
-                                            'Número de contribuinte: 5000139777',
-                                        ],
-                                    ],
+                                    columns: [companyData],
                                 },
                                 {
                                     width: '50%',
