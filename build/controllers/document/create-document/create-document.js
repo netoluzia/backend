@@ -49,7 +49,7 @@ class CreateDocumentController {
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let { items, client, payment, document, amount_received, paid, source } = params;
+                let { items, client, payment, document, amount_received, paid, source, attendant, } = params;
                 const auxItems = items.map((_a) => {
                     var { total, quantity, unit_price } = _a, rest = __rest(_a, ["total", "quantity", "unit_price"]);
                     return (Object.assign({ total: quantity * unit_price, quantity,
@@ -81,7 +81,7 @@ class CreateDocumentController {
                 const doc = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total,
                     reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: params.emission_date || new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
                     hash64,
-                    paid }));
+                    paid, attendant: new mongodb_1.ObjectId(attendant) }));
                 return {
                     statusCode: 200,
                     body: {

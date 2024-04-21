@@ -27,6 +27,14 @@ class MongoGetClientsRepository {
         return __awaiter(this, void 0, void 0, function* () {
             const pipeline = [
                 {
+                    $match: {
+                        $or: [
+                            { deletedAt: { $eq: null } }, // Filtra documentos onde deletedAt é null
+                            { deletedAt: { $exists: false } }, // Filtra documentos onde deletedAt não está presente
+                        ],
+                    },
+                },
+                {
                     $lookup: {
                         from: 'insurance',
                         localField: 'insurance_company',

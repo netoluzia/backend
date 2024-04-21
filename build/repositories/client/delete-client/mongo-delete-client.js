@@ -31,10 +31,13 @@ class MongoDeleteClientRepository {
                 .findOne({ _id: new mongodb_1.ObjectId(id) });
             if (!client)
                 throw new Error('Client was not found');
-            const { deletedCount } = yield mongo_1.MongoClient.db
+            // const { deletedCount } = await MongoClient.db
+            //   .collection('client')
+            //   .deleteOne({ _id: new ObjectId(id) })
+            const deleted = yield mongo_1.MongoClient.db
                 .collection('client')
-                .deleteOne({ _id: new mongodb_1.ObjectId(id) });
-            if (!deletedCount)
+                .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, { $set: { deletedAt: Date.now() } });
+            if (!deleted)
                 throw new Error('Client was not deleted');
             const { _id } = client, rest = __rest(client, ["_id"]);
             return Object.assign({ id: _id.toHexString() }, rest);

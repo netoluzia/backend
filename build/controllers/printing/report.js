@@ -16,6 +16,8 @@ exports.ReportController = void 0;
 const pdfmake_1 = __importDefault(require("pdfmake"));
 const mongo_get_document_1 = require("../../repositories/document/get-document/mongo-get-document");
 const mongo_get_company_1 = require("../../repositories/company/get-company/mongo-get-company");
+const mongo_get_user_1 = require("../../repositories/user/get-user/mongo-get-user");
+const mongo_get_payment_1 = require("../../repositories/payment/get-payment/mongo-get-payment");
 const documents = {
     FT: 'Fatura',
     RG: 'Recibo',
@@ -32,6 +34,12 @@ class ReportController {
                 const client = documentData.client;
                 const companyRepository = new mongo_get_company_1.MongoGetCompany();
                 const company = yield companyRepository.getCompany();
+                const userGet = new mongo_get_user_1.MongoGetUserRepository();
+                const paymentGet = new mongo_get_payment_1.MongoGetPayment();
+                const payment = yield paymentGet.getPayment(documentData.payment);
+                const user = yield userGet.getUser({
+                    id: data.attendant,
+                });
                 const fonts = {
                     Helvetica: {
                         normal: 'Helvetica',
@@ -57,10 +65,10 @@ class ReportController {
                     itemsTable.push(element);
                 });
                 itemsTable.push([
-                    { style: 'default', text: 'TOTAL', alignment: 'left' },
-                    {},
+                    { style: 'tableHeader', text: 'TOTAL', alignment: 'left' },
+                    { style: 'tableHeader', text: '' },
                     {
-                        style: 'default',
+                        style: 'tableHeader',
                         text: new Intl.NumberFormat('de-DE', {
                             style: 'currency',
                             currency: 'AOA',
@@ -68,6 +76,49 @@ class ReportController {
                         alignment: 'right',
                     },
                 ]);
+                if (documentData.document == 'FR' || 'RG') {
+                    itemsTable.push([
+                        {
+                            style: 'tableHeader',
+                            text: 'MONTANTE ENTREGUE',
+                            alignment: 'left',
+                        },
+                        { style: 'tableHeader', text: '' },
+                        {
+                            style: 'tableHeader',
+                            text: new Intl.NumberFormat('de-DE', {
+                                style: 'currency',
+                                currency: 'AOA',
+                            }).format(documentData.amount_received),
+                            alignment: 'right',
+                        },
+                    ]);
+                    itemsTable.push([
+                        { style: 'tableHeader', text: 'TROCO', alignment: 'left' },
+                        { style: 'tableHeader', text: '' },
+                        {
+                            style: 'tableHeader',
+                            text: new Intl.NumberFormat('de-DE', {
+                                style: 'currency',
+                                currency: 'AOA',
+                            }).format(documentData.change),
+                            alignment: 'right',
+                        },
+                    ]);
+                    itemsTable.push([
+                        {
+                            style: 'tableHeader',
+                            text: 'FORMA DE PAGAMENTO',
+                            alignment: 'left',
+                        },
+                        { style: 'tableHeader', text: '' },
+                        {
+                            style: 'tableHeader',
+                            text: payment.title,
+                            alignment: 'right',
+                        },
+                    ]);
+                }
                 const companyData = [
                     {
                         text: company.name,
@@ -270,11 +321,11 @@ class ReportController {
                                             ],
                                             [
                                                 {
-                                                    text: '02/03/2024 - 08:34:45',
+                                                    text: '--',
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: '02/03/2024 - 13:44:45',
+                                                    text: '--',
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
@@ -349,7 +400,7 @@ class ReportController {
                                     alignment: 'center',
                                 },
                                 {
-                                    text: 'funcionario',
+                                    text: `Atendido por: ${user === null || user === void 0 ? void 0 : user.name}`,
                                     alignment: 'center',
                                 },
                             ],
