@@ -33,8 +33,16 @@ export class CreateDocumentController implements ICreateDocumentController {
   }
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
-      let { items, client, payment, document, amount_received, paid, source } =
-        params
+      let {
+        items,
+        client,
+        payment,
+        document,
+        amount_received,
+        paid,
+        source,
+        attendant,
+      } = params
       const auxItems = items.map(
         ({ total, quantity, unit_price, ...rest }) => ({
           total: quantity * unit_price,
@@ -82,6 +90,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         hash4,
         hash64,
         paid,
+        attendant: new ObjectId(attendant),
       })
 
       return {

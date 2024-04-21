@@ -12,6 +12,7 @@ import insurance from './insurance'
 import auth from './auth'
 import attending from './attending'
 import company from './company'
+import reports from './reports'
 
 const router = express.Router()
 const middleware = new Middlewares()
@@ -27,5 +28,6 @@ router.use('/payments', middleware.verifyToken, payment)
 router.use('/insurances', middleware.verifyToken, insurance)
 router.use('/company', middleware.verifyToken, company)
 router.use('/attendings', middleware.verifyToken, attending)
+router.use('/reports-financial', reports)
 
 export default router

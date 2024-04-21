@@ -3,6 +3,8 @@ import { TDocumentDefinitions } from 'pdfmake/interfaces'
 import { MongoGetDocumentRepository } from '../../repositories/document/get-document/mongo-get-document'
 import { FiscalDoc } from '../../models/Document'
 import { MongoGetCompany } from '../../repositories/company/get-company/mongo-get-company'
+import { MongoGetUserRepository } from '../../repositories/user/get-user/mongo-get-user'
+import { MongoGetPayment } from '../../repositories/payment/get-payment/mongo-get-payment'
 const documents = {
   FT: 'Fatura',
   RG: 'Recibo',
@@ -14,9 +16,16 @@ export class ReportController {
       const repository = new MongoGetDocumentRepository()
       const data = await repository.getDocument(id)
       const documentData = JSON.parse(JSON.stringify(data))
+
       const client = documentData.client
       const companyRepository = new MongoGetCompany()
       const company = await companyRepository.getCompany()
+      const userGet = new MongoGetUserRepository()
+      const paymentGet = new MongoGetPayment()
+      const payment = await paymentGet.getPayment(documentData.payment)
+      const user = await userGet.getUser({
+        id: data.attendant,
+      })
 
       const fonts = {
         Helvetica: {
@@ -44,10 +53,10 @@ export class ReportController {
         itemsTable.push(element)
       })
       itemsTable.push([
-        { style: 'default', text: 'TOTAL', alignment: 'left' },
-        {},
+        { style: 'tableHeader', text: 'TOTAL', alignment: 'left' },
+        { style: 'tableHeader', text: '' },
         {
-          style: 'default',
+          style: 'tableHeader',
           text: new Intl.NumberFormat('de-DE', {
             style: 'currency',
             currency: 'AOA',
@@ -55,6 +64,50 @@ export class ReportController {
           alignment: 'right',
         },
       ])
+
+      if (documentData.document == 'FR' || 'RG') {
+        itemsTable.push([
+          {
+            style: 'tableHeader',
+            text: 'MONTANTE ENTREGUE',
+            alignment: 'left',
+          },
+          { style: 'tableHeader', text: '' },
+          {
+            style: 'tableHeader',
+            text: new Intl.NumberFormat('de-DE', {
+              style: 'currency',
+              currency: 'AOA',
+            }).format(documentData.amount_received),
+            alignment: 'right',
+          },
+        ])
+        itemsTable.push([
+          { style: 'tableHeader', text: 'TROCO', alignment: 'left' },
+          { style: 'tableHeader', text: '' },
+          {
+            style: 'tableHeader',
+            text: new Intl.NumberFormat('de-DE', {
+              style: 'currency',
+              currency: 'AOA',
+            }).format(documentData.change),
+            alignment: 'right',
+          },
+        ])
+        itemsTable.push([
+          {
+            style: 'tableHeader',
+            text: 'FORMA DE PAGAMENTO',
+            alignment: 'left',
+          },
+          { style: 'tableHeader', text: '' },
+          {
+            style: 'tableHeader',
+            text: payment.title,
+            alignment: 'right',
+          },
+        ])
+      }
 
       const companyData = [
         {
@@ -263,11 +316,11 @@ export class ReportController {
                     ],
                     [
                       {
-                        text: '02/03/2024 - 08:34:45',
+                        text: '--',
                         style: ['bodyStyle'],
                       },
                       {
-                        text: '02/03/2024 - 13:44:45',
+                        text: '--',
                         style: ['bodyStyle'],
                       },
                     ],
@@ -343,7 +396,7 @@ export class ReportController {
                 alignment: 'center',
               },
               {
-                text: 'funcionario',
+                text: `Atendido por: ${user?.name}`,
                 alignment: 'center',
               },
             ],

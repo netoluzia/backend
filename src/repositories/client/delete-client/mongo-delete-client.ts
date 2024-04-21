@@ -9,12 +9,18 @@ export class MongoDeleteClientRepository implements IDeleteClientRepository {
       .collection<Omit<Client, 'id'>>('client')
       .findOne({ _id: new ObjectId(id) })
     if (!client) throw new Error('Client was not found')
-    const { deletedCount } = await MongoClient.db
+    // const { deletedCount } = await MongoClient.db
+    //   .collection('client')
+    //   .deleteOne({ _id: new ObjectId(id) })
+
+    const deleted = await MongoClient.db
       .collection('client')
-      .deleteOne({ _id: new ObjectId(id) })
+      .findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: { deletedAt: Date.now() } }
+      )
 
-    if (!deletedCount) throw new Error('Client was not deleted')
-
+    if (!deleted) throw new Error('Client was not deleted')
     const { _id, ...rest } = client
     return { id: _id.toHexString(), ...rest }
   }

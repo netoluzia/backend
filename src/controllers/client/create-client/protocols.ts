@@ -10,6 +10,7 @@ export interface CreateCliente {
   insurance_company?: ObjectId
   insurance_number?: string
   createdAt: Date
+  deletedAt: Date
 }
 
 export interface ICreateClientRepository {

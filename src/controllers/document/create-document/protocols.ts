@@ -11,7 +11,7 @@ export interface ParamsCreateDocument {
   document: string
   discount?: number
   total?: number
-  attendant?: string
+  attendant?: ObjectId
   createdAt?: Date
   serie?: string | number
   reference?: string | null

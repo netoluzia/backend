@@ -6,6 +6,14 @@ export class MongoGetClientsRepository implements IGetClientsRepository {
   async getClients(): Promise<Client[] | any> {
     const pipeline = [
       {
+        $match: {
+          $or: [
+            { deletedAt: { $eq: null } }, // Filtra documentos onde deletedAt é null
+            { deletedAt: { $exists: false } }, // Filtra documentos onde deletedAt não está presente
+          ],
+        },
+      },
+      {
         $lookup: {
           from: 'insurance',
           localField: 'insurance_company',
