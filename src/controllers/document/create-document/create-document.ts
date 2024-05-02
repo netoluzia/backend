@@ -56,16 +56,16 @@ export class CreateDocumentController implements ICreateDocumentController {
       const reference = await this.generateReference(document)
       let change: number | null = null
 
-      if (document == 'RG' || document == 'FR') {
+      if (document == 'RC' || document == 'FR') {
         change = amount_received - total
         paid = true
       }
-      if (document == 'RG') {
+      if (document == 'RC') {
         await MongoClient.db
           .collection('document')
           .findOneAndUpdate({ reference: source }, { $set: { paid: true } })
       }
-      if (document == 'RG' && !source) {
+      if (document == 'RC' && !source) {
         return {
           statusCode: 200,
           body: {

@@ -7,7 +7,7 @@ import { MongoGetUserRepository } from '../../repositories/user/get-user/mongo-g
 import { MongoGetPayment } from '../../repositories/payment/get-payment/mongo-get-payment'
 const documents = {
   FT: 'Fatura',
-  RG: 'Recibo',
+  RC: 'Recibo',
   FR: 'Fatura-Recibo',
 }
 export class ReportController {
@@ -65,7 +65,7 @@ export class ReportController {
         },
       ])
 
-      if (documentData.document == 'FR' || 'RG') {
+      if (documentData.document == 'FR' || 'RC') {
         itemsTable.push([
           {
             style: 'tableHeader',

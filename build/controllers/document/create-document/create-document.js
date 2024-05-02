@@ -59,16 +59,16 @@ class CreateDocumentController {
                 const total = this.calculateTotal(items);
                 const reference = yield this.generateReference(document);
                 let change = null;
-                if (document == 'RG' || document == 'FR') {
+                if (document == 'RC' || document == 'FR') {
                     change = amount_received - total;
                     paid = true;
                 }
-                if (document == 'RG') {
+                if (document == 'RC') {
                     yield mongo_1.MongoClient.db
                         .collection('document')
                         .findOneAndUpdate({ reference: source }, { $set: { paid: true } });
                 }
-                if (document == 'RG' && !source) {
+                if (document == 'RC' && !source) {
                     return {
                         statusCode: 200,
                         body: {

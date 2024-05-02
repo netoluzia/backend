@@ -20,7 +20,7 @@ const mongo_get_user_1 = require("../../repositories/user/get-user/mongo-get-use
 const mongo_get_payment_1 = require("../../repositories/payment/get-payment/mongo-get-payment");
 const documents = {
     FT: 'Fatura',
-    RG: 'Recibo',
+    RC: 'Recibo',
     FR: 'Fatura-Recibo',
 };
 class ReportController {
@@ -76,7 +76,7 @@ class ReportController {
                         alignment: 'right',
                     },
                 ]);
-                if (documentData.document == 'FR' || 'RG') {
+                if (documentData.document == 'FR' || 'RC') {
                     itemsTable.push([
                         {
                             style: 'tableHeader',
