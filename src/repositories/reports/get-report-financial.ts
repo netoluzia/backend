@@ -8,7 +8,7 @@ export class MongoGetReportFinancialRepository
     const pipeline = [
       {
         $match: {
-          emission_date: {
+          createdAt: {
             $gte: new Date(params.range.$gte),
           },
           paid: params.paid,
@@ -42,6 +42,7 @@ export class MongoGetReportFinancialRepository
       .collection('document')
       .aggregate(pipeline)
       .toArray()
+
     const response = {
       toPay: 0,
       paid: 0,

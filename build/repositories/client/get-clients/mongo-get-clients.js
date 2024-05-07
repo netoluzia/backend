@@ -54,6 +54,8 @@ class MongoGetClientsRepository {
                         name: 1,
                         email: 1,
                         phone_number: 1,
+                        nif: 1,
+                        protocol: 1,
                         insurance_number: 1,
                         createdAt: 1,
                         insurance_company: '$insurance_data',

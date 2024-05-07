@@ -22,7 +22,7 @@ class UpdateClientController {
                     statusCode: 200,
                     body: {
                         data: client,
-                        message: 'Cliente adicionado com sucesso',
+                        message: 'Cliente modificado com sucesso',
                         status: true,
                     },
                 };
@@ -31,7 +31,7 @@ class UpdateClientController {
                 return {
                     statusCode: 500,
                     body: {
-                        message: 'Something went wrong',
+                        message: error.message,
                         status: false,
                     },
                 };

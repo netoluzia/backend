@@ -6,6 +6,7 @@ export interface Client {
   nif: string
   email: string
   phone_number: string
+  protocol: number
   insurance_company: string
   insurance_number: string
   createdAt?: Date

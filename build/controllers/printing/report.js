@@ -186,7 +186,9 @@ class ReportController {
                                         body: [
                                             [
                                                 {
-                                                    text: 'Segurado',
+                                                    text: client.insurance_company[0]
+                                                        ? 'Segurado'
+                                                        : 'Cliente',
                                                     style: 'tableHeader',
                                                     colSpan: 2,
                                                     alignment: 'center',
@@ -236,65 +238,71 @@ class ReportController {
                                         ],
                                     },
                                 },
-                                {
-                                    width: '50%',
-                                    marginTop: 15,
-                                    table: {
-                                        widths: ['30%', '70%'],
-                                        headerRows: 1,
-                                        body: [
-                                            [
-                                                {
-                                                    text: 'Seguradora',
-                                                    style: 'tableHeader',
-                                                    colSpan: 2,
-                                                    alignment: 'center',
-                                                },
-                                                {},
+                                client.insurance_company[0]
+                                    ? {
+                                        width: '50%',
+                                        marginTop: 15,
+                                        table: {
+                                            widths: ['30%', '70%'],
+                                            headerRows: 1,
+                                            body: [
+                                                [
+                                                    {
+                                                        text: 'Seguradora',
+                                                        style: 'tableHeader',
+                                                        colSpan: 2,
+                                                        alignment: 'center',
+                                                    },
+                                                    {},
+                                                ],
+                                                [
+                                                    {
+                                                        text: 'Nome',
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                    {
+                                                        text: (_a = client.insurance_company[0]) === null || _a === void 0 ? void 0 : _a.name,
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                ],
+                                                [
+                                                    {
+                                                        text: 'Endereço',
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                    {
+                                                        text: (_b = client.insurance_company[0]) === null || _b === void 0 ? void 0 : _b.address,
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                ],
+                                                [
+                                                    {
+                                                        text: 'Contribuinte',
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                    {
+                                                        text: (_c = client.insurance_company[0]) === null || _c === void 0 ? void 0 : _c.nif,
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                ],
+                                                [
+                                                    {
+                                                        text: 'Telefone',
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                    {
+                                                        text: (_d = client.insurance_company[0]) === null || _d === void 0 ? void 0 : _d.phone_number,
+                                                        style: ['bodyStyle'],
+                                                    },
+                                                ],
                                             ],
-                                            [
-                                                {
-                                                    text: 'Nome',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: (_a = client.insurance_company[0]) === null || _a === void 0 ? void 0 : _a.name,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: 'Endereço',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: (_b = client.insurance_company[0]) === null || _b === void 0 ? void 0 : _b.address,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: 'Contribuinte',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: (_c = client.insurance_company[0]) === null || _c === void 0 ? void 0 : _c.nif,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: 'Telefone',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: (_d = client.insurance_company[0]) === null || _d === void 0 ? void 0 : _d.phone_number,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                        ],
+                                        },
+                                    }
+                                    : {
+                                        width: '50%',
+                                        marginTop: 15,
+                                        text: '',
                                     },
-                                },
                             ],
                             columnGap: 10,
                         },
@@ -321,12 +329,19 @@ class ReportController {
                                             ],
                                             [
                                                 {
-                                                    text: '--',
+                                                    text: new Intl.DateTimeFormat('en-GB', {
+                                                        day: 'numeric',
+                                                        month: 'numeric',
+                                                        year: 'numeric',
+                                                        hour: 'numeric',
+                                                        minute: 'numeric',
+                                                    }).format(new Date(documentData === null || documentData === void 0 ? void 0 : documentData.emission_date)),
                                                     style: ['bodyStyle'],
                                                 },
                                                 {
-                                                    text: '--',
+                                                    text: '',
                                                     style: ['bodyStyle'],
+                                                    alignment: 'center',
                                                 },
                                             ],
                                         ],

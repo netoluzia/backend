@@ -179,7 +179,9 @@ export class ReportController {
                   body: [
                     [
                       {
-                        text: 'Segurado',
+                        text: client.insurance_company[0]
+                          ? 'Segurado'
+                          : 'Cliente',
                         style: 'tableHeader',
                         colSpan: 2,
                         alignment: 'center',
@@ -230,66 +232,72 @@ export class ReportController {
                   ],
                 },
               },
-              {
-                width: '50%',
-                marginTop: 15,
-                table: {
-                  widths: ['30%', '70%'],
-                  headerRows: 1,
-                  body: [
-                    [
-                      {
-                        text: 'Seguradora',
-                        style: 'tableHeader',
-                        colSpan: 2,
-                        alignment: 'center',
-                      },
-                      {},
-                    ],
+              client.insurance_company[0]
+                ? {
+                    width: '50%',
+                    marginTop: 15,
+                    table: {
+                      widths: ['30%', '70%'],
+                      headerRows: 1,
+                      body: [
+                        [
+                          {
+                            text: 'Seguradora',
+                            style: 'tableHeader',
+                            colSpan: 2,
+                            alignment: 'center',
+                          },
+                          {},
+                        ],
 
-                    [
-                      {
-                        text: 'Nome',
-                        style: ['bodyStyle'],
-                      },
-                      {
-                        text: client.insurance_company[0]?.name,
-                        style: ['bodyStyle'],
-                      },
-                    ],
-                    [
-                      {
-                        text: 'Endereço',
-                        style: ['bodyStyle'],
-                      },
-                      {
-                        text: client.insurance_company[0]?.address,
-                        style: ['bodyStyle'],
-                      },
-                    ],
-                    [
-                      {
-                        text: 'Contribuinte',
-                        style: ['bodyStyle'],
-                      },
-                      {
-                        text: client.insurance_company[0]?.nif,
-                        style: ['bodyStyle'],
-                      },
-                    ],
-                    [
-                      {
-                        text: 'Telefone',
-                        style: ['bodyStyle'],
-                      },
-                      {
-                        text: client.insurance_company[0]?.phone_number,
-                        style: ['bodyStyle'],
-                      },
-                    ],
-                  ],
-                },
-              },
+                        [
+                          {
+                            text: 'Nome',
+                            style: ['bodyStyle'],
+                          },
+                          {
+                            text: client.insurance_company[0]?.name,
+                            style: ['bodyStyle'],
+                          },
+                        ],
+                        [
+                          {
+                            text: 'Endereço',
+                            style: ['bodyStyle'],
+                          },
+                          {
+                            text: client.insurance_company[0]?.address,
+                            style: ['bodyStyle'],
+                          },
+                        ],
+                        [
+                          {
+                            text: 'Contribuinte',
+                            style: ['bodyStyle'],
+                          },
+                          {
+                            text: client.insurance_company[0]?.nif,
+                            style: ['bodyStyle'],
+                          },
+                        ],
+                        [
+                          {
+                            text: 'Telefone',
+                            style: ['bodyStyle'],
+                          },
+                          {
+                            text: client.insurance_company[0]?.phone_number,
+                            style: ['bodyStyle'],
+                          },
+                        ],
+                      ],
+                    },
+                  }
+                : {
+                    width: '50%',
+                    marginTop: 15,
+                    text: '',
+                  },
             ],
             columnGap: 10,
           },
@@ -316,12 +324,19 @@ export class ReportController {
                     ],
                     [
                       {
-                        text: '--',
+                        text: new Intl.DateTimeFormat('en-GB', {
+                          day: 'numeric',
+                          month: 'numeric',
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: 'numeric',
+                        }).format(new Date(documentData?.emission_date)),
                         style: ['bodyStyle'],
                       },
                       {
-                        text: '--',
+                        text: '',
                         style: ['bodyStyle'],
+                        alignment: 'center',
                       },
                     ],
                   ],

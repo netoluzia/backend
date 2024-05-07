@@ -17,15 +17,15 @@ export class UpdateClientController implements IUpdateClientController {
         statusCode: 200,
         body: {
           data: client,
-          message: 'Cliente adicionado com sucesso',
+          message: 'Cliente modificado com sucesso',
           status: true,
         },
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
         statusCode: 500,
         body: {
-          message: 'Something went wrong',
+          message: error.message,
           status: false,
         },
       }

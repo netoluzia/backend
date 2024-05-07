@@ -17,7 +17,7 @@ class MongoGetReportFinancialRepository {
             const pipeline = [
                 {
                     $match: {
-                        emission_date: {
+                        createdAt: {
                             $gte: new Date(params.range.$gte),
                         },
                         paid: params.paid,

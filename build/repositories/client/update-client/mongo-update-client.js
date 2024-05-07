@@ -27,10 +27,13 @@ class MongoUpdateClientRepository {
     updateClient(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
             const { insurance_company } = params, restParams = __rest(params, ["insurance_company"]);
+            console.log(restParams);
             const updatedClient = yield mongo_1.MongoClient.db
                 .collection('client')
                 .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: Object.assign(Object.assign({ updatedAt: new Date() }, restParams), { insurance_company: new mongodb_1.ObjectId(String(insurance_company)) }),
+                $set: Object.assign(Object.assign({ updatedAt: new Date() }, restParams), { insurance_company: insurance_company
+                        ? new mongodb_1.ObjectId(String(insurance_company))
+                        : undefined }),
             }, { returnDocument: 'after' });
             if (!updatedClient) {
                 throw new Error('Client was not updated');
