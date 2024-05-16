@@ -16,7 +16,6 @@ export class MongoCountDocuments implements ICountDocumentRepository {
         },
       ])
       .toArray()
-    console.log(doc)
     return doc[0]?.total || 0
   }
 }

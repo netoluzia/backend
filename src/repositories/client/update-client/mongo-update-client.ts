@@ -7,7 +7,6 @@ import { Client } from '../../../models/Client'
 export class MongoUpdateClientRepository implements IUpdateClientRepository {
   async updateClient(id: string, params: CreateCliente): Promise<Client> {
     const { insurance_company, ...restParams } = params
-    console.log(restParams)
     const updatedClient = await MongoClient.db
       .collection<Omit<Client, 'id'>>('client')
       .findOneAndUpdate(

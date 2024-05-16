@@ -29,6 +29,7 @@ export interface FiscalDoc {
   changes: number
   hash64: string
   hash4: string
+  total: number
   attendant: User
   createdAt?: Date
   updatedAt?: Date

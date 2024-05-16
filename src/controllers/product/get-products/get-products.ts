@@ -6,7 +6,6 @@ export class GetProductsController implements IGetProductsController {
   constructor(private readonly getProductsRepository: IGetProductsRepository) {}
   async handle(params: string): Promise<HttpResponse<Product[]>> {
     try {
-      console.log('Hey')
       const products = await this.getProductsRepository.getProducts(params)
       return {
         statusCode: 200,

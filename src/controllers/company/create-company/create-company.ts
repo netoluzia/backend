@@ -17,12 +17,10 @@ export class CreateCompanyControler implements ICreateCompanyController {
     id?: string
   ): Promise<HttpResponse<Company>> {
     try {
-      console.log('Hey')
       let company: Company
       if (id) {
         company = await this.update.updateCompany(payload, id)
       } else {
-        console.log('Entrou')
         company = await this.create.createCompany(payload)
       }
       return {

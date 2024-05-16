@@ -9,8 +9,10 @@ export class MongoGetDocumentsRepository implements IGetDocumentsRepository {
       .find({})
       .toArray()
 
-    return documents.map(({ _id, ...rest }) => ({
+    return documents.map(({ _id, total, ...rest }) => ({
       id: _id.toHexString(),
+      total,
+      tax: total * (1 / 100),
       ...rest,
     }))
   }

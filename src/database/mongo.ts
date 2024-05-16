@@ -12,7 +12,5 @@ export const MongoClient = {
 
     this.client = client
     this.db = db
-
-    console.log('Conectou a base')
   },
 }

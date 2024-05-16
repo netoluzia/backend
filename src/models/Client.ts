@@ -7,6 +7,7 @@ export interface Client {
   email: string
   phone_number: string
   protocol: number
+  source: string
   insurance_company: string
   insurance_number: string
   createdAt?: Date

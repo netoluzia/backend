@@ -93,7 +93,6 @@ export class CreateUserController implements ICreateUserController {
         },
       }
     } catch (error: any) {
-      console.log(error)
       return {
         statusCode: 500,
         body: {

@@ -11,7 +11,7 @@ export class MongoGetReportFinancialRepository
           createdAt: {
             $gte: new Date(params.range.$gte),
           },
-          paid: params.paid,
+          document: params.document,
         },
       },
       {
@@ -46,7 +46,12 @@ export class MongoGetReportFinancialRepository
     const response = {
       toPay: 0,
       paid: 0,
-      documents,
+      documents: documents.map(({ total, document, ...rest }) => ({
+        tax: document == 'FR' || document == 'RG' ? total * (1 / 100) : 0,
+        document,
+        total,
+        ...rest,
+      })),
     }
     documents.forEach((item) => {
       if (item.paid) {

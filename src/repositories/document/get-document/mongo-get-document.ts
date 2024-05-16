@@ -82,7 +82,7 @@ export class MongoGetDocumentRepository implements IGetDocumentRepository {
 
     if (!document) throw new Error('FiscalDoc not found')
 
-    const { _id, ...rest } = document[0]
-    return { id: _id.toHexString(), ...rest }
+    const { _id, total, ...rest } = document[0]
+    return { id: _id.toHexString(), tax: total * (1 / 100), total, ...rest }
   }
 }

@@ -19,8 +19,6 @@ export class CreateProductController implements ICreateProductController {
         }
       }
 
-      console.log(body)
-
       const product = await this.createProductRepository.createProduct({
         ...body,
       })
