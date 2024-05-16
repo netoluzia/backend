@@ -23,7 +23,6 @@ exports.MongoClient = {
             const db = client.db('db-users');
             this.client = client;
             this.db = db;
-            console.log('Conectou a base');
         });
     },
 };

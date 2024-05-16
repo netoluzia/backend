@@ -17,7 +17,6 @@ class GetProductsController {
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('Hey');
                 const products = yield this.getProductsRepository.getProducts(params);
                 return {
                     statusCode: 200,

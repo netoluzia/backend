@@ -28,7 +28,6 @@ class MongoCountDocuments {
                 },
             ])
                 .toArray();
-            console.log(doc);
             return ((_a = doc[0]) === null || _a === void 0 ? void 0 : _a.total) || 0;
         });
     }

@@ -101,8 +101,8 @@ class MongoGetDocumentRepository {
             // .findOne({ _id: new ObjectId(id) })
             if (!document)
                 throw new Error('FiscalDoc not found');
-            const _a = document[0], { _id } = _a, rest = __rest(_a, ["_id"]);
-            return Object.assign({ id: _id.toHexString() }, rest);
+            const _a = document[0], { _id, total } = _a, rest = __rest(_a, ["_id", "total"]);
+            return Object.assign({ id: _id.toHexString(), tax: total * (1 / 100), total }, rest);
         });
     }
 }

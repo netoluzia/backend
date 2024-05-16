@@ -27,7 +27,6 @@ class CreateProductController {
                         },
                     };
                 }
-                console.log(body);
                 const product = yield this.createProductRepository.createProduct(Object.assign({}, body));
                 return {
                     statusCode: 200,

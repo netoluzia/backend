@@ -56,6 +56,7 @@ class MongoGetClientsRepository {
                         phone_number: 1,
                         nif: 1,
                         protocol: 1,
+                        source: 1,
                         insurance_number: 1,
                         createdAt: 1,
                         insurance_company: '$insurance_data',

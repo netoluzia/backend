@@ -18,13 +18,11 @@ class CreateCompanyControler {
     handle(payload, id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('Hey');
                 let company;
                 if (id) {
                     company = yield this.update.updateCompany(payload, id);
                 }
                 else {
-                    console.log('Entrou');
                     company = yield this.create.createCompany(payload);
                 }
                 return {

@@ -30,8 +30,8 @@ class MongoGetDocumentsRepository {
                 .find({})
                 .toArray();
             return documents.map((_a) => {
-                var { _id } = _a, rest = __rest(_a, ["_id"]);
-                return (Object.assign({ id: _id.toHexString() }, rest));
+                var { _id, total } = _a, rest = __rest(_a, ["_id", "total"]);
+                return (Object.assign({ id: _id.toHexString(), total, tax: total * (1 / 100) }, rest));
             });
         });
     }

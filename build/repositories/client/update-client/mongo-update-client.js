@@ -27,7 +27,6 @@ class MongoUpdateClientRepository {
     updateClient(id, params) {
         return __awaiter(this, void 0, void 0, function* () {
             const { insurance_company } = params, restParams = __rest(params, ["insurance_company"]);
-            console.log(restParams);
             const updatedClient = yield mongo_1.MongoClient.db
                 .collection('client')
                 .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
