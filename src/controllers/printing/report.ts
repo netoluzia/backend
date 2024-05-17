@@ -40,6 +40,7 @@ export class ReportController {
       documentData.items.forEach((item: any) => {
         const element = [
           { style: 'default', text: item.item, alignment: 'left' },
+          { style: 'default', text: item.description, alignment: 'left' },
           { style: 'default', text: item.quantity, alignment: 'center' },
           {
             style: 'default',
@@ -54,6 +55,7 @@ export class ReportController {
       })
       itemsTable.push([
         { style: 'tableHeader', text: 'TOTAL', alignment: 'left' },
+        { style: 'tableHeader', text: '' },
         { style: 'tableHeader', text: '' },
         {
           style: 'tableHeader',
@@ -73,6 +75,7 @@ export class ReportController {
             alignment: 'left',
           },
           { style: 'tableHeader', text: '' },
+          { style: 'tableHeader', text: '' },
           {
             style: 'tableHeader',
             text: new Intl.NumberFormat('de-DE', {
@@ -84,6 +87,7 @@ export class ReportController {
         ])
         itemsTable.push([
           { style: 'tableHeader', text: 'TROCO', alignment: 'left' },
+          { style: 'tableHeader', text: '' },
           { style: 'tableHeader', text: '' },
           {
             style: 'tableHeader',
@@ -100,6 +104,7 @@ export class ReportController {
             text: 'FORMA DE PAGAMENTO',
             alignment: 'left',
           },
+          { style: 'tableHeader', text: '' },
           { style: 'tableHeader', text: '' },
           {
             style: 'tableHeader',
@@ -371,12 +376,17 @@ export class ReportController {
           {
             marginTop: 25,
             table: {
-              widths: ['50%', '15%', '35%'],
+              widths: ['30%', '40%', '15%', '15%'],
               headerRows: 1,
               body: [
                 [
                   {
-                    text: 'Serviço',
+                    text: 'Serviço/Produto',
+                    style: 'tableHeader',
+                    alignment: 'left',
+                  },
+                  {
+                    text: 'Descrição',
                     style: 'tableHeader',
                     alignment: 'left',
                   },
