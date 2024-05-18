@@ -30,7 +30,9 @@ class MongoUpdateClientRepository {
             const updatedClient = yield mongo_1.MongoClient.db
                 .collection('client')
                 .findOneAndUpdate({ _id: new mongodb_1.ObjectId(id) }, {
-                $set: Object.assign(Object.assign({ updatedAt: new Date() }, restParams), { insurance_company: insurance_company
+                $set: Object.assign(Object.assign({ updatedAt: new Date() }, restParams), { protocol: params.protocol
+                        ? new mongodb_1.ObjectId(String(params.protocol))
+                        : undefined, insurance_company: insurance_company
                         ? new mongodb_1.ObjectId(String(insurance_company))
                         : undefined }),
             }, { returnDocument: 'after' });

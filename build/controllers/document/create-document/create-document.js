@@ -30,7 +30,7 @@ class CreateDocumentController {
     }
     calculateTotal(items) {
         return items.reduce((accumulator, item) => {
-            return accumulator + item.quantity * item.unit_price;
+            return accumulator + item.quantity * item.total;
         }, 0);
     }
     generateReference(document) {
@@ -52,7 +52,7 @@ class CreateDocumentController {
                 let { items, client, payment, document, amount_received, paid, source, attendant, } = params;
                 const auxItems = items.map((_a) => {
                     var { total, quantity, unit_price } = _a, rest = __rest(_a, ["total", "quantity", "unit_price"]);
-                    return (Object.assign({ total: quantity * unit_price, quantity,
+                    return (Object.assign({ total: quantity * total, quantity,
                         unit_price }, rest));
                 });
                 paid = false;

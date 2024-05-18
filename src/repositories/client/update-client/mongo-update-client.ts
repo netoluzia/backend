@@ -15,6 +15,9 @@ export class MongoUpdateClientRepository implements IUpdateClientRepository {
           $set: {
             updatedAt: new Date(),
             ...restParams,
+            protocol: params.protocol
+              ? (new ObjectId(String(params.protocol)) as unknown as string)
+              : undefined,
             insurance_company: insurance_company
               ? (new ObjectId(String(insurance_company)) as unknown as string)
               : undefined,

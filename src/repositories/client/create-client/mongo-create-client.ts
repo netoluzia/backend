@@ -14,6 +14,7 @@ export class MongoCreateClientRepository implements ICreateClientRepository {
       insurance_company: insurance_company
         ? new ObjectId(insurance_company)
         : null,
+      protocol: params.protocol ? new ObjectId(params.protocol) : null,
       ...restData,
     })
     const client = await MongoClient.db

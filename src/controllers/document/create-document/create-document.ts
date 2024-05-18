@@ -15,7 +15,7 @@ export class CreateDocumentController implements ICreateDocumentController {
   ) {}
   calculateTotal(items: Items[]): number {
     return items.reduce((accumulator: number, item: Items) => {
-      return accumulator + item.quantity * item.unit_price
+      return accumulator + item.quantity * item.total
     }, 0)
   }
   async generateReference(document: string): Promise<string> {
@@ -45,7 +45,7 @@ export class CreateDocumentController implements ICreateDocumentController {
       } = params
       const auxItems = items.map(
         ({ total, quantity, unit_price, ...rest }) => ({
-          total: quantity * unit_price,
+          total: quantity * total,
           quantity,
           unit_price,
           ...rest,

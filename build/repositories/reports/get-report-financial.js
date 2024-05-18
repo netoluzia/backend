@@ -31,7 +31,7 @@ class MongoGetReportFinancialRepository {
                         createdAt: {
                             $gte: new Date(params.range.$gte),
                         },
-                        document: params.document,
+                        document: params.document === 'FR' ? { $in: ['FR', 'RC'] } : params.document,
                     },
                 },
                 {

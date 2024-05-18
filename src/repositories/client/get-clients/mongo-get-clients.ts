@@ -28,6 +28,20 @@ export class MongoGetClientsRepository implements IGetClientsRepository {
         },
       },
       {
+        $lookup: {
+          from: 'protocol',
+          localField: 'protocol',
+          foreignField: '_id',
+          as: 'protocol_data',
+        },
+      },
+      {
+        $unwind: {
+          path: '$protocol_data',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           _id: 1,
           name: 1,
@@ -39,6 +53,7 @@ export class MongoGetClientsRepository implements IGetClientsRepository {
           insurance_number: 1,
           createdAt: 1,
           insurance_company: '$insurance_data',
+          protocol_data: '$protocol_data',
         },
       },
     ]

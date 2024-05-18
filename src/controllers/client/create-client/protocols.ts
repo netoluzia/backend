@@ -6,7 +6,7 @@ export interface CreateCliente {
   name: string
   nif?: string
   email?: string
-  protocol?: number
+  protocol?: string
   source?: string
   phone_number?: string
   insurance_company?: ObjectId

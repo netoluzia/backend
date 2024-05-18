@@ -14,6 +14,7 @@ import attending from './attending'
 import company from './company'
 import reports from './reports'
 import dashboard from './dashboard'
+import protocol from './protocol'
 
 const router = express.Router()
 const middleware = new Middlewares()
@@ -27,6 +28,7 @@ router.use('/documents', middleware.verifyToken, document)
 router.use('/clients', middleware.verifyToken, client)
 router.use('/payments', middleware.verifyToken, payment)
 router.use('/insurances', middleware.verifyToken, insurance)
+router.use('/protocols', middleware.verifyToken, protocol)
 router.use('/company', middleware.verifyToken, company)
 router.use('/attendings', middleware.verifyToken, attending)
 router.use('/dashboard', middleware.verifyToken, dashboard)
