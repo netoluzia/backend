@@ -51,9 +51,9 @@ class CreateDocumentController {
             try {
                 let { items, client, payment, document, amount_received, paid, source, attendant, } = params;
                 const auxItems = items.map((_a) => {
-                    var { total, quantity, unit_price } = _a, rest = __rest(_a, ["total", "quantity", "unit_price"]);
+                    var { total, quantity, unit_price, id } = _a, rest = __rest(_a, ["total", "quantity", "unit_price", "id"]);
                     return (Object.assign({ total: quantity * total, quantity,
-                        unit_price }, rest));
+                        unit_price, id: new mongodb_1.ObjectId(id) }, rest));
                 });
                 paid = false;
                 const total = this.calculateTotal(items);
@@ -79,7 +79,7 @@ class CreateDocumentController {
                 }
                 const { hash4, hash64 } = yield this.signature();
                 const doc = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total,
-                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: params.emission_date || new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
+                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: new Date(String(params.emission_date)) || new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
                     hash64,
                     paid, attendant: new mongodb_1.ObjectId(attendant) }));
                 return {

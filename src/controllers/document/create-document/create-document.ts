@@ -44,10 +44,11 @@ export class CreateDocumentController implements ICreateDocumentController {
         attendant,
       } = params
       const auxItems = items.map(
-        ({ total, quantity, unit_price, ...rest }) => ({
+        ({ total, quantity, unit_price, id, ...rest }) => ({
           total: quantity * total,
           quantity,
           unit_price,
+          id: new ObjectId(id),
           ...rest,
         })
       )
@@ -81,7 +82,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         reference,
         serie: new Date().getFullYear(),
         createdAt: new Date(),
-        emission_date: params.emission_date || new Date(),
+        emission_date: new Date(String(params.emission_date)) || new Date(),
         client: new ObjectId(client),
         payment: payment ? new ObjectId(payment) : null,
         items: auxItems,

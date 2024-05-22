@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb'
 import { Client } from './Client'
 import { Payment } from './Payment'
 import { User } from './User'
@@ -8,7 +9,7 @@ export interface DocumentType {
 }
 
 export interface Items {
-  id: string
+  id: string | ObjectId
   item: string
   description: string
   unit_price: number
