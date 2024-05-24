@@ -7,6 +7,25 @@ export class MongoGetAccountClosuresRepository
   implements IGetAccountClosuresRepository
 {
   async getAccountClosures(range: any): Promise<AccountClosure[] | any> {
+    // const docs = await MongoClient.db.collection('document').find({}).toArray()
+
+    // docs.forEach(async (doc) => {
+    //   MongoClient.db
+    //     .collection('document')
+    //     .updateOne(
+    //       { _id: doc._id },
+    //       {
+    //         $set: {
+    //           emission_date: new Date(doc.emission_date),
+    //           items: doc.item.map(({ id, ...rest }: any) => ({
+    //             id: new ObjectId(String(id)),
+    //             ...rest,
+    //           })),
+    //         },
+    //       }
+    //     )
+    // })
+
     const items = await MongoClient.db
       .collection('document')
       .aggregate([
