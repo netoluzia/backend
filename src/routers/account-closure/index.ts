@@ -2,6 +2,9 @@ import express from 'express'
 import type { Response, Request } from 'express'
 import { MongoGetAccountClosuresRepository } from '../../repositories/account-closure/get-account-closures/mongo-get-account-closures'
 import { GetAccountClosuresController } from '../../controllers/account-closure/get-account-closures/get-account-closures'
+import { MongoCreateAccountClosure } from '../../repositories/account-closure/create-account-closure/mongo-create-account-closure'
+import { CreateAccountClosureController } from '../../controllers/account-closure/create-account-closure/create-acount-closure'
+
 const router = express.Router()
 
 router.post('/', async (req: Request, res: Response) => {
@@ -10,20 +13,19 @@ router.post('/', async (req: Request, res: Response) => {
     getClientsRepository
   )
 
-  console.log(req.body)
   const { body, statusCode } = await getClientsController.handle(req.body)
   return res.status(statusCode).send(body)
 })
 
-// router.post('/', async (req: Request, res: Response) => {
-//   const createClientRepository = new MongoCreateClientRepository()
-//   const createClientController = new CreateClientController(
-//     createClientRepository
-//   )
-//   const { body, statusCode } = await createClientController.handle(req.body)
+router.post('/create-account', async (req: Request, res: Response) => {
+  const createAccountRepository = new MongoCreateAccountClosure()
+  const createAccountController = new CreateAccountClosureController(
+    createAccountRepository
+  )
+  const { body, statusCode } = await createAccountController.handle(req.body)
 
-//   return res.status(statusCode).send(body)
-// })
+  return res.status(statusCode).send(body)
+})
 
 // router.patch('/:id', async (req: Request, res: Response) => {
 //   const updateClientRepository = new MongoUpdateClientRepository()
