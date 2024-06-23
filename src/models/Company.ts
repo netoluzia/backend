@@ -6,4 +6,7 @@ export interface Company {
   phone_number: string
   others_phone_numbers: string[]
   address: string
+  bank: string
+  iban: string
+  account_number: string
 }

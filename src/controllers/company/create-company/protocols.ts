@@ -8,6 +8,9 @@ export interface CreateCompany {
   phone_number?: string
   others_phone_numbers?: string[]
   address?: string
+  account_number: string
+  bank: string
+  iban: string
 }
 
 export interface ICreateCompanyRepository {

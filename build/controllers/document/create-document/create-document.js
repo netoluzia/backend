@@ -67,14 +67,16 @@ class CreateDocumentController {
                         _d = items_1_1.value;
                         _a = false;
                         const item = _d;
-                        const service = yield repository.getMaterialFromService(String(item.id));
+                        console.log(item);
+                        const service = yield repository.getMaterialFromService(item.id.toHexString());
+                        if (!service)
+                            return true;
                         try {
                             for (var _l = true, _m = (e_2 = void 0, __asyncValues(service.materials)), _o; _o = yield _m.next(), _e = _o.done, !_e; _l = true) {
                                 _g = _o.value;
                                 _l = false;
                                 const iterator = _g;
                                 const rest = iterator.materialDetails.quantity - iterator.quantity;
-                                console.log(rest);
                                 if (rest < 0)
                                     return false;
                                 identifiers.push({
@@ -123,7 +125,6 @@ class CreateDocumentController {
                 return true;
             }
             catch (error) {
-                console.log(error.message);
                 return false;
             }
         });
@@ -145,6 +146,7 @@ class CreateDocumentController {
                     change = amount_received - total;
                     paid = true;
                     const response = yield this.decrementStock(auxItems);
+                    console.log(response);
                     if (!response)
                         throw new Error('Materiais em falta no stock');
                 }
@@ -164,7 +166,7 @@ class CreateDocumentController {
                 }
                 const { hash4, hash64 } = yield this.signature();
                 const doc = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total,
-                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: new Date(String(params.emission_date)) || new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
+                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
                     hash64,
                     paid, attendant: new mongodb_1.ObjectId(attendant) }));
                 return {

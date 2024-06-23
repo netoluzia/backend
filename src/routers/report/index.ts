@@ -12,11 +12,11 @@ router.get('/:id', async (req: Request, res: Response) => {
   return res.end(result)
 })
 
-router.get('/termal/printing', async (req: Request, res: Response) => {
-  console.log('hey')
+router.get('/termal/printing/:id', async (req: Request, res: Response) => {
+  console.log('Hey')
   const reportController = new ReportController()
   const { id } = req.params
-  const result = await reportController.defineDocument()
+  const result = await reportController.defineDocument(id)
   return res.end(result)
 })
 

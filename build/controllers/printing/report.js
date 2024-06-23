@@ -170,7 +170,7 @@ class ReportController {
                                                 alignment: 'right',
                                             },
                                             {
-                                                text: 'Série: 2024',
+                                                text: `Série: ${documentData.serie}`,
                                                 alignment: 'right',
                                             },
                                         ],
@@ -474,9 +474,100 @@ class ReportController {
             }));
         });
     }
-    defineDocument() {
+    defineDocument(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                const repository = new mongo_get_document_1.MongoGetDocumentRepository();
+                const data = yield repository.getDocument(id);
+                const documentData = JSON.parse(JSON.stringify(data));
+                const client = documentData.client;
+                const companyRepository = new mongo_get_company_1.MongoGetCompany();
+                const company = yield companyRepository.getCompany();
+                const userGet = new mongo_get_user_1.MongoGetUserRepository();
+                const paymentGet = new mongo_get_payment_1.MongoGetPayment();
+                const payment = yield paymentGet.getPayment(documentData.payment);
+                const user = yield userGet.getUser({
+                    id: data.attendant,
+                });
+                let itemsTable = [];
+                documentData.items.forEach((item) => {
+                    const element = [
+                        { style: 'default', text: item.item, alignment: 'left' },
+                        { style: 'default', text: item.description, alignment: 'left' },
+                        { style: 'default', text: item.quantity, alignment: 'center' },
+                        {
+                            style: 'default',
+                            text: new Intl.NumberFormat('de-DE', {
+                                style: 'currency',
+                                currency: 'AOA',
+                            }).format(item.total),
+                            alignment: 'right',
+                        },
+                    ];
+                    itemsTable.push(element);
+                });
+                itemsTable.push([
+                    { text: 'TOTAL', colSpan: 3, alignment: 'right' },
+                    {},
+                    {},
+                    {
+                        style: 'tableHeader',
+                        text: new Intl.NumberFormat('de-DE', {
+                            style: 'currency',
+                            currency: 'AOA',
+                        }).format(documentData.total),
+                        alignment: 'right',
+                    },
+                ]);
+                if (documentData.document == 'FR' || 'RC') {
+                    itemsTable.push([
+                        {
+                            text: 'MONTANTE ENTREGUE',
+                            alignment: 'right',
+                            colSpan: 3,
+                        },
+                        {},
+                        {},
+                        {
+                            text: new Intl.NumberFormat('de-DE', {
+                                style: 'currency',
+                                currency: 'AOA',
+                            }).format(documentData.amount_received),
+                            alignment: 'right',
+                        },
+                    ]);
+                    itemsTable.push([
+                        {
+                            style: 'tableHeader',
+                            text: 'TROCO',
+                            alignment: 'right',
+                            colSpan: 3,
+                        },
+                        {},
+                        {},
+                        {
+                            text: new Intl.NumberFormat('de-DE', {
+                                style: 'currency',
+                                currency: 'AOA',
+                            }).format(documentData.change),
+                            alignment: 'right',
+                        },
+                    ]);
+                    itemsTable.push([
+                        {
+                            style: 'tableHeader',
+                            text: 'FORMA DE PAGAMENTO',
+                            alignment: 'right',
+                            colSpan: 3,
+                        },
+                        {},
+                        {},
+                        {
+                            text: payment.title,
+                            alignment: 'right',
+                        },
+                    ]);
+                }
                 const fonts = {
                     Helvetica: {
                         normal: 'Helvetica',
@@ -493,23 +584,27 @@ class ReportController {
                     pageMargins: [10, 10, 10, 10],
                     content: [
                         {
-                            text: 'Clinica Alfavida',
+                            text: `${company.name}`,
                             alignment: 'center',
                             style: { bold: true, fontSize: 14 },
                         },
-                        { text: 'Endereço: Zango 1', alignment: 'center', style: 'header' },
                         {
-                            text: 'Telefone: 946-803-775',
+                            text: `Endereço: ${company.address}`,
                             alignment: 'center',
                             style: 'header',
                         },
                         {
-                            text: 'Email: clinicaalfavida2020@gmail.com',
+                            text: `Telefone: ${company.phone_number}`,
                             alignment: 'center',
                             style: 'header',
                         },
                         {
-                            text: 'Nº de contibuinte: 5000139777',
+                            text: `Email: ${company.email}`,
+                            alignment: 'center',
+                            style: 'header',
+                        },
+                        {
+                            text: `Nº de contibuinte: ${company.nif}`,
                             alignment: 'center',
                             style: ['header'],
                         },
@@ -522,7 +617,13 @@ class ReportController {
                         {
                             text: 'Ref.:' +
                                 ' ' +
-                                'FR19052024/1\n Data de emissão:  01/04/2024, 08:15\n Serie: 2024 \n Cliente: Orlando Garcia \n Contacto: 924254775',
+                                `${documentData === null || documentData === void 0 ? void 0 : documentData.reference}\n Data de emissão:  ${new Intl.DateTimeFormat('en-GB', {
+                                    day: 'numeric',
+                                    month: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: 'numeric',
+                                }).format(new Date(documentData === null || documentData === void 0 ? void 0 : documentData.emission_date))}\n Série: ${documentData.serie} \n Cliente: ${client.name} \n Contacto: ${client.phone_number}\n Cartão: ${(client === null || client === void 0 ? void 0 : client.insurance_number) || ' '}`,
                             alignment: 'left',
                             style: {
                                 fontSize: 8,
@@ -538,61 +639,33 @@ class ReportController {
                         {
                             table: {
                                 headerRows: 1,
-                                widths: ['*', '*', '*', '*'],
+                                widths: ['30%', '20%', '10%', '40%'],
                                 body: [
                                     [
                                         { text: 'Serviço', style: 'tableHeader' },
                                         { text: 'Desc', style: 'tableHeader' },
                                         { text: 'Qtd', style: 'tableHeader' },
-                                        { text: 'Preço', style: 'tableHeader' },
+                                        { text: 'Preço', alignment: 'right', style: 'tableHeader' },
                                     ],
-                                    ['Raio X', 'Torax AP', '1', '10.000,00'],
-                                    [
-                                        { text: 'TOTAL', colSpan: 3, alignment: 'right' },
-                                        {},
-                                        {},
-                                        '10.000,00',
-                                    ],
-                                    [
-                                        { text: 'MONTANTE ENTREGUE', colSpan: 3, alignment: 'right' },
-                                        {},
-                                        {},
-                                        '10.000,00',
-                                    ],
-                                    [
-                                        { text: 'TROCO', colSpan: 3, alignment: 'right' },
-                                        {},
-                                        {},
-                                        '0,00',
-                                    ],
-                                    [
-                                        {
-                                            text: 'FORMA DE PAGAMENTO',
-                                            colSpan: 3,
-                                            alignment: 'right',
-                                        },
-                                        {},
-                                        {},
-                                        'Dinheiro',
-                                    ],
+                                    ...itemsTable,
                                 ],
                             },
                             fontSize: 8,
                             marginTop: 5,
                         },
                         {
-                            text: 'Coordenadas bancárias (BFA) \n Nº de conta: XXX-XXXX-XXX \n IBAN: AO06 XXXX XXXX XXXX XXXX X \n ',
+                            text: `Coordenadas bancárias (${company.bank}) \n Nº de conta: ${company.account_number} \n IBAN: AO06 ${company.iban} \n `,
                             alignment: 'left',
                             style: {
                                 fontSize: 8,
                             },
-                            margin: [0, 3, 0, 0],
+                            margin: [0, 10, 0, 0],
                         },
                         {
-                            text: 'Emitido por: Usuario Master \n70/0-Processado por programa validado nº 355/AGT/2024 - Alfavida App',
+                            text: `Emitido por: ${user && user.name} \n70/0-Processado por programa validado nº 355/AGT/2024 - Alfavida App`,
                             alignment: 'center',
                             style: {
-                                fontSize: 8,
+                                fontSize: 6,
                             },
                             margin: [0, 3, 0, 0],
                         },

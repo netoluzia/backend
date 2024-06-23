@@ -48,10 +48,13 @@ export class CreateDocumentController implements ICreateDocumentController {
       const identifiers: { material: string; qtd: number }[] = []
       const repository = new MongoGetMaterialFormServiceRepository()
       for await (const item of items) {
-        const service = await repository.getMaterialFromService(String(item.id))
+        console.log(item)
+        const service = await repository.getMaterialFromService(
+          item.id.toHexString()
+        )
+        if (!service) return true
         for await (const iterator of service.materials) {
           const rest = iterator.materialDetails.quantity - iterator.quantity
-          console.log(rest)
           if (rest < 0) return false
           identifiers.push({
             material: iterator.materialId,
@@ -70,7 +73,6 @@ export class CreateDocumentController implements ICreateDocumentController {
       }
       return true
     } catch (error: any) {
-      console.log(error.message)
       return false
     }
   }
@@ -104,6 +106,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         change = amount_received - total
         paid = true
         const response = await this.decrementStock(auxItems)
+        console.log(response)
         if (!response) throw new Error('Materiais em falta no stock')
       }
       if (document == 'RC') {
@@ -127,7 +130,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         reference,
         serie: new Date().getFullYear(),
         createdAt: new Date(),
-        emission_date: new Date(String(params.emission_date)) || new Date(),
+        emission_date: new Date(),
         client: new ObjectId(client),
         payment: payment ? new ObjectId(payment) : null,
         items: auxItems,
