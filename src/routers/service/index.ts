@@ -12,6 +12,10 @@ import { GetServiceController } from '../../controllers/service/get-service/get-
 import { MongoDeleteClientRepository } from '../../repositories/client/delete-client/mongo-delete-client'
 import { MongoDeleteServiceRepository } from '../../repositories/service/delete-service/mongo-delete-service'
 import { DeleteServiceController } from '../../controllers/service/delete-service/delete-service'
+import { MongoAttachMaterialRepository } from '../../repositories/service/attach-material/mongo-attach-material'
+import { AttachMaterialController } from '../../controllers/service/attach-material/attach-material'
+import { MongoGetMaterialFormServiceRepository } from '../../repositories/service/get-material-from-service/mongo-get-material-form-service'
+import { GetMaterialFromService } from '../../controllers/service/get-material-from-service/get-material-from-service'
 
 const router = express.Router()
 
@@ -38,6 +42,18 @@ router.post('/', async (req: Request, res: Response) => {
   return res.status(statusCode).send(body)
 })
 
+router.patch('/attach-material/:id', async (req: Request, res: Response) => {
+  const createServiceRepository = new MongoAttachMaterialRepository()
+  const createServiceController = new AttachMaterialController(
+    createServiceRepository
+  )
+  const { body, statusCode } = await createServiceController.handle({
+    body: req.body.material,
+    params: req.params,
+  })
+  return res.status(statusCode).send(body)
+})
+
 router.patch('/:id', async (req: Request, res: Response) => {
   const updateServiceRepository = new MongoUpdateServiceRepository()
   const updateServiceController = new UpdateServiceController(
@@ -59,6 +75,15 @@ router.get('/:id', async (req: Request, res: Response) => {
   const { body, statusCode } = await controller.handle(req.params.id)
   return res.status(statusCode).send(body)
 })
+
+router.get('/materials/:id', async (req: Request, res: Response) => {
+  const repository = new MongoGetMaterialFormServiceRepository()
+  const controller = new GetMaterialFromService(repository)
+
+  const { body, statusCode } = await controller.handle(req.params.id)
+  return res.status(statusCode).send(body)
+})
+
 router.delete('/:id', async (req: Request, res: Response) => {
   const repository = new MongoDeleteServiceRepository()
   const controller = new DeleteServiceController(repository)

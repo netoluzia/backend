@@ -8,6 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -23,6 +30,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateDocumentController = void 0;
 const mongodb_1 = require("mongodb");
 const mongo_1 = require("../../../database/mongo");
+const mongo_get_material_form_service_1 = require("../../../repositories/service/get-material-from-service/mongo-get-material-form-service");
+const mongo_add_stock_1 = require("../../../repositories/materials/add-stock/mongo-add-stock");
 class CreateDocumentController {
     constructor(createDocumentRepository, countDocumentType) {
         this.createDocumentRepository = createDocumentRepository;
@@ -46,6 +55,79 @@ class CreateDocumentController {
             return { hash64, hash4 };
         });
     }
+    decrementStock(items) {
+        var _a, items_1, items_1_1;
+        var _b, e_1, _c, _d, _e, e_2, _f, _g, _h, e_3, _j, _k;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const identifiers = [];
+                const repository = new mongo_get_material_form_service_1.MongoGetMaterialFormServiceRepository();
+                try {
+                    for (_a = true, items_1 = __asyncValues(items); items_1_1 = yield items_1.next(), _b = items_1_1.done, !_b; _a = true) {
+                        _d = items_1_1.value;
+                        _a = false;
+                        const item = _d;
+                        const service = yield repository.getMaterialFromService(String(item.id));
+                        try {
+                            for (var _l = true, _m = (e_2 = void 0, __asyncValues(service.materials)), _o; _o = yield _m.next(), _e = _o.done, !_e; _l = true) {
+                                _g = _o.value;
+                                _l = false;
+                                const iterator = _g;
+                                const rest = iterator.materialDetails.quantity - iterator.quantity;
+                                console.log(rest);
+                                if (rest < 0)
+                                    return false;
+                                identifiers.push({
+                                    material: iterator.materialId,
+                                    qtd: iterator.quantity,
+                                });
+                            }
+                        }
+                        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                        finally {
+                            try {
+                                if (!_l && !_e && (_f = _m.return)) yield _f.call(_m);
+                            }
+                            finally { if (e_2) throw e_2.error; }
+                        }
+                    }
+                }
+                catch (e_1_1) { e_1 = { error: e_1_1 }; }
+                finally {
+                    try {
+                        if (!_a && !_b && (_c = items_1.return)) yield _c.call(items_1);
+                    }
+                    finally { if (e_1) throw e_1.error; }
+                }
+                const anotherRepository = new mongo_add_stock_1.MongoAddStockRepository();
+                try {
+                    for (var _p = true, identifiers_1 = __asyncValues(identifiers), identifiers_1_1; identifiers_1_1 = yield identifiers_1.next(), _h = identifiers_1_1.done, !_h; _p = true) {
+                        _k = identifiers_1_1.value;
+                        _p = false;
+                        const iterator = _k;
+                        // await anotherRepository.addStock(iterator.material, -1 * iterator.qtd)
+                        yield anotherRepository.addStock({
+                            material: iterator.material,
+                            quantity: iterator.qtd,
+                            type: 'SAIDA',
+                        });
+                    }
+                }
+                catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                finally {
+                    try {
+                        if (!_p && !_h && (_j = identifiers_1.return)) yield _j.call(identifiers_1);
+                    }
+                    finally { if (e_3) throw e_3.error; }
+                }
+                return true;
+            }
+            catch (error) {
+                console.log(error.message);
+                return false;
+            }
+        });
+    }
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -62,6 +144,9 @@ class CreateDocumentController {
                 if (document == 'RC' || document == 'FR') {
                     change = amount_received - total;
                     paid = true;
+                    const response = yield this.decrementStock(auxItems);
+                    if (!response)
+                        throw new Error('Materiais em falta no stock');
                 }
                 if (document == 'RC') {
                     yield mongo_1.MongoClient.db

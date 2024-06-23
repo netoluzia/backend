@@ -8,6 +8,8 @@ import {
   ParamsCreateDocument,
 } from './protocols'
 import { MongoClient } from '../../../database/mongo'
+import { MongoGetMaterialFormServiceRepository } from '../../../repositories/service/get-material-from-service/mongo-get-material-form-service'
+import { MongoAddStockRepository } from '../../../repositories/materials/add-stock/mongo-add-stock'
 export class CreateDocumentController implements ICreateDocumentController {
   constructor(
     private readonly createDocumentRepository: ICreateDocumentRepository,
@@ -30,6 +32,47 @@ export class CreateDocumentController implements ICreateDocumentController {
     const hash64 = '64'
     const hash4 = '4'
     return { hash64, hash4 }
+  }
+
+  async decrementStock(
+    items: {
+      item: string
+      description: string
+      total: number
+      quantity: number
+      unit_price: number
+      id: ObjectId
+    }[]
+  ): Promise<boolean> {
+    try {
+      const identifiers: { material: string; qtd: number }[] = []
+      const repository = new MongoGetMaterialFormServiceRepository()
+      for await (const item of items) {
+        const service = await repository.getMaterialFromService(String(item.id))
+        for await (const iterator of service.materials) {
+          const rest = iterator.materialDetails.quantity - iterator.quantity
+          console.log(rest)
+          if (rest < 0) return false
+          identifiers.push({
+            material: iterator.materialId,
+            qtd: iterator.quantity,
+          })
+        }
+      }
+      const anotherRepository = new MongoAddStockRepository()
+      for await (const iterator of identifiers) {
+        // await anotherRepository.addStock(iterator.material, -1 * iterator.qtd)
+        await anotherRepository.addStock({
+          material: iterator.material,
+          quantity: iterator.qtd,
+          type: 'SAIDA',
+        })
+      }
+      return true
+    } catch (error: any) {
+      console.log(error.message)
+      return false
+    }
   }
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
@@ -60,6 +103,8 @@ export class CreateDocumentController implements ICreateDocumentController {
       if (document == 'RC' || document == 'FR') {
         change = amount_received - total
         paid = true
+        const response = await this.decrementStock(auxItems)
+        if (!response) throw new Error('Materiais em falta no stock')
       }
       if (document == 'RC') {
         await MongoClient.db

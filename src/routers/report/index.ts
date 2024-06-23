@@ -11,6 +11,15 @@ router.get('/:id', async (req: Request, res: Response) => {
   const result = await reportController.handle(id)
   return res.end(result)
 })
+
+router.get('/termal/printing', async (req: Request, res: Response) => {
+  console.log('hey')
+  const reportController = new ReportController()
+  const { id } = req.params
+  const result = await reportController.defineDocument()
+  return res.end(result)
+})
+
 router.get('/map/services', async (req: Request, res: Response) => {
   const reportController = new MapReportController()
   const { id } = req.params

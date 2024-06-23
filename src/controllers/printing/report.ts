@@ -469,4 +469,154 @@ export class ReportController {
       })
     })
   }
+
+  async defineDocument(): Promise<Buffer> {
+    return new Promise(async (resolve, reject) => {
+      const fonts = {
+        Helvetica: {
+          normal: 'Helvetica',
+          bold: 'Helvetica-Bold',
+          italics: 'Helvetica-Oblique',
+          bolditalics: 'Helvetica-BoldOblique',
+        },
+      }
+      const docDefinition: TDocumentDefinitions = {
+        pageSize: {
+          width: 80 * 2.83465,
+          height: 'auto',
+        },
+        pageMargins: [10, 10, 10, 10],
+        content: [
+          {
+            text: 'Clinica Alfavida',
+            alignment: 'center',
+            style: { bold: true, fontSize: 14 },
+          },
+          { text: 'Endereço: Zango 1', alignment: 'center', style: 'header' },
+          {
+            text: 'Telefone: 946-803-775',
+            alignment: 'center',
+            style: 'header',
+          },
+          {
+            text: 'Email: clinicaalfavida2020@gmail.com',
+            alignment: 'center',
+            style: 'header',
+          },
+          {
+            text: 'Nº de contibuinte: 5000139777',
+            alignment: 'center',
+            style: ['header'],
+          },
+          {
+            canvas: [
+              { type: 'line', x1: 0, y1: 0, x2: 205, y2: 0, lineWidth: 1 },
+            ],
+            margin: [0, 5, 0, 5],
+          },
+          {
+            text:
+              'Ref.:' +
+              ' ' +
+              'FR19052024/1\n Data de emissão:  01/04/2024, 08:15\n Serie: 2024 \n Cliente: Orlando Garcia \n Contacto: 924254775',
+            alignment: 'left',
+            style: {
+              fontSize: 8,
+            },
+            margin: [0, 3, 0, 0],
+          },
+          {
+            canvas: [
+              { type: 'line', x1: 0, y1: 0, x2: 205, y2: 0, lineWidth: 1 },
+            ],
+            margin: [0, 5, 0, 5],
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: ['*', '*', '*', '*'],
+              body: [
+                [
+                  { text: 'Serviço', style: 'tableHeader' },
+                  { text: 'Desc', style: 'tableHeader' },
+                  { text: 'Qtd', style: 'tableHeader' },
+                  { text: 'Preço', style: 'tableHeader' },
+                ],
+                ['Raio X', 'Torax AP', '1', '10.000,00'],
+                [
+                  { text: 'TOTAL', colSpan: 3, alignment: 'right' },
+                  {},
+                  {},
+                  '10.000,00',
+                ],
+                [
+                  { text: 'MONTANTE ENTREGUE', colSpan: 3, alignment: 'right' },
+                  {},
+                  {},
+                  '10.000,00',
+                ],
+                [
+                  { text: 'TROCO', colSpan: 3, alignment: 'right' },
+                  {},
+                  {},
+                  '0,00',
+                ],
+                [
+                  {
+                    text: 'FORMA DE PAGAMENTO',
+                    colSpan: 3,
+                    alignment: 'right',
+                  },
+                  {},
+                  {},
+                  'Dinheiro',
+                ],
+              ],
+            },
+            fontSize: 8,
+            marginTop: 5,
+          },
+          {
+            text: 'Coordenadas bancárias (BFA) \n Nº de conta: XXX-XXXX-XXX \n IBAN: AO06 XXXX XXXX XXXX XXXX X \n ',
+            alignment: 'left',
+            style: {
+              fontSize: 8,
+            },
+            margin: [0, 3, 0, 0],
+          },
+          {
+            text: 'Emitido por: Usuario Master \n70/0-Processado por programa validado nº 355/AGT/2024 - Alfavida App',
+            alignment: 'center',
+            style: {
+              fontSize: 8,
+            },
+            margin: [0, 3, 0, 0],
+          },
+        ],
+        defaultStyle: {
+          font: 'Helvetica',
+        },
+        styles: {
+          header: {
+            fontSize: 10,
+            lineHeight: 1.2,
+          },
+        },
+      }
+      const printer = new pdfPrinter(fonts)
+      const pdfDoc = printer.createPdfKitDocument(docDefinition)
+      const chunks: any[] = []
+      pdfDoc.on('data', (chunk) => {
+        chunks.push(chunk)
+      })
+      pdfDoc.end()
+      pdfDoc.on('end', () => {
+        const result = Buffer.concat(chunks)
+        resolve(result)
+      })
+      pdfDoc.on('error', (error) => {
+        reject(error)
+      })
+    })
+  }
 }

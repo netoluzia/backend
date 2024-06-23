@@ -23,6 +23,13 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const result = yield reportController.handle(id);
     return res.end(result);
 }));
+router.get('/termal/printing', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('hey');
+    const reportController = new report_1.ReportController();
+    const { id } = req.params;
+    const result = yield reportController.defineDocument();
+    return res.end(result);
+}));
 router.get('/map/services', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reportController = new map_1.MapReportController();
     const { id } = req.params;

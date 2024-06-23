@@ -16,6 +16,7 @@ import reports from './reports'
 import dashboard from './dashboard'
 import protocol from './protocol'
 import account_closure from './account-closure'
+import material from './material'
 
 const router = express.Router()
 const middleware = new Middlewares()
@@ -33,6 +34,7 @@ router.use('/protocols', middleware.verifyToken, protocol)
 router.use('/company', middleware.verifyToken, company)
 router.use('/attendings', middleware.verifyToken, attending)
 router.use('/dashboard', middleware.verifyToken, dashboard)
+router.use('/materials', middleware.verifyToken, material)
 router.use('/account-closure', account_closure)
 router.use('/reports-financial', reports)
 
