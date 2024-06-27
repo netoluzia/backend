@@ -28,6 +28,7 @@ class MongoGetDocumentsRepository {
             const documents = yield mongo_1.MongoClient.db
                 .collection('document')
                 .find({})
+                .sort({ createdAt: -1 })
                 .toArray();
             return documents.map((_a) => {
                 var { _id, total } = _a, rest = __rest(_a, ["_id", "total"]);

@@ -13,7 +13,6 @@ export class MongoCreateStockMaterialRepository
 {
   private readonly repository = new MongoAddStockRepository()
   async createStockMaterial(params: CreateStockMaterial): Promise<Stock> {
-    console.log(params)
     const { insertedId } = await MongoClient.db
       .collection('material')
       .insertOne({

@@ -24,7 +24,6 @@ router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     return res.end(result);
 }));
 router.get('/termal/printing/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Hey');
     const reportController = new report_1.ReportController();
     const { id } = req.params;
     const result = yield reportController.defineDocument(id);

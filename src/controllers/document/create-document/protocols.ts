@@ -20,6 +20,7 @@ export interface ParamsCreateDocument {
   emission_date?: Date
   paid: boolean
   source: string | null
+  expiryDate: Date
 }
 
 export interface ICreateDocumentRepository {

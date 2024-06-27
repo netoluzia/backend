@@ -29,7 +29,6 @@ class MongoCreateStockMaterialRepository {
     }
     createStockMaterial(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(params);
             const { insertedId } = yield mongo_1.MongoClient.db
                 .collection('material')
                 .insertOne(Object.assign(Object.assign({ createdAt: new Date() }, params), { startQuantity: params.quantity }));

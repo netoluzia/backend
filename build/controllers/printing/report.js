@@ -27,7 +27,7 @@ class ReportController {
     handle(id) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b, _c, _d;
+                var _a, _b, _c;
                 const repository = new mongo_get_document_1.MongoGetDocumentRepository();
                 const data = yield repository.getDocument(id);
                 const documentData = JSON.parse(JSON.stringify(data));
@@ -36,7 +36,10 @@ class ReportController {
                 const company = yield companyRepository.getCompany();
                 const userGet = new mongo_get_user_1.MongoGetUserRepository();
                 const paymentGet = new mongo_get_payment_1.MongoGetPayment();
-                const payment = yield paymentGet.getPayment(documentData.payment);
+                let payment;
+                if (documentData.document == 'RC' || documentData.document == 'FR')
+                    payment = yield paymentGet.getPayment(documentData.payment);
+                console.log(documentData);
                 const user = yield userGet.getUser({
                     id: data.attendant,
                 });
@@ -51,78 +54,96 @@ class ReportController {
                 let itemsTable = [];
                 documentData.items.forEach((item) => {
                     const element = [
-                        { style: 'default', text: item.item, alignment: 'left' },
-                        { style: 'default', text: item.description, alignment: 'left' },
+                        {
+                            style: 'default',
+                            text: `[${item.item}] - ${item.description || ''}`,
+                            alignment: 'left',
+                        },
                         { style: 'default', text: item.quantity, alignment: 'center' },
                         {
                             style: 'default',
                             text: new Intl.NumberFormat('de-DE', {
-                                style: 'currency',
                                 currency: 'AOA',
-                            }).format(item.total),
+                                style: 'currency',
+                            })
+                                .format(item.total / Number(item.quantity))
+                                .slice(0, -3),
+                            alignment: 'center',
+                        },
+                        { style: 'default', text: item.discount, alignment: 'center' },
+                        { style: 'default', text: '0.0', alignment: 'center' },
+                        { style: 'default', text: '', alignment: 'center' },
+                        {
+                            style: 'default',
+                            text: new Intl.NumberFormat('de-DE', {
+                                currency: 'AOA',
+                                style: 'currency',
+                            })
+                                .format(item.total)
+                                .slice(0, -3),
                             alignment: 'right',
                         },
                     ];
                     itemsTable.push(element);
                 });
-                itemsTable.push([
-                    { style: 'tableHeader', text: 'TOTAL', alignment: 'left' },
-                    { style: 'tableHeader', text: '' },
-                    { style: 'tableHeader', text: '' },
-                    {
-                        style: 'tableHeader',
-                        text: new Intl.NumberFormat('de-DE', {
-                            style: 'currency',
-                            currency: 'AOA',
-                        }).format(documentData.total),
-                        alignment: 'right',
-                    },
-                ]);
+                // itemsTable.push([
+                //   { style: 'tableHeader', text: 'TOTAL', alignment: 'left' },
+                //   { style: 'tableHeader', text: '' },
+                //   { style: 'tableHeader', text: '' },
+                //   {
+                //     style: 'tableHeader',
+                //     text: new Intl.NumberFormat('de-DE', {
+                //       style: 'currency',
+                //       currency: 'AOA',
+                //     }).format(documentData.total),
+                //     alignment: 'right',
+                //   },
+                // ])
                 if (documentData.document == 'FR' || 'RC') {
-                    itemsTable.push([
-                        {
-                            style: 'tableHeader',
-                            text: 'MONTANTE ENTREGUE',
-                            alignment: 'left',
-                        },
-                        { style: 'tableHeader', text: '' },
-                        { style: 'tableHeader', text: '' },
-                        {
-                            style: 'tableHeader',
-                            text: new Intl.NumberFormat('de-DE', {
-                                style: 'currency',
-                                currency: 'AOA',
-                            }).format(documentData.amount_received),
-                            alignment: 'right',
-                        },
-                    ]);
-                    itemsTable.push([
-                        { style: 'tableHeader', text: 'TROCO', alignment: 'left' },
-                        { style: 'tableHeader', text: '' },
-                        { style: 'tableHeader', text: '' },
-                        {
-                            style: 'tableHeader',
-                            text: new Intl.NumberFormat('de-DE', {
-                                style: 'currency',
-                                currency: 'AOA',
-                            }).format(documentData.change),
-                            alignment: 'right',
-                        },
-                    ]);
-                    itemsTable.push([
-                        {
-                            style: 'tableHeader',
-                            text: 'FORMA DE PAGAMENTO',
-                            alignment: 'left',
-                        },
-                        { style: 'tableHeader', text: '' },
-                        { style: 'tableHeader', text: '' },
-                        {
-                            style: 'tableHeader',
-                            text: payment.title,
-                            alignment: 'right',
-                        },
-                    ]);
+                    // itemsTable.push([
+                    //   {
+                    //     style: 'tableHeader',
+                    //     text: 'MONTANTE ENTREGUE',
+                    //     alignment: 'left',
+                    //   },
+                    //   { style: 'tableHeader', text: '' },
+                    //   { style: 'tableHeader', text: '' },
+                    //   {
+                    //     style: 'tableHeader',
+                    //     text: new Intl.NumberFormat('de-DE', {
+                    //       style: 'currency',
+                    //       currency: 'AOA',
+                    //     }).format(documentData.amount_received),
+                    //     alignment: 'right',
+                    //   },
+                    // ])
+                    // itemsTable.push([
+                    //   { style: 'tableHeader', text: 'TROCO', alignment: 'left' },
+                    //   { style: 'tableHeader', text: '' },
+                    //   { style: 'tableHeader', text: '' },
+                    //   {
+                    //     style: 'tableHeader',
+                    //     text: new Intl.NumberFormat('de-DE', {
+                    //       style: 'currency',
+                    //       currency: 'AOA',
+                    //     }).format(documentData.change),
+                    //     alignment: 'right',
+                    //   },
+                    // ])
+                    // itemsTable.push([
+                    //   {
+                    //     style: 'tableHeader',
+                    //     text: 'FORMA DE PAGAMENTO',
+                    //     alignment: 'left',
+                    //   },
+                    //   { style: 'tableHeader', text: '' },
+                    //   { style: 'tableHeader', text: '' },
+                    //   {
+                    //     style: 'tableHeader',
+                    //     text: payment.title,
+                    //     alignment: 'right',
+                    //   },
+                    // ])
                 }
                 const companyData = [
                     {
@@ -220,26 +241,6 @@ class ReportController {
                                                     style: ['bodyStyle'],
                                                 },
                                             ],
-                                            [
-                                                {
-                                                    text: 'Contribuinte',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: client === null || client === void 0 ? void 0 : client.nif,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: 'Telefone',
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: client.phone_number,
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
                                         ],
                                     },
                                 },
@@ -290,16 +291,6 @@ class ReportController {
                                                         style: ['bodyStyle'],
                                                     },
                                                 ],
-                                                [
-                                                    {
-                                                        text: 'Telefone',
-                                                        style: ['bodyStyle'],
-                                                    },
-                                                    {
-                                                        text: (_d = client.insurance_company[0]) === null || _d === void 0 ? void 0 : _d.phone_number,
-                                                        style: ['bodyStyle'],
-                                                    },
-                                                ],
                                             ],
                                         },
                                     }
@@ -312,104 +303,271 @@ class ReportController {
                             columnGap: 10,
                         },
                         {
+                            canvas: [
+                                { type: 'line', x1: 0, x2: 515, y1: 0, y2: 0, lineWidth: 1 },
+                            ],
+                            marginTop: 10,
+                        },
+                        {
+                            columns: [
+                                { width: '25%', text: 'Data de emissão' },
+                                { width: '25%', text: 'Data de vencimento' },
+                                { width: '25%', text: 'Moeda' },
+                                { width: '25%', text: 'V/Ref.' },
+                            ],
+                            margin: [0, 3, 0, 2],
+                            style: ['default'],
+                        },
+                        {
+                            canvas: [
+                                { type: 'line', x1: 0, x2: 515, y1: 0, y2: 0, lineWidth: 1 },
+                            ],
+                        },
+                        {
                             columns: [
                                 {
-                                    width: '50%',
-                                    marginTop: 15,
-                                    table: {
-                                        widths: ['50%', '50%'],
-                                        headerRows: 1,
-                                        body: [
-                                            [
-                                                {
-                                                    text: 'Data e hora de entrada',
-                                                    style: 'tableHeader',
-                                                    alignment: 'left',
-                                                },
-                                                {
-                                                    text: 'Data e hora de alta',
-                                                    style: 'tableHeader',
-                                                    alignment: 'left',
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: new Intl.DateTimeFormat('en-GB', {
-                                                        day: 'numeric',
-                                                        month: 'numeric',
-                                                        year: 'numeric',
-                                                        hour: 'numeric',
-                                                        minute: 'numeric',
-                                                    }).format(new Date(documentData === null || documentData === void 0 ? void 0 : documentData.emission_date)),
-                                                    style: ['bodyStyle'],
-                                                },
-                                                {
-                                                    text: '',
-                                                    style: ['bodyStyle'],
-                                                    alignment: 'center',
-                                                },
-                                            ],
-                                        ],
-                                    },
+                                    width: '25%',
+                                    text: new Intl.DateTimeFormat('en-GB', {
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                        year: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                    }).format(new Date(documentData === null || documentData === void 0 ? void 0 : documentData.emission_date)),
                                 },
                                 {
-                                    width: '50%',
-                                    marginTop: 15,
-                                    table: {
-                                        widths: ['100%'],
-                                        headerRows: 1,
-                                        body: [
-                                            [
-                                                {
-                                                    text: 'Elegibilidade | Termo de responsabilidade',
-                                                    style: 'tableHeader',
-                                                    alignment: 'center',
-                                                },
-                                            ],
-                                            [
-                                                {
-                                                    text: ' ',
-                                                    style: ['bodyStyle'],
-                                                },
-                                            ],
-                                        ],
-                                    },
+                                    width: '25%',
+                                    text: new Intl.DateTimeFormat('en-GB', {
+                                        day: 'numeric',
+                                        month: 'numeric',
+                                        year: 'numeric',
+                                    }).format(new Date((documentData === null || documentData === void 0 ? void 0 : documentData.expiryDate) || (documentData === null || documentData === void 0 ? void 0 : documentData.emission_date))),
                                 },
+                                { width: '25%', text: 'AOA' },
+                                { width: '25%', text: `${documentData === null || documentData === void 0 ? void 0 : documentData.reference}` },
                             ],
-                            columnGap: 10,
+                            marginTop: 3,
+                            style: ['default'],
                         },
                         {
                             marginTop: 25,
                             table: {
-                                widths: ['30%', '40%', '15%', '15%'],
+                                widths: ['40%', '10%', '10%', '10%', '10%', '10%', '10%'],
                                 headerRows: 1,
                                 body: [
                                     [
                                         {
-                                            text: 'Serviço/Produto',
-                                            style: 'tableHeader',
-                                            alignment: 'left',
-                                        },
-                                        {
                                             text: 'Descrição',
-                                            style: 'tableHeader',
+                                            style: 'default',
                                             alignment: 'left',
                                         },
                                         {
-                                            text: 'Quantidade',
-                                            style: 'tableHeader',
+                                            text: 'Qtd',
+                                            style: 'default',
                                             alignment: 'center',
                                         },
                                         {
-                                            text: 'Preço',
-                                            style: 'tableHeader',
+                                            text: 'Unit.P',
+                                            style: 'default',
+                                            alignment: 'center',
+                                        },
+                                        {
+                                            text: 'Desc (%)',
+                                            style: 'default',
+                                            alignment: 'center',
+                                        },
+                                        {
+                                            text: 'Taxa(%)',
+                                            style: 'default',
+                                            alignment: 'center',
+                                        },
+                                        {
+                                            text: 'Código',
+                                            style: 'default',
+                                            alignment: 'center',
+                                        },
+                                        {
+                                            text: 'Valor',
+                                            style: 'default',
                                             alignment: 'right',
                                         },
                                     ],
                                     ...itemsTable,
                                 ],
                             },
-                            layout: 'headerLineOnly',
+                            layout: {
+                                hLineWidth: (i, node) => i === 0 || i === node.table.body.length ? 1 : 0.5,
+                                vLineWidth: () => 0,
+                                hLineColor: (i, node) => i === 0 || i === node.table.body.length ? 'black' : 'grey',
+                            },
+                        },
+                        {
+                            marginTop: 30,
+                            columns: [
+                                {
+                                    width: '60%',
+                                    table: {
+                                        widths: ['20%', '15%', '30%', '35%'],
+                                        body: [
+                                            [
+                                                {
+                                                    text: 'Descrição',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: 'Taxa%',
+                                                    style: 'default',
+                                                    alignment: 'center',
+                                                },
+                                                {
+                                                    text: 'Incidência',
+                                                    style: 'default',
+                                                    alignment: 'center',
+                                                },
+                                                {
+                                                    text: 'Valor do imposto',
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                            [
+                                                {
+                                                    text: 'IVA',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: '0.0',
+                                                    style: 'default',
+                                                    alignment: 'center',
+                                                },
+                                                {
+                                                    text: new Intl.NumberFormat('de-DE', {
+                                                        currency: 'AOA',
+                                                        style: 'currency',
+                                                    })
+                                                        .format(documentData.total)
+                                                        .slice(0, -3),
+                                                    style: 'default',
+                                                    alignment: 'center',
+                                                },
+                                                {
+                                                    text: '0.0',
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                        ],
+                                    },
+                                    layout: {
+                                        hLineWidth: (i, node) => i === 0 || i === node.table.body.length ? 1 : 1,
+                                        vLineWidth: () => 0,
+                                        hLineColor: (i, node) => i === 0 || i === node.table.body.length ? 'black' : 'black',
+                                    },
+                                },
+                                {
+                                    width: '40%',
+                                    table: {
+                                        widths: ['*', '*'],
+                                        body: [
+                                            [
+                                                {
+                                                    text: 'Total liquido',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: new Intl.NumberFormat('de-DE', {
+                                                        currency: 'AOA',
+                                                        style: 'currency',
+                                                    })
+                                                        .format(documentData.total)
+                                                        .slice(0, -3),
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                            [
+                                                {
+                                                    text: 'Total de desconto',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: '0.0',
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                            [
+                                                {
+                                                    text: 'Total de imposto',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: '0.0',
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                            [
+                                                {
+                                                    text: 'Total retenção',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: '0.0',
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                            [
+                                                {
+                                                    text: 'Total a pagar',
+                                                    style: 'default',
+                                                    alignment: 'left',
+                                                },
+                                                {
+                                                    text: new Intl.NumberFormat('de-DE', {
+                                                        currency: 'AOA',
+                                                        style: 'currency',
+                                                    })
+                                                        .format(documentData.total)
+                                                        .slice(0, -3),
+                                                    style: 'default',
+                                                    alignment: 'right',
+                                                },
+                                            ],
+                                        ],
+                                    },
+                                    layout: {
+                                        hLineWidth: (i, node) => i === 0 || i === 4 || i === node.table.body.length ? 1 : 0,
+                                        vLineWidth: () => 0,
+                                        hLineColor: (i, node) => i === 0 || i === node.table.body.length ? 'black' : 'black',
+                                    },
+                                },
+                            ],
+                            columnGap: 20,
+                        },
+                        {
+                            marginTop: 30,
+                            text: `Os bens/serviços foram colocados à disposição do adquirente na data de ${new Intl.DateTimeFormat('en-GB', {
+                                day: 'numeric',
+                                month: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                            }).format(new Date(documentData === null || documentData === void 0 ? void 0 : documentData.emission_date))} em Luanda`,
+                            alignment: 'left',
+                            style: ['default'],
+                        },
+                        {
+                            text: `Operador: ${user === null || user === void 0 ? void 0 : user.name}`,
+                            alignment: 'left',
+                            style: ['default'],
                         },
                     ],
                     footer: {
@@ -421,11 +579,8 @@ class ReportController {
                         columns: [
                             [
                                 {
-                                    text: 'programa certificado e validado pela AGT',
-                                    alignment: 'center',
-                                },
-                                {
-                                    text: `Atendido por: ${user === null || user === void 0 ? void 0 : user.name}`,
+                                    text: `${documentData.hash4}` +
+                                        '-Processado por programa validado nº 355/AGT/2023 FacilitaSoft (3.1.1)',
                                     alignment: 'center',
                                 },
                             ],
@@ -447,8 +602,8 @@ class ReportController {
                             alignment: 'right',
                         },
                         tableHeader: {
-                            fillColor: '#06063f',
-                            color: 'white',
+                            // fillColor: '#06063f',
+                            // color: 'white',
                             fontSize: 10,
                         },
                         bodyStyle: {

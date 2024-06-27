@@ -13,7 +13,6 @@ router.get('/:id', async (req: Request, res: Response) => {
 })
 
 router.get('/termal/printing/:id', async (req: Request, res: Response) => {
-  console.log('Hey')
   const reportController = new ReportController()
   const { id } = req.params
   const result = await reportController.defineDocument(id)

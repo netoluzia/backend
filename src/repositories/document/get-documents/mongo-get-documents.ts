@@ -7,6 +7,7 @@ export class MongoGetDocumentsRepository implements IGetDocumentsRepository {
     const documents = await MongoClient.db
       .collection<Omit<FiscalDoc, 'id'>>('document')
       .find({})
+      .sort({ createdAt: -1 })
       .toArray()
 
     return documents.map(({ _id, total, ...rest }) => ({

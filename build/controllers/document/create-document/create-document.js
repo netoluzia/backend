@@ -48,10 +48,19 @@ class CreateDocumentController {
             return `${document}${dia}${mes}${ano}/${(yield this.countDocumentType.count(document)) + 1}`;
         });
     }
+    generateRandomHash(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|<>?';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
     signature() {
         return __awaiter(this, void 0, void 0, function* () {
-            const hash64 = '64';
-            const hash4 = '4';
+            const hash64 = this.generateRandomHash(64);
+            const hash4 = this.generateRandomHash(4);
             return { hash64, hash4 };
         });
     }
@@ -67,7 +76,6 @@ class CreateDocumentController {
                         _d = items_1_1.value;
                         _a = false;
                         const item = _d;
-                        console.log(item);
                         const service = yield repository.getMaterialFromService(item.id.toHexString());
                         if (!service)
                             return true;
@@ -132,7 +140,7 @@ class CreateDocumentController {
     handle(params) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let { items, client, payment, document, amount_received, paid, source, attendant, } = params;
+                let { items, client, payment, document, amount_received, paid, source, attendant, emission_date, } = params;
                 const auxItems = items.map((_a) => {
                     var { total, quantity, unit_price, id } = _a, rest = __rest(_a, ["total", "quantity", "unit_price", "id"]);
                     return (Object.assign({ total: quantity * total, quantity,
@@ -141,12 +149,12 @@ class CreateDocumentController {
                 paid = false;
                 const total = this.calculateTotal(items);
                 const reference = yield this.generateReference(document);
+                const { hash4, hash64 } = yield this.signature();
                 let change = null;
                 if (document == 'RC' || document == 'FR') {
                     change = amount_received - total;
                     paid = true;
                     const response = yield this.decrementStock(auxItems);
-                    console.log(response);
                     if (!response)
                         throw new Error('Materiais em falta no stock');
                 }
@@ -164,9 +172,12 @@ class CreateDocumentController {
                         },
                     };
                 }
-                const { hash4, hash64 } = yield this.signature();
                 const doc = yield this.createDocumentRepository.createDocument(Object.assign(Object.assign({}, params), { total,
-                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, hash4,
+                    reference, serie: new Date().getFullYear(), createdAt: new Date(), emission_date: emission_date ? new Date(emission_date) : new Date(), client: new mongodb_1.ObjectId(client), payment: payment ? new mongodb_1.ObjectId(payment) : null, items: auxItems, amount_received, change: change, expiryDate: params.document === 'FT'
+                        ? emission_date
+                            ? new Date(new Date(emission_date).setDate(new Date(emission_date).getDate() + 30))
+                            : new Date(new Date().setDate(new Date().getDate() + 30))
+                        : new Date(), hash4,
                     hash64,
                     paid, attendant: new mongodb_1.ObjectId(attendant) }));
                 return {

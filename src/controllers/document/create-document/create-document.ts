@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { FiscalDoc, Items } from '../../../models/Document'
 import { HttpResponse } from '../../protocols'
+import crypto from 'crypto'
 import {
   ICountDocumentRepository,
   ICreateDocumentController,
@@ -27,10 +28,19 @@ export class CreateDocumentController implements ICreateDocumentController {
       (await this.countDocumentType.count(document)) + 1
     }`
   }
-
+  generateRandomHash(length: number) {
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|<>?'
+    let result = ''
+    const charactersLength = characters.length
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength))
+    }
+    return result
+  }
   async signature(): Promise<{ hash64: string; hash4: string }> {
-    const hash64 = '64'
-    const hash4 = '4'
+    const hash64 = this.generateRandomHash(64)
+    const hash4 = this.generateRandomHash(4)
     return { hash64, hash4 }
   }
 
@@ -48,7 +58,6 @@ export class CreateDocumentController implements ICreateDocumentController {
       const identifiers: { material: string; qtd: number }[] = []
       const repository = new MongoGetMaterialFormServiceRepository()
       for await (const item of items) {
-        console.log(item)
         const service = await repository.getMaterialFromService(
           item.id.toHexString()
         )
@@ -76,6 +85,7 @@ export class CreateDocumentController implements ICreateDocumentController {
       return false
     }
   }
+
   async handle(params: ParamsCreateDocument): Promise<HttpResponse<FiscalDoc>> {
     try {
       let {
@@ -87,6 +97,7 @@ export class CreateDocumentController implements ICreateDocumentController {
         paid,
         source,
         attendant,
+        emission_date,
       } = params
       const auxItems = items.map(
         ({ total, quantity, unit_price, id, ...rest }) => ({
@@ -100,20 +111,22 @@ export class CreateDocumentController implements ICreateDocumentController {
       paid = false
       const total = this.calculateTotal(items)
       const reference = await this.generateReference(document)
+      const { hash4, hash64 } = await this.signature()
       let change: number | null = null
 
       if (document == 'RC' || document == 'FR') {
         change = amount_received - total
         paid = true
         const response = await this.decrementStock(auxItems)
-        console.log(response)
         if (!response) throw new Error('Materiais em falta no stock')
       }
+
       if (document == 'RC') {
         await MongoClient.db
           .collection('document')
           .findOneAndUpdate({ reference: source }, { $set: { paid: true } })
       }
+
       if (document == 'RC' && !source) {
         return {
           statusCode: 200,
@@ -123,19 +136,28 @@ export class CreateDocumentController implements ICreateDocumentController {
           },
         }
       }
-      const { hash4, hash64 } = await this.signature()
       const doc = await this.createDocumentRepository.createDocument({
         ...params,
         total,
         reference,
         serie: new Date().getFullYear(),
         createdAt: new Date(),
-        emission_date: new Date(),
+        emission_date: emission_date ? new Date(emission_date) : new Date(),
         client: new ObjectId(client),
         payment: payment ? new ObjectId(payment) : null,
         items: auxItems,
         amount_received,
         change: change as number,
+        expiryDate:
+          params.document === 'FT'
+            ? emission_date
+              ? new Date(
+                  new Date(emission_date).setDate(
+                    new Date(emission_date).getDate() + 30
+                  )
+                )
+              : new Date(new Date().setDate(new Date().getDate() + 30))
+            : new Date(),
         hash4,
         hash64,
         paid,
