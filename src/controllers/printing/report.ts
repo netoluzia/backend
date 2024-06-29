@@ -135,6 +135,10 @@ export class ReportController {
         // ])
       }
 
+      let totalDiscount = 0
+      documentData.items.forEach((item: any) => {
+        totalDiscount += item.discount
+      })
       const companyData = [
         {
           text: company.name,
@@ -501,13 +505,7 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: `${() => {
-                          let result = 0
-                          documentData.items.forEach((item: any) => {
-                            result += item.discount
-                          })
-                          return String(result)
-                        }}`,
+                        text: `${totalDiscount}`,
                         style: 'default',
                         alignment: 'right',
                       },
