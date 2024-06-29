@@ -54,7 +54,7 @@ export class ReportController {
               currency: 'AOA',
               style: 'currency',
             })
-              .format(item.total / Number(item.quantity))
+              .format(item.unit_price)
               .slice(0, -3),
             alignment: 'center',
           },
@@ -374,7 +374,7 @@ export class ReportController {
                     alignment: 'center',
                   },
                   {
-                    text: 'Desc (%)',
+                    text: 'Desc.',
                     style: 'default',
                     alignment: 'center',
                   },
@@ -501,7 +501,13 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: '0.0',
+                        text: () => {
+                          let result = 0
+                          documentData.items.forEach((item: any) => {
+                            result += item.discount
+                          })
+                          return String(result)
+                        },
                         style: 'default',
                         alignment: 'right',
                       },
