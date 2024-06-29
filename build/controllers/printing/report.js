@@ -500,13 +500,13 @@ class ReportController {
                                                     alignment: 'left',
                                                 },
                                                 {
-                                                    text: () => {
+                                                    text: `${() => {
                                                         let result = 0;
                                                         documentData.items.forEach((item) => {
                                                             result += item.discount;
                                                         });
                                                         return String(result);
-                                                    },
+                                                    }}`,
                                                     style: 'default',
                                                     alignment: 'right',
                                                 },
