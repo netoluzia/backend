@@ -333,15 +333,16 @@ export class ReportController {
               },
               {
                 width: '25%',
-                text: new Intl.DateTimeFormat('en-GB', {
-                  day: 'numeric',
-                  month: 'numeric',
-                  year: 'numeric',
-                }).format(
-                  new Date(
-                    documentData?.expiryDate || documentData?.emission_date
-                  )
-                ),
+                // text: new Intl.DateTimeFormat('en-GB', {
+                //   day: 'numeric',
+                //   month: 'numeric',
+                //   year: 'numeric',
+                // }).format(
+                //   new Date(
+                //     documentData?.expiryDate || documentData?.emission_date
+                //   )
+                // ),
+                text: '',
               },
               { width: '25%', text: 'AOA' },
               { width: '25%', text: `${documentData?.reference}` },
