@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -18,13 +41,14 @@ const mongo_get_document_1 = require("../../repositories/document/get-document/m
 const mongo_get_company_1 = require("../../repositories/company/get-company/mongo-get-company");
 const mongo_get_user_1 = require("../../repositories/user/get-user/mongo-get-user");
 const mongo_get_payment_1 = require("../../repositories/payment/get-payment/mongo-get-payment");
+const path = __importStar(require("path"));
 const documents = {
     FT: 'Fatura',
     RC: 'Recibo',
     FR: 'Fatura-Recibo',
 };
 class ReportController {
-    handle(id) {
+    handle(id, second = false) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 var _a, _b, _c;
@@ -149,11 +173,16 @@ class ReportController {
                 documentData.items.forEach((item) => {
                     totalDiscount += item.discount;
                 });
+                const imagePath = path.resolve(__dirname, '../../../image/logo.jpg');
                 const companyData = [
                     {
-                        text: company.name,
-                        style: ['header'],
+                        // : company.name,
+                        // style: ['header'],
+                        image: imagePath,
+                        width: 80,
+                        height: 40,
                     },
+                    'VLS Global Prestação de Serviços, SA',
                     `Endereço: ${company.address}`,
                     `Telefone: (+244) ${company.phone_number}`,
                     `Email: ${company.email}`,
@@ -197,6 +226,11 @@ class ReportController {
                                             {
                                                 text: `Série: ${documentData.serie}`,
                                                 alignment: 'right',
+                                            },
+                                            {
+                                                text: second ? 'Cópia' : 'Original',
+                                                alignment: 'right',
+                                                fontSize: 9,
                                             },
                                         ],
                                     ],

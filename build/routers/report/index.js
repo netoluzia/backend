@@ -17,10 +17,11 @@ const report_1 = require("../../controllers/printing/report");
 const map_1 = require("../../controllers/printing/map");
 const map_products_1 = require("../../controllers/printing/map-products");
 const router = express_1.default.Router();
-router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/:id/:second?', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const reportController = new report_1.ReportController();
-    const { id } = req.params;
-    const result = yield reportController.handle(id);
+    const { id, second } = req.params;
+    console.log(req.params);
+    const result = yield reportController.handle(id, Boolean(second));
     return res.end(result);
 }));
 router.get('/termal/printing/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

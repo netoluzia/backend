@@ -5,10 +5,11 @@ import { MapReportController } from '../../controllers/printing/map'
 import { MapProductReportController } from '../../controllers/printing/map-products'
 const router = express.Router()
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id/:second?', async (req: Request, res: Response) => {
   const reportController = new ReportController()
-  const { id } = req.params
-  const result = await reportController.handle(id)
+  const { id, second } = req.params
+  console.log(req.params)
+  const result = await reportController.handle(id, Boolean(second))
   return res.end(result)
 })
 

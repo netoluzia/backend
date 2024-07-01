@@ -5,13 +5,15 @@ import { FiscalDoc } from '../../models/Document'
 import { MongoGetCompany } from '../../repositories/company/get-company/mongo-get-company'
 import { MongoGetUserRepository } from '../../repositories/user/get-user/mongo-get-user'
 import { MongoGetPayment } from '../../repositories/payment/get-payment/mongo-get-payment'
+import * as path from 'path'
 const documents = {
   FT: 'Fatura',
   RC: 'Recibo',
   FR: 'Fatura-Recibo',
 }
+
 export class ReportController {
-  async handle(id: string): Promise<Buffer> {
+  async handle(id: string, second = false): Promise<Buffer> {
     return new Promise(async (resolve, reject) => {
       const repository = new MongoGetDocumentRepository()
       const data = await repository.getDocument(id)
@@ -139,11 +141,16 @@ export class ReportController {
       documentData.items.forEach((item: any) => {
         totalDiscount += item.discount
       })
+      const imagePath = path.resolve(__dirname, '../../../image/logo.jpg')
       const companyData = [
         {
-          text: company.name,
-          style: ['header'],
+          // : company.name,
+          // style: ['header'],
+          image: imagePath,
+          width: 80,
+          height: 40,
         },
+        'VLS Global Prestação de Serviços, SA',
         `Endereço: ${company.address}`,
         `Telefone: (+244) ${company.phone_number}`,
         `Email: ${company.email}`,
@@ -190,6 +197,11 @@ export class ReportController {
                     {
                       text: `Série: ${documentData.serie}`,
                       alignment: 'right',
+                    },
+                    {
+                      text: second ? 'Cópia' : 'Original',
+                      alignment: 'right',
+                      fontSize: 9,
                     },
                   ],
                 ],
