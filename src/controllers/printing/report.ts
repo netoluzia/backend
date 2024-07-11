@@ -60,8 +60,17 @@ export class ReportController {
               .slice(0, -3),
             alignment: 'center',
           },
-          { style: 'default', text: item.discount, alignment: 'center' },
-          { style: 'default', text: '0.0', alignment: 'center' },
+          {
+            style: 'default',
+            text: new Intl.NumberFormat('de-DE', {
+              currency: 'AOA',
+              style: 'currency',
+            })
+              .format(item.discount)
+              .slice(0, -3),
+            alignment: 'center',
+          },
+          { style: 'default', text: '0,00', alignment: 'center' },
           { style: 'default', text: '', alignment: 'center' },
           {
             style: 'default',
@@ -458,7 +467,7 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: '0.0',
+                        text: '0,00',
                         style: 'default',
                         alignment: 'center',
                       },
@@ -473,7 +482,7 @@ export class ReportController {
                         alignment: 'center',
                       },
                       {
-                        text: '0.0',
+                        text: '0,00',
                         style: 'default',
                         alignment: 'right',
                       },
@@ -517,7 +526,12 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: `${totalDiscount}`,
+                        text: new Intl.NumberFormat('de-DE', {
+                          currency: 'AOA',
+                          style: 'currency',
+                        })
+                          .format(totalDiscount)
+                          .slice(0, -3),
                         style: 'default',
                         alignment: 'right',
                       },
@@ -529,7 +543,7 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: '0.0',
+                        text: '0,00',
                         style: 'default',
                         alignment: 'right',
                       },
@@ -541,7 +555,7 @@ export class ReportController {
                         alignment: 'left',
                       },
                       {
-                        text: '0.0',
+                        text: '0,00',
                         style: 'default',
                         alignment: 'right',
                       },
