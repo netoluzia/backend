@@ -18,10 +18,21 @@ import protocol from './protocol'
 import account_closure from './account-closure'
 import material from './material'
 
+import customer from './customer'
+import invoice from './invoice'
+import insuranceNew from './insurance-new'
+import userNew from './user-new'
+import materialNew from './material-new'
+import serviceNew from './service-new'
+import authNew from './auth-new'
+import protocolNew from './protocol-new'
+import paymentNew from './payment-new'
+
 const router = express.Router()
 const middleware = new Middlewares()
 
 router.use('/auth', auth)
+
 router.use('/users', middleware.verifyToken, user)
 router.use('/services', middleware.verifyToken, service)
 router.use('/products', middleware.verifyToken, product)
@@ -35,6 +46,15 @@ router.use('/company', middleware.verifyToken, company)
 router.use('/attendings', middleware.verifyToken, attending)
 router.use('/dashboard', middleware.verifyToken, dashboard)
 router.use('/materials', middleware.verifyToken, material)
+router.use('/customers', customer)
+router.use('/invoices', invoice)
+router.use('/insurance-new', insuranceNew)
+router.use('/user-new', userNew)
+router.use('/material-new', materialNew)
+router.use('/service-new', serviceNew)
+router.use('/auth-new', authNew)
+router.use('/protocol-new', protocolNew)
+router.use('/payment-new', paymentNew)
 router.use('/account-closure', account_closure)
 router.use('/reports-financial', reports)
 

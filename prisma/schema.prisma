@@ -1,0 +1,256 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  userId    String    @db.ObjectId
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  email     String?
+  username  String    @unique
+  phone     String    @unique
+  password  String
+  name      String
+  nif       String?   @unique
+  role      Role
+  invoices  Invoice[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model Insurance {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  nif       String
+  address   String
+  phone     String?
+  customers Customer[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+}
+
+model Protocol {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  value     Float
+  customers Customer[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+}
+
+model Customer {
+  id               String     @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  nif              String?
+  address          String?
+  phone            String?
+  source           String?
+  email            String?
+  insurance_number String?
+  insuranceId      String?    @db.ObjectId
+  insurance        Insurance? @relation(fields: [insuranceId], references: [id])
+  protocolId       String?    @db.ObjectId
+  protocol         Protocol?  @relation(fields: [protocolId], references: [id])
+  invoices         Invoice[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  deletedAt        DateTime?
+}
+
+model Service {
+  id                        String                      @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  unit_price                Float
+  sale_price                Float?
+  tax                       Float?
+  hasIva                    Boolean?
+  category                  Category
+  account_code              String?
+  status                    StatusService               @default(AVAILABLE)
+  description               String
+  discount                  Float?
+  exemptionCode             String?
+  invoiceItems              InvoiceItem[]
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  deletedAt                 DateTime?
+  serviceExpendableMaterial ServiceExpendableMaterial[]
+}
+
+model ServiceExpendableMaterial {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId            String             @db.ObjectId
+  expendableMaterialId String             @db.ObjectId
+  quantity             Int
+  service              Service            @relation(fields: [serviceId], references: [id])
+  expendableMaterial   ExpendableMaterial @relation(fields: [expendableMaterialId], references: [id])
+
+  @@index([serviceId, expendableMaterialId], name: "material-service")
+}
+
+model ExpendableMaterial {
+  id                        String                      @id @default(auto()) @map("_id") @db.ObjectId
+  name                      String
+  category                  Category
+  description               String?
+  price                     Float
+  quantity                  Int
+  measure                   Measure                     @default(Unidade)
+  transations               Transaction[]
+  serviceExpandableMaterial ServiceExpendableMaterial[]
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  deletedAt                 DateTime?
+}
+
+model Transaction {
+  id                   String             @id @default(auto()) @map("_id") @db.ObjectId
+  type                 TransactionType
+  quantity             Int
+  expendableMaterialId String             @db.ObjectId
+  expandableMaterial   ExpendableMaterial @relation(fields: [expendableMaterialId], references: [id])
+  createdAt            DateTime           @default(now())
+}
+
+model Payment {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  code      String
+  Invoice   Invoice[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model InvoiceItem {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  serviceId String  @db.ObjectId
+  invoiceId String  @db.ObjectId
+  quantity  Int
+  price     Float
+  discount  Float
+  total     Float
+  service   Service @relation(fields: [serviceId], references: [id])
+  invoice   Invoice @relation(fields: [invoiceId], references: [id])
+
+  @@index([serviceId, invoiceId], name: "invoice-item")
+}
+
+model Invoice {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  customerId      String        @db.ObjectId
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  type            InvoiceType
+  paymentId       String?       @db.ObjectId
+  payment         Payment?      @relation(fields: [paymentId], references: [id])
+  serie           String
+  invoiceItems    InvoiceItem[]
+  reasonInssuance String?
+  change          Float?
+  reference       String
+  emission_date   DateTime      @default(now())
+  expiry_date     DateTime?
+  hash64          String
+  hash4           String
+  total           Float
+  status          InvoiceStatus
+  discount        Float
+  userId          String        @db.ObjectId
+  user            User          @relation(fields: [userId], references: [id])
+  invoiceId       String?       @unique @db.ObjectId
+  invoiceSource   Invoice?      @relation("Origin", fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  invoiceCurrent  Invoice?      @relation("Origin")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+}
+
+model Company {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  nif            String
+  email          String
+  phone_number   String
+  address        String
+  bank           String
+  iban           String
+  account_number String
+  tax_ii         Float
+  logo           String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+}
+
+enum StatusService {
+  AVAILABLE
+  UNAVAILABE
+}
+
+enum InvoiceType {
+  RC
+  FT
+  FR
+  ND
+  NC
+  PP
+}
+
+enum InvoiceStatus {
+  POR_PAGAR
+  PAGO
+  ANULADO
+  RETIFICADO
+}
+
+enum Measure {
+  Mililitro
+  Litro
+  Unidade
+  Par
+}
+
+enum Category {
+  ENF
+  RX
+  LAB
+  FAR
+  ESP
+  ECO
+  EST
+}
+
+enum Role {
+  admin
+  nurse
+  attendant
+  analyst
+  doctor
+  financial
+}
+
+enum TransactionType {
+  ADD
+  SUBTRACT
+}
