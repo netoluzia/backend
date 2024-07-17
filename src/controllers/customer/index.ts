@@ -72,9 +72,9 @@ export class CustomerController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
+        message: error.message,
         status: StatusCode.OK,
         success: true,
       }
@@ -93,9 +93,9 @@ export class CustomerController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
+        message: error.message,
         status: StatusCode.OK,
         success: true,
       }

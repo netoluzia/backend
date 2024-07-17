@@ -63,16 +63,36 @@ export class CustomerRepository
   }
 
   async show(id: string): Promise<Meta<Customer>> {
-    const customer = await prisma.customer.findUnique({ where: { id } })
+    const customer = await prisma.customer.findUnique({
+      where: { id },
+      include: { insurance: true, protocol: true, _count: true },
+    })
     return { data: customer }
   }
 
   async create(payload: TCreateCustomer): Promise<Meta<Customer>> {
-    const customer = await prisma.customer.create({ data: payload })
+    const customer = await prisma.customer.create({
+      data: { deletedAt: null, ...payload },
+    })
     return { data: customer }
   }
 
   async update(id: string, payload: TUpdateCustomer): Promise<Meta<Customer>> {
+    await prisma.customer.update({
+      where: { id },
+      data: {
+        address: null,
+        email: null,
+        insuranceId: null,
+        nif: null,
+        phone: null,
+        source: null,
+        protocolId: null,
+        partnerId: null,
+        name: undefined,
+        insurance_number: null,
+      },
+    })
     const customer = await prisma.customer.update({
       where: { id },
       data: { ...payload },

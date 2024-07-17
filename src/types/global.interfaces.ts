@@ -38,12 +38,31 @@ export interface IController<Entity, CreateRecord, UpdateRecord> {
     orderBy?: any
     category?: string
   }): Promise<HttpResponse<Entity[]>>
+  indexByStatus?(payload: {
+    search?: string
+    page: number
+    perPage: number
+    orderBy?: any
+    status?: string
+  }): Promise<HttpResponse<Entity[]>>
   show(id: string): Promise<HttpResponse<Entity>>
   create(payload: CreateRecord): Promise<HttpResponse<Entity>>
   update(id: string, payload: UpdateRecord): Promise<HttpResponse<Entity>>
   softDelete(id: string): Promise<HttpResponse<Entity>>
   destroy(id: string): Promise<HttpResponse<Entity>>
   searchByName?(name: string): Promise<HttpResponse<Entity[]>>
+  filter?(search: string): Promise<HttpResponse<Entity[]>>
+  invoiceFromInsurance?(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<HttpResponse<Entity[]>>
 }
 
 export interface IRepository<Entity, CreateRecord, UpdateRecord> {
@@ -53,10 +72,28 @@ export interface IRepository<Entity, CreateRecord, UpdateRecord> {
     perPage?: number
     orderBy?: any
   }): Promise<Meta<Entity[]>>
+  indexByStatus?(payload: {
+    search?: string
+    page?: number
+    perPage?: number
+    status?: string
+  }): Promise<Meta<Entity[]>>
   show(id: string): Promise<Meta<Entity>>
   create(payload: CreateRecord): Promise<Meta<Entity>>
   update(id: string, payload: UpdateRecord): Promise<Meta<Entity>>
   softDelete(id: string): Promise<Meta<Entity>>
   destroy(id: string): Promise<Meta<Entity>>
   searchByName?(name: string): Promise<Meta<Entity[]>>
+  filter?(search: string): Promise<Meta<Entity[]>>
+  invoiceFromInsurance?(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<Meta<Entity[]>>
 }

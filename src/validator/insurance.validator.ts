@@ -2,8 +2,8 @@ import { z } from 'zod'
 export const createInsurance = z.object({
   name: z.string(),
   nif: z.string(),
-  address: z.string(),
-  phone: z.string().optional(),
+  address: z.string().nullable(),
+  phone: z.string().nullable(),
 })
 
 export type TCreateInsurance = z.infer<typeof createInsurance>

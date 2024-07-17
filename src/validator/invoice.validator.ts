@@ -13,7 +13,7 @@ export const createInvoice = z.object({
   paymentId: z.string().optional(),
   reasonInssuance: z.string().optional(),
   invoiceId: z.string().optional(),
-  emission_date: z.string(),
+  emission_date: z.string().optional(),
   invoiceItems: z.array(
     z.object({
       serviceId: z.string(),
@@ -23,6 +23,7 @@ export const createInvoice = z.object({
       total: z.number(),
     })
   ),
+  amount_received: z.number().optional(),
   hash64: z.string(),
   hash4: z.string(),
   total: z.number(),
@@ -50,6 +51,7 @@ export const updateInvoice = z.object({
     InvoiceType.PP,
     InvoiceType.RC,
   ]),
+  amount_received: z.number().optional(),
   paymentId: z.string().optional(),
   reasonInssuance: z.string().optional(),
   invoiceId: z.string().optional(),

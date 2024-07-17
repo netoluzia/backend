@@ -4,13 +4,62 @@ import { InvoiceRepository } from '../../repositories/invoice'
 import { InvoiceController } from '../../controllers/invoice'
 const router = express.Router()
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/index/:category', async (req: Request, res: Response) => {
   const search = (req.query.search as string) || ''
   const page = Number(req.query.page as string) || 1
   const perPage = Number(req.query.perPage as string) || 10
   const repository = new InvoiceRepository()
   const controller = new InvoiceController(repository)
-  const { status, ...rest } = await controller.index({ search, page, perPage })
+  const { status, ...rest } = await controller.index({
+    search,
+    page,
+    perPage,
+    category: req.params.category,
+  })
+  return res.status(status).send(rest)
+})
+
+router.get('/insurance/myInvoices', async (req: Request, res: Response) => {
+  const search = (req.query.search as string) || ''
+  const page = Number(req.query.page as string) || 1
+  const perPage = Number(req.query.perPage as string) || 10
+  const repository = new InvoiceRepository()
+  const controller = new InvoiceController(repository)
+  const { status, ...rest } = await controller.invoiceFromInsurance(
+    {
+      search,
+      page,
+      perPage,
+      category: req.params.category,
+    },
+    String(req.query.insuranceId),
+    String(req.query.status)
+  )
+  return res.status(status).send(rest)
+})
+
+router.get('/filter/search', async (req: Request, res: Response) => {
+  const search = (req.query.search as string) || ''
+  const page = Number(req.query.page as string) || 1
+  const perPage = Number(req.query.perPage as string) || 10
+  const repository = new InvoiceRepository()
+  const controller = new InvoiceController(repository)
+  const { status, ...rest } = await controller.filter(search)
+  return res.status(status).send(rest)
+})
+
+router.get('/index-by-status/:status', async (req: Request, res: Response) => {
+  const search = (req.query.search as string) || ''
+  const page = Number(req.query.page as string) || 1
+  const perPage = Number(req.query.perPage as string) || 10
+  const repository = new InvoiceRepository()
+  const controller = new InvoiceController(repository)
+  const { status, ...rest } = await controller.indexByStatus({
+    search,
+    page,
+    perPage,
+    status: req.params.status,
+  })
   return res.status(status).send(rest)
 })
 

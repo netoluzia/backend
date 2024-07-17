@@ -19,6 +19,7 @@ import account_closure from './account-closure'
 import material from './material'
 
 import customer from './customer'
+import finance from './finance'
 import invoice from './invoice'
 import insuranceNew from './insurance-new'
 import userNew from './user-new'
@@ -27,6 +28,7 @@ import serviceNew from './service-new'
 import authNew from './auth-new'
 import protocolNew from './protocol-new'
 import paymentNew from './payment-new'
+import partner from './partner'
 
 const router = express.Router()
 const middleware = new Middlewares()
@@ -47,7 +49,9 @@ router.use('/attendings', middleware.verifyToken, attending)
 router.use('/dashboard', middleware.verifyToken, dashboard)
 router.use('/materials', middleware.verifyToken, material)
 router.use('/customers', customer)
+router.use('/finances', finance)
 router.use('/invoices', invoice)
+router.use('/partners', partner)
 router.use('/insurance-new', insuranceNew)
 router.use('/user-new', userNew)
 router.use('/material-new', materialNew)
