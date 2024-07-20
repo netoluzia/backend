@@ -26,7 +26,7 @@ export class CompanyRepository
     throw new Error('Method not implemented.')
   }
   async show(id: string): Promise<Meta<Company>> {
-    const company = await prisma.company.findFirst()
+    const company = await prisma.company.findFirst({})
     return { data: company }
   }
   create(payload: TCreateCompany): Promise<Meta<Company>> {

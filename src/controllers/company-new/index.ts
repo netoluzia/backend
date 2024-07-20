@@ -60,6 +60,24 @@ export class CompanyController
         message: error.message,
         status: StatusCode.OK,
         success: true,
+        body: {
+          data: {
+            id: '660c1301d6dbda0666bc5610',
+            name: 'VLS Global Prestação de Serviços',
+            account_number: '',
+            address: 'Zango 1',
+            bank: '',
+            email: 'clinicaalfavida2020@gmail.com',
+            iban: '',
+            nif: '5000139777',
+            tax_ii: 0,
+            logo: null,
+            createdAt: new Date('2024-07-11T20:54:53.706Z'),
+            updatedAt: new Date('2024-07-18T22:38:19.720Z'),
+            deletedAt: null,
+            phone: ' 946803750',
+          },
+        },
       }
     }
   }

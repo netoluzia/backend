@@ -20,7 +20,7 @@ class CompanyRepository {
     }
     show(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const company = yield prisma_1.prisma.company.findFirst();
+            const company = yield prisma_1.prisma.company.findFirst({});
             return { data: company };
         });
     }
