@@ -27,7 +27,6 @@ export class ReportController {
       let payment: any
       if (documentData.document == 'RC' || documentData.document == 'FR')
         payment = await paymentGet.getPayment(documentData.payment)
-      console.log(documentData)
       const user = await userGet.getUser({
         id: data.attendant,
       })

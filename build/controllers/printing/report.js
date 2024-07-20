@@ -63,7 +63,6 @@ class ReportController {
                 let payment;
                 if (documentData.document == 'RC' || documentData.document == 'FR')
                     payment = yield paymentGet.getPayment(documentData.payment);
-                console.log(documentData);
                 const user = yield userGet.getUser({
                     id: data.attendant,
                 });

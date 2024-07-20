@@ -109,7 +109,6 @@ export class InvoicePrintController {
       let items = ['FR', 'FT', 'PP'].includes(invoice.type)
         ? (invoice?.invoiceItems as InvoiceItemWithService[])
         : (invoice.invoiceSource?.invoiceItems as InvoiceItemWithService[])
-      console.log(items)
       const imagePath = path.resolve(__dirname, '../../../image/logo.jpg')
       const companyData = [
         {

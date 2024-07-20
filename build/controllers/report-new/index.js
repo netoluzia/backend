@@ -123,7 +123,6 @@ class InvoicePrintController {
                 let items = ['FR', 'FT', 'PP'].includes(invoice.type)
                     ? invoice === null || invoice === void 0 ? void 0 : invoice.invoiceItems
                     : (_b = invoice.invoiceSource) === null || _b === void 0 ? void 0 : _b.invoiceItems;
-                console.log(items);
                 const imagePath = path.resolve(__dirname, '../../../image/logo.jpg');
                 const companyData = [
                     {
