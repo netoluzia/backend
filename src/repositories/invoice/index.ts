@@ -35,7 +35,11 @@ export class InvoiceRepository
         : { type: category as InvoiceType },
       include: {
         customer: true,
-        invoiceSource: true,
+        invoiceSource: {
+          include: {
+            customer: { select: { name: true } },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
@@ -83,33 +87,71 @@ export class InvoiceRepository
               {
                 reference: { contains: search, mode: 'insensitive' },
               },
-              {
-                status: status as InvoiceStatus,
-              },
+              status == 'PAGO'
+                ? {
+                    OR: [
+                      {
+                        type: 'FR',
+                      },
+                      {
+                        type: 'RC',
+                      },
+                    ],
+                  }
+                : {
+                    status: status as InvoiceStatus,
+                  },
             ],
           }
-        : { status: status as InvoiceStatus },
+        : {
+            AND: [
+              status == 'PAGO'
+                ? {
+                    OR: [
+                      {
+                        type: 'FR',
+                      },
+                      {
+                        type: 'RC',
+                      },
+                    ],
+                  }
+                : {
+                    status: status as InvoiceStatus,
+                  },
+            ],
+          },
       include: {
         customer: true,
-        invoiceSource: true,
+        invoiceSource: {
+          include: {
+            customer: { select: { name: true } },
+          },
+        },
       },
       orderBy: {
         createdAt: 'desc',
       },
     })
     const total = await prisma.invoice.count({
-      where: search
-        ? {
-            AND: [
-              {
-                reference: { contains: search, mode: 'insensitive' },
-              },
-              {
+      where: {
+        AND: [
+          status == 'PAGO'
+            ? {
+                OR: [
+                  {
+                    type: 'FR',
+                  },
+                  {
+                    type: 'RC',
+                  },
+                ],
+              }
+            : {
                 status: status as InvoiceStatus,
               },
-            ],
-          }
-        : { status: status as InvoiceStatus },
+        ],
+      },
     })
     return {
       data: invoices,
@@ -127,10 +169,20 @@ export class InvoiceRepository
       where: { id },
       include: {
         invoiceItems: { include: { service: true } },
-        customer: true,
+        customer: {
+          include: { insurance: true, Partner: true, protocol: true },
+        },
         payment: true,
         user: true,
-        invoiceSource: true,
+        invoiceSource: {
+          include: {
+            customer: {
+              include: { insurance: true, Partner: true, protocol: true },
+            },
+
+            invoiceItems: { include: { service: true } },
+          },
+        },
       },
     })
     return { data: invoice }
@@ -138,25 +190,54 @@ export class InvoiceRepository
   async create(payload: TCreateInvoice): Promise<Meta<Invoice>> {
     const { invoiceItems, emission_date, invoiceId, amount_received, ...rest } =
       payload
-    const invoice = await prisma.invoice.create({
-      data: {
-        emission_date: new Date(),
-        amount_received: payload.amount_received,
-        invoiceId: payload.invoiceId || null,
-        invoiceItems: {
-          createMany: {
-            data: invoiceItems.map((item) => ({
-              discount: item.discount,
-              price: item.price,
-              quantity: item.quantity,
-              serviceId: item.serviceId,
-              total: item.total,
-            })),
+    let invoice: Invoice
+    if (
+      invoiceItems?.length &&
+      (payload.type == 'FR' || payload.type == 'FT' || payload.type == 'PP')
+    ) {
+      invoice = await prisma.invoice.create({
+        data: {
+          emission_date: payload.emission_date
+            ? new Date(payload.emission_date)
+            : new Date(),
+          amount_received: payload.amount_received,
+          invoiceId: payload.invoiceId || null,
+          invoiceItems: {
+            createMany: {
+              data: invoiceItems.map((item) => ({
+                discount: item.discount,
+                price: item.price,
+                quantity: item.quantity,
+                serviceId: item.serviceId,
+                total: item.total,
+              })),
+            },
           },
+          ...rest,
         },
-        ...rest,
-      },
-    })
+      })
+    } else {
+      invoice = await prisma.invoice.create({
+        data: {
+          emission_date: payload.emission_date
+            ? new Date(payload.emission_date)
+            : new Date(),
+          ...rest,
+          invoiceId,
+          amount_received,
+        },
+        include: {
+          invoiceSource: true,
+        },
+      })
+      if (invoiceId)
+        await prisma.invoice.update({
+          where: { id: invoiceId },
+          data: {
+            status: payload.type == 'RC' ? 'PAGO' : 'FINAL',
+          },
+        })
+    }
     return { data: invoice }
   }
   async filter(search: string): Promise<Meta<Invoice[]>> {
@@ -259,6 +340,8 @@ export class InvoiceRepository
         customer: true,
         user: true,
       },
+      take: perPage,
+      skip: skip,
       orderBy: {
         createdAt: 'desc',
       },
@@ -287,6 +370,164 @@ export class InvoiceRepository
                 customer: {
                   insuranceId: insuranceId,
                 },
+              },
+              {
+                status: statusOfDocument as InvoiceStatus,
+              },
+            ],
+          },
+    })
+    return {
+      data: invoices,
+      meta: {
+        page,
+        perPage,
+        search,
+        total,
+        totalPages: Math.ceil(total / perPage),
+      },
+    }
+  }
+  async invoiceFromInsuranceTotal(
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<Meta<number | null>> {
+    const invoices = await prisma.invoice.aggregate({
+      where: {
+        AND: [
+          {
+            customer: {
+              insuranceId: insuranceId,
+            },
+          },
+          (statusOfDocument as InvoiceStatus) == 'PAGO'
+            ? {
+                OR: [
+                  {
+                    type: 'FR',
+                  },
+                  {
+                    type: 'RC',
+                  },
+                ],
+              }
+            : {
+                type: 'FT',
+              },
+        ],
+      },
+      _sum: {
+        total: true,
+      },
+    })
+
+    return {
+      data: invoices._sum.total,
+    }
+  }
+  async invoiceFromCustomer(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    customerId: string,
+    statusOfDocument: string
+  ): Promise<Meta<Invoice[]>> {
+    const { page, perPage, search, orderBy } = payload
+    const skip = (page - 1) * perPage
+
+    const invoices = await prisma.invoice.findMany({
+      where: search
+        ? {
+            AND: [
+              {
+                reference: { contains: search, mode: 'insensitive' },
+              },
+              {
+                customerId,
+              },
+              (statusOfDocument as InvoiceStatus) == 'PAGO'
+                ? {
+                    OR: [
+                      {
+                        type: 'FR',
+                      },
+                      {
+                        type: 'RC',
+                      },
+                    ],
+                  }
+                : {
+                    AND: [
+                      {
+                        type: 'FT',
+                      },
+                      {
+                        status: 'POR_PAGAR',
+                      },
+                    ],
+                  },
+            ],
+          }
+        : {
+            AND: [
+              {
+                customerId,
+              },
+              (statusOfDocument as InvoiceStatus) == 'PAGO'
+                ? {
+                    OR: [
+                      {
+                        type: 'FR',
+                      },
+                      {
+                        type: 'RC',
+                      },
+                    ],
+                  }
+                : {
+                    AND: [
+                      {
+                        type: 'FT',
+                      },
+                      {
+                        status: 'POR_PAGAR',
+                      },
+                    ],
+                  },
+            ],
+          },
+      include: {
+        customer: true,
+        user: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    })
+
+    const total = await prisma.invoice.count({
+      where: search
+        ? {
+            AND: [
+              {
+                reference: { contains: search, mode: 'insensitive' },
+              },
+              {
+                customerId,
+              },
+              {
+                status: statusOfDocument as InvoiceStatus,
+              },
+            ],
+          }
+        : {
+            AND: [
+              {
+                customerId,
               },
               {
                 status: statusOfDocument as InvoiceStatus,

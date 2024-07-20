@@ -1,7 +1,7 @@
 import { InvoiceType } from '@prisma/client'
 import { prisma } from '../database/prisma'
 
-export const generateHashes = (length: number) => {
+export const generateHashes = (length: number): string => {
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*_+[]{}|<>?'
   let result = ''

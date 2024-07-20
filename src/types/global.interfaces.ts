@@ -63,6 +63,21 @@ export interface IController<Entity, CreateRecord, UpdateRecord> {
     insuranceId: string,
     statusOfDocument: string
   ): Promise<HttpResponse<Entity[]>>
+  invoiceFromCustomer?(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<HttpResponse<Entity[]>>
+  invoiceFromInsuranceTotal?(
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<HttpResponse<number | null>>
 }
 
 export interface IRepository<Entity, CreateRecord, UpdateRecord> {
@@ -96,4 +111,19 @@ export interface IRepository<Entity, CreateRecord, UpdateRecord> {
     insuranceId: string,
     statusOfDocument: string
   ): Promise<Meta<Entity[]>>
+  invoiceFromCustomer?(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<Meta<Entity[]>>
+  invoiceFromInsuranceTotal?(
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<Meta<number | null>>
 }

@@ -19,7 +19,7 @@ export class Middlewares {
 
     jwt.verify(
       token,
-      'your_secret_key',
+      'alfavida_app_management_clinic',
       (err: VerifyErrors | null, user: any) => {
         if (err)
           return res

@@ -1,8 +1,7 @@
 import { User } from '@prisma/client'
-import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 export function generateToken(user: User): string {
-  return jwt.sign({ email: user.email }, 'your_secret_key', {
+  return jwt.sign({ email: user.email }, 'alfavida_app_management_clinic', {
     expiresIn: '8h',
   })
 }

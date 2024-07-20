@@ -28,6 +28,7 @@ import serviceNew from './service-new'
 import authNew from './auth-new'
 import protocolNew from './protocol-new'
 import paymentNew from './payment-new'
+import companyNew from './company-new'
 import partner from './partner'
 
 const router = express.Router()
@@ -48,18 +49,19 @@ router.use('/company', middleware.verifyToken, company)
 router.use('/attendings', middleware.verifyToken, attending)
 router.use('/dashboard', middleware.verifyToken, dashboard)
 router.use('/materials', middleware.verifyToken, material)
-router.use('/customers', customer)
-router.use('/finances', finance)
-router.use('/invoices', invoice)
-router.use('/partners', partner)
-router.use('/insurance-new', insuranceNew)
-router.use('/user-new', userNew)
-router.use('/material-new', materialNew)
-router.use('/service-new', serviceNew)
+router.use('/customers', middleware.verifyToken, customer)
+router.use('/finances', middleware.verifyToken, finance)
+router.use('/invoices', middleware.verifyToken, invoice)
+router.use('/partners', middleware.verifyToken, partner)
+router.use('/insurance-new', middleware.verifyToken, insuranceNew)
+router.use('/user-new', middleware.verifyToken, userNew)
+router.use('/material-new', middleware.verifyToken, materialNew)
+router.use('/service-new', middleware.verifyToken, serviceNew)
 router.use('/auth-new', authNew)
-router.use('/protocol-new', protocolNew)
-router.use('/payment-new', paymentNew)
-router.use('/account-closure', account_closure)
-router.use('/reports-financial', reports)
+router.use('/protocol-new', middleware.verifyToken, protocolNew)
+router.use('/payment-new', middleware.verifyToken, paymentNew)
+router.use('/company-new', middleware.verifyToken, companyNew)
+router.use('/account-closure', middleware.verifyToken, account_closure)
+router.use('/reports-financial', middleware.verifyToken, reports)
 
 export default router

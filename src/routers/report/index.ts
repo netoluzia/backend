@@ -3,10 +3,11 @@ import type { Response, Request } from 'express'
 import { ReportController } from '../../controllers/printing/report'
 import { MapReportController } from '../../controllers/printing/map'
 import { MapProductReportController } from '../../controllers/printing/map-products'
+import { InvoicePrintController } from '../../controllers/report-new'
 const router = express.Router()
 
 router.get('/:id/:second?', async (req: Request, res: Response) => {
-  const reportController = new ReportController()
+  const reportController = new InvoicePrintController()
   const { id, second } = req.params
   console.log(req.params)
   const result = await reportController.handle(id, Boolean(second))

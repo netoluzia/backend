@@ -73,9 +73,9 @@ export class ProtocolController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
+        message: error.message,
         status: StatusCode.OK,
         success: true,
       }
@@ -94,11 +94,11 @@ export class ProtocolController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
-        status: StatusCode.OK,
-        success: true,
+        message: error.message,
+        status: 500,
+        success: false,
       }
     }
   }

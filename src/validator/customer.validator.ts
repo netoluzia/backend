@@ -2,7 +2,7 @@ import { z } from 'zod'
 export const createCustomer = z.object({
   name: z.string(),
   nif: z.string().optional(),
-  address: z.string().nullable(),
+  address: z.string().optional().nullable(),
   phone: z.string(),
   source: z.string(),
   email: z.string().optional(),

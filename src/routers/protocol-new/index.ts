@@ -55,6 +55,14 @@ router.patch('/soft-delete/:id', async (req: Request, res: Response) => {
   const { status, ...rest } = await controller.softDelete(id)
   return res.status(status).send(rest)
 })
+
+router.patch('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params
+  const repository = new ProtocolRepository()
+  const controller = new ProtocolController(repository)
+  const { status, ...rest } = await controller.update(id, req.body)
+  return res.status(status).send(rest)
+})
 router.post('/', async (req: Request, res: Response) => {
   const { body } = req
   const repository = new ProtocolRepository()

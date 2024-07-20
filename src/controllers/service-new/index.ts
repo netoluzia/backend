@@ -76,7 +76,7 @@ export class ServiceController
       }
     } catch (error: any) {
       return {
-        message: error.message as string,
+        message: error.message,
         status: StatusCode.SERVER_ERROR,
         success: true,
       }
@@ -95,9 +95,9 @@ export class ServiceController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
+        message: error.message,
         status: StatusCode.OK,
         success: true,
       }

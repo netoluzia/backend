@@ -95,6 +95,7 @@ export class InvoiceController
       payloadToValidate.serie = String(new Date().getFullYear())
 
       if (payload.type == 'FR' || payload.type == 'RC') {
+        if (!payload.total) throw new Error('Total não foi calculado')
         if (payload.amount_received && payload.amount_received < payload.total)
           throw new Error('Insira um montante válido')
         payloadToValidate.status = 'PAGO'
@@ -105,7 +106,15 @@ export class InvoiceController
         payload.type == 'RC' ||
         payload.type == 'ND'
       ) {
-        if (payload.invoiceId) throw new Error('Insira uma referência válida')
+        if (!payload.invoiceId) throw new Error('Insira uma referência válida')
+      }
+
+      if (payload.type == 'RC') {
+        payloadToValidate.status = 'PAGO'
+      }
+
+      if (payload.type == 'ND' || payload.type == 'NC') {
+        payloadToValidate.status = 'FINAL'
       }
 
       if (payload.type == 'FT') {
@@ -219,6 +228,64 @@ export class InvoiceController
         throw new Error('Nor implemeyted')
       const response = await this.repository.invoiceFromInsurance(
         payload,
+        insuranceId,
+        statusOfDocument
+      )
+      return {
+        message: Message.OK,
+        body: response,
+        status: StatusCode.OK,
+        success: true,
+      }
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: StatusCode.OK,
+        success: true,
+      }
+    }
+  }
+  async invoiceFromCustomer(
+    payload: {
+      search?: string
+      page: number
+      perPage: number
+      orderBy?: any
+      category?: string
+    },
+    customerId: string,
+    statusOfDocument: string
+  ): Promise<HttpResponse<Invoice[]>> {
+    try {
+      if (!this.repository.invoiceFromCustomer)
+        throw new Error('Nor implemented')
+      const response = await this.repository.invoiceFromCustomer(
+        payload,
+        customerId,
+        statusOfDocument
+      )
+      return {
+        message: Message.OK,
+        body: response,
+        status: StatusCode.OK,
+        success: true,
+      }
+    } catch (error: any) {
+      return {
+        message: error.message,
+        status: StatusCode.OK,
+        success: true,
+      }
+    }
+  }
+  async invoiceFromInsuranceTotal(
+    insuranceId: string,
+    statusOfDocument: string
+  ): Promise<HttpResponse<number | null>> {
+    try {
+      if (!this.repository.invoiceFromInsuranceTotal)
+        throw new Error('Nor implemented')
+      const response = await this.repository.invoiceFromInsuranceTotal(
         insuranceId,
         statusOfDocument
       )

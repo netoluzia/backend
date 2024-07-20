@@ -37,11 +37,11 @@ export class CustomerController
         status: StatusCode.OK,
         success: true,
       }
-    } catch (error) {
+    } catch (error: any) {
       return {
-        message: Message.OK,
-        status: StatusCode.OK,
-        success: true,
+        message: error.message,
+        status: StatusCode.SERVER_ERROR,
+        success: false,
       }
     }
   }
