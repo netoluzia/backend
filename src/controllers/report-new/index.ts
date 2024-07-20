@@ -17,6 +17,7 @@ const documents = {
 import { InvoiceRepository } from '../../repositories/invoice'
 import { CompanyRepository } from '../../repositories/company-new'
 import { InvoiceItem, Prisma } from '@prisma/client'
+import { CompanyController } from '../company-new'
 
 type InvoiceItemWithService = Prisma.InvoiceItemGetPayload<{
   include: { service: true }
@@ -88,8 +89,9 @@ export class InvoicePrintController {
   async handle(id: string, second = false): Promise<Buffer> {
     const repository = new InvoiceRepository()
     const companyRepository = new CompanyRepository()
+    const companyController = new CompanyController(companyRepository)
     const { data } = await repository.show(id)
-    const company = (await companyRepository.show('company')).data
+    const company = (await companyController.show('company')).body?.data
 
     const invoice = data as InvoiceWithAll
 

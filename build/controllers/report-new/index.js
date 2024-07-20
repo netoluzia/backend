@@ -52,6 +52,7 @@ const documents = {
 };
 const invoice_1 = require("../../repositories/invoice");
 const company_new_1 = require("../../repositories/company-new");
+const company_new_2 = require("../company-new");
 class InvoicePrintController {
     getItemsInvoice(items) {
         let itemsTable = [];
@@ -101,17 +102,19 @@ class InvoicePrintController {
         return itemsTable;
     }
     handle(id, second = false) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const repository = new invoice_1.InvoiceRepository();
             const companyRepository = new company_new_1.CompanyRepository();
+            const companyController = new company_new_2.CompanyController(companyRepository);
             const { data } = yield repository.show(id);
-            const company = (yield companyRepository.show('company')).data;
+            const company = (_a = (yield companyController.show('company')).body) === null || _a === void 0 ? void 0 : _a.data;
             const invoice = data;
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                var _a, _b, _c, _d, _e, _f, _g;
+                var _b, _c, _d, _e, _f, _g, _h;
                 const customer = ['FR', 'FT', 'PP'].includes(invoice.type)
                     ? invoice.customer
-                    : (_a = invoice.invoiceSource) === null || _a === void 0 ? void 0 : _a.customer;
+                    : (_b = invoice.invoiceSource) === null || _b === void 0 ? void 0 : _b.customer;
                 const fonts = {
                     Helvetica: {
                         normal: 'Helvetica',
@@ -122,7 +125,7 @@ class InvoicePrintController {
                 };
                 let items = ['FR', 'FT', 'PP'].includes(invoice.type)
                     ? invoice === null || invoice === void 0 ? void 0 : invoice.invoiceItems
-                    : (_b = invoice.invoiceSource) === null || _b === void 0 ? void 0 : _b.invoiceItems;
+                    : (_c = invoice.invoiceSource) === null || _c === void 0 ? void 0 : _c.invoiceItems;
                 const imagePath = path.resolve(__dirname, '../../../image/logo.jpg');
                 const companyData = [
                     {
@@ -255,7 +258,7 @@ class InvoicePrintController {
                                                         style: ['bodyStyle'],
                                                     },
                                                     {
-                                                        text: (_c = customer === null || customer === void 0 ? void 0 : customer.insurance) === null || _c === void 0 ? void 0 : _c.name,
+                                                        text: (_d = customer === null || customer === void 0 ? void 0 : customer.insurance) === null || _d === void 0 ? void 0 : _d.name,
                                                         style: ['bodyStyle'],
                                                     },
                                                 ],
@@ -265,7 +268,7 @@ class InvoicePrintController {
                                                         style: ['bodyStyle'],
                                                     },
                                                     {
-                                                        text: (_d = customer === null || customer === void 0 ? void 0 : customer.insurance) === null || _d === void 0 ? void 0 : _d.address,
+                                                        text: (_e = customer === null || customer === void 0 ? void 0 : customer.insurance) === null || _e === void 0 ? void 0 : _e.address,
                                                         style: ['bodyStyle'],
                                                     },
                                                 ],
@@ -275,7 +278,7 @@ class InvoicePrintController {
                                                         style: ['bodyStyle'],
                                                     },
                                                     {
-                                                        text: (_e = customer.insurance) === null || _e === void 0 ? void 0 : _e.nif,
+                                                        text: (_f = customer.insurance) === null || _f === void 0 ? void 0 : _f.nif,
                                                         style: ['bodyStyle'],
                                                     },
                                                 ],
@@ -372,7 +375,7 @@ class InvoicePrintController {
                                 },
                                 {
                                     width: '20%',
-                                    text: `${((_f = invoice === null || invoice === void 0 ? void 0 : invoice.invoiceSource) === null || _f === void 0 ? void 0 : _f.reference) || ''}`,
+                                    text: `${((_g = invoice === null || invoice === void 0 ? void 0 : invoice.invoiceSource) === null || _g === void 0 ? void 0 : _g.reference) || ''}`,
                                     alignment: 'right',
                                 },
                             ],
@@ -600,7 +603,7 @@ class InvoicePrintController {
                             style: ['default'],
                         },
                         {
-                            text: `Operador: ${(_g = invoice === null || invoice === void 0 ? void 0 : invoice.user) === null || _g === void 0 ? void 0 : _g.name}`,
+                            text: `Operador: ${(_h = invoice === null || invoice === void 0 ? void 0 : invoice.user) === null || _h === void 0 ? void 0 : _h.name}`,
                             alignment: 'left',
                             style: ['default'],
                         },
