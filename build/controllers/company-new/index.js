@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PartnerController = void 0;
+exports.CompanyController = void 0;
 const global_interfaces_1 = require("../../types/global.interfaces");
-const partner_validator_1 = require("../../validator/partner.validator");
-class PartnerController {
+const company_validator_1 = require("../../validator/company.validator");
+class CompanyController {
     constructor(repository) {
         this.repository = repository;
     }
@@ -29,7 +29,7 @@ class PartnerController {
             }
             catch (error) {
                 return {
-                    message: error.message,
+                    message: global_interfaces_1.Message.OK,
                     status: global_interfaces_1.StatusCode.OK,
                     success: true,
                 };
@@ -49,7 +49,7 @@ class PartnerController {
             }
             catch (error) {
                 return {
-                    message: global_interfaces_1.Message.OK,
+                    message: error.message,
                     status: global_interfaces_1.StatusCode.OK,
                     success: true,
                 };
@@ -59,7 +59,7 @@ class PartnerController {
     create(payload) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const payloadValidated = partner_validator_1.createPartner.parse(payload);
+                const payloadValidated = company_validator_1.createCompany.parse(payload);
                 const response = yield this.repository.create(payloadValidated);
                 return {
                     message: global_interfaces_1.Message.OK,
@@ -70,7 +70,7 @@ class PartnerController {
             }
             catch (error) {
                 return {
-                    message: error.message,
+                    message: global_interfaces_1.Message.OK,
                     status: global_interfaces_1.StatusCode.OK,
                     success: true,
                 };
@@ -80,7 +80,7 @@ class PartnerController {
     update(id, payload) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const payloadValidated = partner_validator_1.updatePartner.parse(payload);
+                const payloadValidated = company_validator_1.updateCompany.parse(payload);
                 const response = yield this.repository.update(id, payloadValidated);
                 return {
                     message: global_interfaces_1.Message.OK,
@@ -91,7 +91,7 @@ class PartnerController {
             }
             catch (error) {
                 return {
-                    message: error.message,
+                    message: global_interfaces_1.Message.OK,
                     status: global_interfaces_1.StatusCode.OK,
                     success: true,
                 };
@@ -138,5 +138,27 @@ class PartnerController {
             }
         });
     }
+    searchByName(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!this.repository.searchByName)
+                    throw new Error('Nao implementado');
+                const response = yield this.repository.searchByName(name);
+                return {
+                    message: global_interfaces_1.Message.OK,
+                    body: response,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+            catch (error) {
+                return {
+                    message: global_interfaces_1.Message.OK,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+        });
+    }
 }
-exports.PartnerController = PartnerController;
+exports.CompanyController = CompanyController;

@@ -91,7 +91,7 @@ class ServiceController {
             }
             catch (error) {
                 return {
-                    message: global_interfaces_1.Message.OK,
+                    message: error.message,
                     status: global_interfaces_1.StatusCode.OK,
                     success: true,
                 };

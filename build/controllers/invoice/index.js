@@ -88,6 +88,8 @@ class InvoiceController {
                 payloadToValidate.reference = yield (0, invoice_1.generateReference)(payload.type);
                 payloadToValidate.serie = String(new Date().getFullYear());
                 if (payload.type == 'FR' || payload.type == 'RC') {
+                    if (!payload.total)
+                        throw new Error('Total não foi calculado');
                     if (payload.amount_received && payload.amount_received < payload.total)
                         throw new Error('Insira um montante válido');
                     payloadToValidate.status = 'PAGO';
@@ -95,8 +97,14 @@ class InvoiceController {
                 if (payload.type == 'NC' ||
                     payload.type == 'RC' ||
                     payload.type == 'ND') {
-                    if (payload.invoiceId)
+                    if (!payload.invoiceId)
                         throw new Error('Insira uma referência válida');
+                }
+                if (payload.type == 'RC') {
+                    payloadToValidate.status = 'PAGO';
+                }
+                if (payload.type == 'ND' || payload.type == 'NC') {
+                    payloadToValidate.status = 'FINAL';
                 }
                 if (payload.type == 'FT') {
                     payloadToValidate.status = 'POR_PAGAR';
@@ -208,6 +216,50 @@ class InvoiceController {
                 if (!this.repository.invoiceFromInsurance)
                     throw new Error('Nor implemeyted');
                 const response = yield this.repository.invoiceFromInsurance(payload, insuranceId, statusOfDocument);
+                return {
+                    message: global_interfaces_1.Message.OK,
+                    body: response,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+            catch (error) {
+                return {
+                    message: error.message,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+        });
+    }
+    invoiceFromCustomer(payload, customerId, statusOfDocument) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!this.repository.invoiceFromCustomer)
+                    throw new Error('Nor implemented');
+                const response = yield this.repository.invoiceFromCustomer(payload, customerId, statusOfDocument);
+                return {
+                    message: global_interfaces_1.Message.OK,
+                    body: response,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+            catch (error) {
+                return {
+                    message: error.message,
+                    status: global_interfaces_1.StatusCode.OK,
+                    success: true,
+                };
+            }
+        });
+    }
+    invoiceFromInsuranceTotal(insuranceId, statusOfDocument) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!this.repository.invoiceFromInsuranceTotal)
+                    throw new Error('Nor implemented');
+                const response = yield this.repository.invoiceFromInsuranceTotal(insuranceId, statusOfDocument);
                 return {
                     message: global_interfaces_1.Message.OK,
                     body: response,

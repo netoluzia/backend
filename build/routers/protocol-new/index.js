@@ -71,11 +71,18 @@ router.patch('/soft-delete/:id', (req, res) => __awaiter(void 0, void 0, void 0,
     const _e = yield controller.softDelete(id), { status } = _e, rest = __rest(_e, ["status"]);
     return res.status(status).send(rest);
 }));
+router.patch('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const repository = new protocol_new_1.ProtocolRepository();
+    const controller = new protocol_new_2.ProtocolController(repository);
+    const _f = yield controller.update(id, req.body), { status } = _f, rest = __rest(_f, ["status"]);
+    return res.status(status).send(rest);
+}));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const repository = new protocol_new_1.ProtocolRepository();
     const controller = new protocol_new_2.ProtocolController(repository);
-    const _f = yield controller.create(body), { status } = _f, rest = __rest(_f, ["status"]);
+    const _g = yield controller.create(body), { status } = _g, rest = __rest(_g, ["status"]);
     return res.status(status).send(rest);
 }));
 exports.default = router;

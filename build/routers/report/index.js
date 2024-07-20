@@ -16,9 +16,10 @@ const express_1 = __importDefault(require("express"));
 const report_1 = require("../../controllers/printing/report");
 const map_1 = require("../../controllers/printing/map");
 const map_products_1 = require("../../controllers/printing/map-products");
+const report_new_1 = require("../../controllers/report-new");
 const router = express_1.default.Router();
 router.get('/:id/:second?', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const reportController = new report_1.ReportController();
+    const reportController = new report_new_1.InvoicePrintController();
     const { id, second } = req.params;
     console.log(req.params);
     const result = yield reportController.handle(id, Boolean(second));

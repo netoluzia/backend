@@ -55,13 +55,33 @@ router.get('/insurance/myInvoices', (req, res) => __awaiter(void 0, void 0, void
     }, String(req.query.insuranceId), String(req.query.status)), { status } = _b, rest = __rest(_b, ["status"]);
     return res.status(status).send(rest);
 }));
+router.get('/insurance/myInvoices/total', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repository = new invoice_1.InvoiceRepository();
+    const controller = new invoice_2.InvoiceController(repository);
+    const _c = yield controller.invoiceFromInsuranceTotal(String(req.query.insuranceId), String(req.query.status)), { status } = _c, rest = __rest(_c, ["status"]);
+    return res.status(status).send(rest);
+}));
+router.get('/customer/myInvoices', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const search = req.query.search || '';
+    const page = Number(req.query.page) || 1;
+    const perPage = Number(req.query.perPage) || 10;
+    const repository = new invoice_1.InvoiceRepository();
+    const controller = new invoice_2.InvoiceController(repository);
+    const _d = yield controller.invoiceFromCustomer({
+        search,
+        page,
+        perPage,
+        category: req.params.category,
+    }, String(req.query.customerId), String(req.query.status)), { status } = _d, rest = __rest(_d, ["status"]);
+    return res.status(status).send(rest);
+}));
 router.get('/filter/search', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const search = req.query.search || '';
     const page = Number(req.query.page) || 1;
     const perPage = Number(req.query.perPage) || 10;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _c = yield controller.filter(search), { status } = _c, rest = __rest(_c, ["status"]);
+    const _e = yield controller.filter(search), { status } = _e, rest = __rest(_e, ["status"]);
     return res.status(status).send(rest);
 }));
 router.get('/index-by-status/:status', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -70,40 +90,40 @@ router.get('/index-by-status/:status', (req, res) => __awaiter(void 0, void 0, v
     const perPage = Number(req.query.perPage) || 10;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _d = yield controller.indexByStatus({
+    const _f = yield controller.indexByStatus({
         search,
         page,
         perPage,
         status: req.params.status,
-    }), { status } = _d, rest = __rest(_d, ["status"]);
+    }), { status } = _f, rest = __rest(_f, ["status"]);
     return res.status(status).send(rest);
 }));
 router.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _e = yield controller.show(id), { status } = _e, rest = __rest(_e, ["status"]);
+    const _g = yield controller.show(id), { status } = _g, rest = __rest(_g, ["status"]);
     return res.status(status).send(rest);
 }));
 router.delete('/destroy/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _f = yield controller.destroy(id), { status } = _f, rest = __rest(_f, ["status"]);
+    const _h = yield controller.destroy(id), { status } = _h, rest = __rest(_h, ["status"]);
     return res.status(status).send(rest);
 }));
 router.patch('/soft-delete/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _g = yield controller.softDelete(id), { status } = _g, rest = __rest(_g, ["status"]);
+    const _j = yield controller.softDelete(id), { status } = _j, rest = __rest(_j, ["status"]);
     return res.status(status).send(rest);
 }));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { body } = req;
     const repository = new invoice_1.InvoiceRepository();
     const controller = new invoice_2.InvoiceController(repository);
-    const _h = yield controller.create(body), { status } = _h, rest = __rest(_h, ["status"]);
+    const _k = yield controller.create(body), { status } = _k, rest = __rest(_k, ["status"]);
     return res.status(status).send(rest);
 }));
 exports.default = router;

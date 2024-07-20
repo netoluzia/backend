@@ -5,7 +5,7 @@ const zod_1 = require("zod");
 exports.createCustomer = zod_1.z.object({
     name: zod_1.z.string(),
     nif: zod_1.z.string().optional(),
-    address: zod_1.z.string().nullable(),
+    address: zod_1.z.string().optional().nullable(),
     phone: zod_1.z.string(),
     source: zod_1.z.string(),
     email: zod_1.z.string().optional(),

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function generateToken(user) {
-    return jsonwebtoken_1.default.sign({ email: user.email }, 'your_secret_key', {
+    return jsonwebtoken_1.default.sign({ email: user.email }, 'alfavida_app_management_clinic', {
         expiresIn: '8h',
     });
 }

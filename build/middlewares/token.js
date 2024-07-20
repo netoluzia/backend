@@ -13,7 +13,7 @@ class Middlewares {
             return res
                 .status(401)
                 .send({ message: 'Token expirado ou sem autorização' });
-        jsonwebtoken_1.default.verify(token, 'your_secret_key', (err, user) => {
+        jsonwebtoken_1.default.verify(token, 'alfavida_app_management_clinic', (err, user) => {
             if (err)
                 return res
                     .status(401)

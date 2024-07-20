@@ -29,9 +29,9 @@ class CustomerController {
             }
             catch (error) {
                 return {
-                    message: global_interfaces_1.Message.OK,
-                    status: global_interfaces_1.StatusCode.OK,
-                    success: true,
+                    message: error.message,
+                    status: global_interfaces_1.StatusCode.SERVER_ERROR,
+                    success: false,
                 };
             }
         });
