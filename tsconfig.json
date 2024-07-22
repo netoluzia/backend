@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "build",
-    // "rootDir": "src",
+    "rootDir": "src",
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
