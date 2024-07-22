@@ -18,10 +18,10 @@ const main = async () => {
     },
   })
   app.set('io', io)
-  app.use(cors())
+  app.use(cors({ origin: '*', methods: '*' }))
   app.use(express.json())
 
-  await MongoClient.connect()
+  // await MongoClient.connect()
 
   app.use('/api', routes)
   io.on('connection', (socket: Socket) => {
