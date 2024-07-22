@@ -113,7 +113,11 @@ export class InvoiceController
         payloadToValidate.status = 'PAGO'
       }
 
-      if (payload.type == 'ND' || payload.type == 'NC') {
+      if (
+        payload.type == 'ND' ||
+        payload.type == 'NC' ||
+        payload.type == 'PP'
+      ) {
         payloadToValidate.status = 'FINAL'
       }
 

@@ -17,6 +17,8 @@ import dashboard from './dashboard'
 import protocol from './protocol'
 import account_closure from './account-closure'
 import material from './material'
+import balance from './balance'
+import exemption from './exemption'
 
 import customer from './customer'
 import finance from './finance'
@@ -40,6 +42,7 @@ router.use('/users', middleware.verifyToken, user)
 router.use('/services', middleware.verifyToken, service)
 router.use('/products', middleware.verifyToken, product)
 router.use('/reports', report)
+router.use('/balances', balance)
 router.use('/documents', middleware.verifyToken, document)
 router.use('/clients', middleware.verifyToken, client)
 router.use('/payments', middleware.verifyToken, payment)
@@ -53,6 +56,7 @@ router.use('/customers', middleware.verifyToken, customer)
 router.use('/finances', middleware.verifyToken, finance)
 router.use('/invoices', middleware.verifyToken, invoice)
 router.use('/partners', middleware.verifyToken, partner)
+router.use('/exemptions', middleware.verifyToken, exemption)
 router.use('/insurance-new', middleware.verifyToken, insuranceNew)
 router.use('/user-new', middleware.verifyToken, userNew)
 router.use('/material-new', middleware.verifyToken, materialNew)

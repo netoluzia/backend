@@ -217,6 +217,20 @@ class InvoiceRepository {
                         } }, rest),
                 });
             }
+            else if (payload.type == 'ND') {
+                invoice = yield prisma_1.prisma.invoice.create({
+                    data: Object.assign({ emission_date: payload.emission_date
+                            ? new Date(payload.emission_date)
+                            : new Date(), invoiceId: payload.invoiceId || null }, rest),
+                });
+                if (invoiceId)
+                    yield prisma_1.prisma.invoice.update({
+                        where: { id: invoiceId },
+                        data: {
+                            status: 'FINAL',
+                        },
+                    });
+            }
             else {
                 invoice = yield prisma_1.prisma.invoice.create({
                     data: Object.assign(Object.assign({ emission_date: payload.emission_date

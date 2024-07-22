@@ -18,6 +18,7 @@ exports.createService = zod_1.z.object({
         client_1.Category.LAB,
         client_1.Category.RX,
     ]),
+    type: zod_1.z.enum([client_1.TypeItem.PRODUCT, client_1.TypeItem.SERVICE]),
     account_code: zod_1.z.string().optional(),
     status: zod_1.z
         .enum([client_1.StatusService.AVAILABLE, client_1.StatusService.UNAVAILABE])
@@ -44,6 +45,7 @@ exports.updateService = zod_1.z.object({
         client_1.Category.LAB,
         client_1.Category.RX,
     ]),
+    type: zod_1.z.enum([client_1.TypeItem.PRODUCT, client_1.TypeItem.SERVICE]),
     account_code: zod_1.z.string().optional(),
     status: zod_1.z
         .enum([client_1.StatusService.AVAILABLE, client_1.StatusService.UNAVAILABE])

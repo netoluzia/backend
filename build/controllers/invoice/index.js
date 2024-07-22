@@ -103,7 +103,9 @@ class InvoiceController {
                 if (payload.type == 'RC') {
                     payloadToValidate.status = 'PAGO';
                 }
-                if (payload.type == 'ND' || payload.type == 'NC') {
+                if (payload.type == 'ND' ||
+                    payload.type == 'NC' ||
+                    payload.type == 'PP') {
                     payloadToValidate.status = 'FINAL';
                 }
                 if (payload.type == 'FT') {

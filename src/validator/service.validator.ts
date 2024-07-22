@@ -1,4 +1,4 @@
-import { Category, StatusService } from '@prisma/client'
+import { Category, StatusService, TypeItem } from '@prisma/client'
 import { z } from 'zod'
 export const createService = z.object({
   name: z.string(),
@@ -15,6 +15,7 @@ export const createService = z.object({
     Category.LAB,
     Category.RX,
   ]),
+  type: z.enum([TypeItem.PRODUCT, TypeItem.SERVICE]),
   account_code: z.string().optional(),
   status: z
     .enum([StatusService.AVAILABLE, StatusService.UNAVAILABE])
@@ -44,6 +45,7 @@ export const updateService = z.object({
     Category.LAB,
     Category.RX,
   ]),
+  type: z.enum([TypeItem.PRODUCT, TypeItem.SERVICE]),
   account_code: z.string().optional(),
   status: z
     .enum([StatusService.AVAILABLE, StatusService.UNAVAILABE])

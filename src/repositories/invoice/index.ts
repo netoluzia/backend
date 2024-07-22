@@ -216,6 +216,23 @@ export class InvoiceRepository
           ...rest,
         },
       })
+    } else if (payload.type == 'ND') {
+      invoice = await prisma.invoice.create({
+        data: {
+          emission_date: payload.emission_date
+            ? new Date(payload.emission_date)
+            : new Date(),
+          invoiceId: payload.invoiceId || null,
+          ...rest,
+        },
+      })
+      if (invoiceId)
+        await prisma.invoice.update({
+          where: { id: invoiceId },
+          data: {
+            status: 'FINAL',
+          },
+        })
     } else {
       invoice = await prisma.invoice.create({
         data: {
